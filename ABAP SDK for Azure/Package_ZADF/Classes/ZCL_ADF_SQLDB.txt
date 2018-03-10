@@ -1,0 +1,512 @@
+*----------------------------------------------------------------------*
+*       CLASS ZCL_ADF_SQLDB DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcl_adf_sqldb DEFINITION
+  PUBLIC
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    DATA gv_dbcon TYPE dbcon_name .
+    DATA go_dbcon TYPE REF TO cl_sql_connection .
+
+    METHODS constructor
+      IMPORTING
+        value(iv_dbcon) TYPE dbcon_name
+      RAISING
+        cx_sql_exception
+        zcx_adf_sqldb .
+    METHODS insert_table
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+        value(it_data) TYPE ANY TABLE
+      RAISING
+        cx_sql_exception
+        zcx_adf_sqldb .
+    METHODS insert_row
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+        value(iv_data) TYPE data
+      RAISING
+        cx_sql_exception
+        zcx_adf_sqldb .
+    METHODS delete_table
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+        value(it_data) TYPE ANY TABLE
+      RAISING
+        cx_sql_exception
+        zcx_adf_sqldb .
+    METHODS delete_row
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+        value(iv_data) TYPE data
+      RAISING
+        cx_sql_exception
+        zcx_adf_sqldb .
+    METHODS modify_table
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+        value(it_data) TYPE ANY TABLE
+      RAISING
+        cx_sql_exception
+        zcx_adf_sqldb .
+    METHODS modify_row
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+        value(iv_data) TYPE data
+      RAISING
+        cx_sql_exception
+        zcx_adf_sqldb .
+    METHODS commit_db
+      RAISING
+        cx_sql_exception
+        zcx_adf_sqldb .
+    METHODS generate_create_statement
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+      RETURNING
+        value(rv_statement) TYPE string .
+    METHODS insert_multiple_rows
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+        value(it_data) TYPE ANY TABLE
+      RETURNING
+        value(rv_rows) TYPE int4 .
+    METHODS drop_table
+      IMPORTING
+        value(iv_tabname) TYPE tabname .
+    METHODS create_table
+      IMPORTING
+        value(iv_tabname) TYPE tabname .
+
+  PROTECTED SECTION.
+
+  PRIVATE SECTION.
+
+    METHODS check_connection
+      RAISING
+        cx_sql_exception
+        zcx_adf_sqldb .
+    METHODS open_connection .
+    METHODS close_connection .
+    METHODS generate_insert_statement
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+      RETURNING
+        value(rv_statement) TYPE string .
+    METHODS get_ddic_fields
+      IMPORTING
+        value(iv_tabname) TYPE tabname
+      RETURNING
+        value(rt_fields) TYPE tddfields .
+    METHODS update_multiple_rows .
+    METHODS select_multiple_rows .
+    METHODS delete_multiple_rows .
+    METHODS insert_single_row .
+    METHODS select_single_row .
+    METHODS update_single_row .
+ENDCLASS.                    "ZCL_ADF_SQLDB DEFINITION
+
+*----------------------------------------------------------------------*
+*       CLASS ZCL_ADF_SQLDB IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcl_adf_sqldb IMPLEMENTATION.
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->CHECK_CONNECTION
+* +-------------------------------------------------------------------------------------------------+
+* | [!CX!] CX_SQL_EXCEPTION
+* | [!CX!] ZCX_ADF_SQLDB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD check_connection.
+
+    open_connection( ).
+    close_connection( ).
+
+  ENDMETHOD.                    "check_connection
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->CLOSE_CONNECTION
+* +-------------------------------------------------------------------------------------------------+
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD close_connection.
+
+    DATA : lv_dbcon TYPE dbcon_name.
+
+    lv_dbcon = go_dbcon->get_con_name( ).
+    CHECK lv_dbcon <> cl_sql_connection=>c_default_connection.
+    go_dbcon->close( ).
+
+  ENDMETHOD.                    "close_connection
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->COMMIT_DB
+* +-------------------------------------------------------------------------------------------------+
+* | [!CX!] CX_SQL_EXCEPTION
+* | [!CX!] ZCX_ADF_SQLDB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD commit_db.
+  ENDMETHOD.                    "COMMIT_DB
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->CONSTRUCTOR
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_DBCON                       TYPE        DBCON_NAME
+* | [!CX!] CX_SQL_EXCEPTION
+* | [!CX!] ZCX_ADF_SQLDB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD constructor.
+
+    gv_dbcon = iv_dbcon.
+*  check_connection( ).
+
+  ENDMETHOD.                    "constructor
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->CREATE_TABLE
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD create_table.
+
+    DATA: lo_sqlerr_ref TYPE REF TO cx_sql_exception,
+          lv_stmt       TYPE string,
+          lo_stmt_ref   TYPE REF TO cl_sql_statement.
+
+    IF go_dbcon IS NOT BOUND.
+      open_connection( ).
+    ENDIF.
+
+    lo_stmt_ref = go_dbcon->create_statement( ).
+    lv_stmt = generate_create_statement( iv_tabname = iv_tabname ).
+    lo_stmt_ref->execute_ddl( lv_stmt ).
+
+  ENDMETHOD.                    "create_table
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->DELETE_MULTIPLE_ROWS
+* +-------------------------------------------------------------------------------------------------+
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD delete_multiple_rows.
+  ENDMETHOD.                    "DELETE_MULTIPLE_ROWS
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->DELETE_ROW
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [--->] IV_DATA                        TYPE        DATA
+* | [!CX!] CX_SQL_EXCEPTION
+* | [!CX!] ZCX_ADF_SQLDB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD delete_row.
+
+    INSERT (iv_tabname) CLIENT SPECIFIED CONNECTION (gv_dbcon)
+           FROM iv_data.
+
+  ENDMETHOD.                    "delete_row
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->DELETE_TABLE
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [--->] IT_DATA                        TYPE        ANY TABLE
+* | [!CX!] CX_SQL_EXCEPTION
+* | [!CX!] ZCX_ADF_SQLDB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD delete_table.
+
+    DELETE (iv_tabname) CLIENT SPECIFIED CONNECTION (gv_dbcon)
+            FROM TABLE it_data.
+
+  ENDMETHOD.                    "delete_table
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->DROP_TABLE
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD drop_table.
+
+    DATA: lv_stmt     TYPE string,
+          lv_stmt_ref TYPE REF TO cl_sql_statement.
+
+    IF go_dbcon IS NOT BOUND.
+      open_connection( ).
+    ENDIF.
+
+* create a statement object
+    lv_stmt_ref = go_dbcon->create_statement( ).
+
+* create the statement string
+    CONCATENATE 'drop table' iv_tabname
+      INTO lv_stmt SEPARATED BY space.
+
+* execute the DDL command
+    lv_stmt_ref->execute_ddl( lv_stmt ).
+
+  ENDMETHOD.                    "drop_table
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->GENERATE_CREATE_STATEMENT
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [<-()] RV_STATEMENT                   TYPE        STRING
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD generate_create_statement.
+
+    DATA : lt_ddflds TYPE tddfields,
+           ls_ddflds TYPE ddfield,
+           lv_stmt   TYPE string,
+           lv_strlen TYPE i,
+           lt_dbflds TYPE TABLE OF dbftype,
+           ls_dbflds TYPE dbftype,
+           lv_field  TYPE string,
+           lv_type   TYPE string,
+           lv_length TYPE string,
+           lv_nullable TYPE string.
+
+    lt_ddflds = get_ddic_fields( iv_tabname ).
+
+    CALL FUNCTION 'DB_MAP_DDFIELDS'
+      EXPORTING
+        dbsys        = sy-dbsys
+        with_check   = ' '
+        with_string  = 'X'
+        nullable     = 'X'
+        tabname      = ''
+      TABLES
+        dbftypes     = lt_dbflds
+        ddfields     = lt_ddflds
+      EXCEPTIONS
+        not_mappable = 1
+        OTHERS       = 2.
+    IF sy-subrc <> 0.
+* Implement suitable error handling here
+    ENDIF.
+
+    LOOP AT lt_dbflds INTO ls_dbflds.
+      CONCATENATE '[' ls_dbflds-name ']' INTO lv_field.
+      SPLIT ls_dbflds-string AT '(' INTO lv_type lv_length.
+      CONCATENATE '[' lv_type ']' '(' lv_length INTO lv_type.
+      IF ls_dbflds-nullable IS INITIAL.
+        lv_nullable = 'NOT NULL'.
+      ELSE.
+        lv_nullable = 'NULL'.
+      ENDIF.
+      CONCATENATE lv_stmt lv_field lv_type lv_nullable ','
+                  INTO lv_stmt SEPARATED BY space.
+    ENDLOOP.
+
+    lv_strlen = strlen( lv_stmt ).
+    lv_strlen = lv_strlen - 1.
+    lv_stmt = lv_stmt+0(lv_strlen).
+
+    CONCATENATE '(' lv_stmt ')' INTO lv_stmt.
+    CONCATENATE 'CREATE TABLE' iv_tabname lv_stmt
+                INTO lv_stmt SEPARATED BY space.
+
+    rv_statement = lv_stmt.
+
+  ENDMETHOD.                    "generate_create_statement
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->GENERATE_INSERT_STATEMENT
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [<-()] RV_STATEMENT                   TYPE        STRING
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD generate_insert_statement.
+
+    DATA : lt_ddflds TYPE tddfields,
+           ls_ddflds TYPE ddfield,
+           lv_stmt   TYPE string,
+           lv_strlen TYPE i.
+
+    lt_ddflds = get_ddic_fields( iv_tabname ).
+
+    LOOP AT lt_ddflds INTO ls_ddflds.
+      CONCATENATE lv_stmt '?,' INTO lv_stmt
+                  SEPARATED BY space.
+    ENDLOOP.
+    lv_strlen = strlen( lv_stmt ).
+    lv_strlen = lv_strlen - 1.
+    lv_stmt = lv_stmt+0(lv_strlen).
+
+    CONCATENATE '(' lv_stmt ')' INTO lv_stmt.
+    CONCATENATE 'INSERT INTO' iv_tabname 'VALUES' lv_stmt
+                INTO lv_stmt SEPARATED BY space.
+
+    rv_statement = lv_stmt.
+
+  ENDMETHOD.                    "generate_insert_statement
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->GET_DDIC_FIELDS
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [<-()] RT_FIELDS                      TYPE        TDDFIELDS
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD get_ddic_fields.
+
+    DATA: lv_tabname        TYPE tabname,
+          lv_dbsys          TYPE sy-dbsys,
+          lt_tabflds        TYPE TABLE OF ddfield.
+
+    lv_dbsys = 'MSS'.
+    lv_tabname = iv_tabname.
+    TRANSLATE lv_tabname TO UPPER CASE.
+
+    CALL FUNCTION 'DD_NAMETAB_TO_DDFIELDS'
+      EXPORTING
+        keyfields = 'X'
+        nullable  = 'X'
+        tabname   = lv_tabname
+      TABLES
+        ddfields  = lt_tabflds.
+
+    rt_fields = lt_tabflds.
+
+  ENDMETHOD.                    "get_ddic_fields
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->INSERT_MULTIPLE_ROWS
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [--->] IT_DATA                        TYPE        ANY TABLE
+* | [<-()] RV_ROWS                        TYPE        INT4
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD insert_multiple_rows.
+
+    DATA : lv_stmt  TYPE string,
+           lo_stmt_ref TYPE REF TO cl_sql_statement,
+           lo_table TYPE REF TO data.
+
+    IF go_dbcon IS NOT BOUND.
+      open_connection( ).
+    ENDIF.
+
+    lo_stmt_ref = go_dbcon->create_statement( ).
+
+    GET REFERENCE OF it_data INTO lo_table.
+    lo_stmt_ref->set_param_table( lo_table ).
+
+    lv_stmt = generate_insert_statement( iv_tabname ).
+    rv_rows = lo_stmt_ref->execute_update( lv_stmt ).
+
+  ENDMETHOD.                    "insert_multiple_rows
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->INSERT_ROW
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [--->] IV_DATA                        TYPE        DATA
+* | [!CX!] CX_SQL_EXCEPTION
+* | [!CX!] ZCX_ADF_SQLDB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD insert_row.
+
+    INSERT (iv_tabname) CLIENT SPECIFIED CONNECTION (gv_dbcon)
+                        FROM iv_data.
+
+  ENDMETHOD.                    "insert_row
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->INSERT_SINGLE_ROW
+* +-------------------------------------------------------------------------------------------------+
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD insert_single_row.
+  ENDMETHOD.                    "INSERT_SINGLE_ROW
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->INSERT_TABLE
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [--->] IT_DATA                        TYPE        ANY TABLE
+* | [!CX!] CX_SQL_EXCEPTION
+* | [!CX!] ZCX_ADF_SQLDB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD insert_table.
+
+    INSERT (iv_tabname) CLIENT SPECIFIED CONNECTION (gv_dbcon)
+           FROM TABLE it_data.
+
+  ENDMETHOD.                    "insert_table
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->MODIFY_ROW
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [--->] IV_DATA                        TYPE        DATA
+* | [!CX!] CX_SQL_EXCEPTION
+* | [!CX!] ZCX_ADF_SQLDB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD modify_row.
+
+    MODIFY (iv_tabname) CLIENT SPECIFIED CONNECTION (gv_dbcon)
+           FROM iv_data.
+
+  ENDMETHOD.                    "modify_row
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB->MODIFY_TABLE
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* | [--->] IT_DATA                        TYPE        ANY TABLE
+* | [!CX!] CX_SQL_EXCEPTION
+* | [!CX!] ZCX_ADF_SQLDB
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD modify_table.
+
+    MODIFY (iv_tabname) CLIENT SPECIFIED CONNECTION (gv_dbcon)
+           FROM TABLE it_data.
+
+  ENDMETHOD.                    "modify_table
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->OPEN_CONNECTION
+* +-------------------------------------------------------------------------------------------------+
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD open_connection.
+
+    IF gv_dbcon IS INITIAL.
+      CREATE OBJECT go_dbcon.
+    ELSE.
+      go_dbcon = cl_sql_connection=>get_connection( gv_dbcon ).
+    ENDIF.
+
+  ENDMETHOD.                    "open_connection
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->SELECT_MULTIPLE_ROWS
+* +-------------------------------------------------------------------------------------------------+
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD select_multiple_rows.
+  ENDMETHOD.                    "SELECT_MULTIPLE_ROWS
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->SELECT_SINGLE_ROW
+* +-------------------------------------------------------------------------------------------------+
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD select_single_row.
+  ENDMETHOD.                    "SELECT_SINGLE_ROW
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->UPDATE_MULTIPLE_ROWS
+* +-------------------------------------------------------------------------------------------------+
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD update_multiple_rows.
+  ENDMETHOD.                    "UPDATE_MULTIPLE_ROWS
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Private Method ZCL_ADF_SQLDB->UPDATE_SINGLE_ROW
+* +-------------------------------------------------------------------------------------------------+
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD update_single_row.
+  ENDMETHOD.                    "UPDATE_SINGLE_ROW
+
+ENDCLASS.                    "ZCL_ADF_SQLDB IMPLEMENTATION

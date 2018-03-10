@@ -1,0 +1,85 @@
+*----------------------------------------------------------------------*
+*       CLASS ZCX_ADF_SERVICE DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcx_adf_service DEFINITION
+  PUBLIC
+  INHERITING FROM cx_static_check
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    CONSTANTS format_not_supported TYPE sotr_conc VALUE 'AC162D8534601ED6BABF7F20BB28143F'. "#EC NOTEXT
+    CONSTANTS sas_key_not_maintained TYPE sotr_conc VALUE 'AC162D8534601ED6BAC048BB654C943F'. "#EC NOTEXT
+    CONSTANTS uri_not_maintained TYPE sotr_conc VALUE 'AC162D8534601ED6BAC048BB654CB43F'. "#EC NOTEXT
+    CONSTANTS interface_type_not_maintained TYPE sotr_conc VALUE 'AC162D8534601ED78DABCC118DAA544B'. "#EC NOTEXT
+    CONSTANTS interface_not_available TYPE sotr_conc VALUE 'AC162D8534601ED6BAC062EC53C4943F'. "#EC NOTEXT
+    CONSTANTS sas_key_not_generated TYPE sotr_conc VALUE 'AC162D8534601ED6BCE8BBBD03F7543F'. "#EC NOTEXT
+    CONSTANTS restapi_response_not_found TYPE sotr_conc VALUE 'AC162D8534601ED6BCE94AFF3765F43F'. "#EC NOTEXT
+    CONSTANTS call_type_not_maintained TYPE sotr_conc VALUE 'AC162D8534601ED6BDEA11EC356C3440'. "#EC NOTEXT
+    CONSTANTS expiry_time_not_set TYPE sotr_conc VALUE 'AC162D8534601ED7839077DD57807443'. "#EC NOTEXT
+    CONSTANTS expiry_utc_time_not_set TYPE sotr_conc VALUE 'AC162D8534601ED78390B9D36646F443'. "#EC NOTEXT
+    CONSTANTS error_in_sas_key_encryption TYPE sotr_conc VALUE 'AC162D8534601ED78390F0B976731443'. "#EC NOTEXT
+    CONSTANTS string_to_sign_not_generated TYPE sotr_conc VALUE 'AC162D8534601ED783910D8D01127443'. "#EC NOTEXT
+    CONSTANTS error_in_append_blob_creation TYPE sotr_conc VALUE 'AC162D8534601ED783912385A3E13443'. "#EC NOTEXT
+    CONSTANTS read_error_rfc_destination TYPE sotr_conc VALUE 'AC162D8534601ED78CF89C2237E9F44B'. "#EC NOTEXT
+    CONSTANTS read_error_pse_filename TYPE sotr_conc VALUE 'AC162D8534601ED78CF8A20AC94C944B'. "#EC NOTEXT
+    CONSTANTS error_get_certificate_instance TYPE sotr_conc VALUE 'AC162D8534601ED78CF8AA43DE01544B'. "#EC NOTEXT
+    CONSTANTS error_attributes_certificate TYPE sotr_conc VALUE 'AC162D8534601ED78CF8B16C4043744B'. "#EC NOTEXT
+    CONSTANTS error_decode_sas_key TYPE sotr_conc VALUE 'AC162D8534601ED78CF8B9DD08F6544B'. "#EC NOTEXT
+    CONSTANTS error_con_saskey_string TYPE sotr_conc VALUE 'AC162D8534601ED78CF8C6BA194E944B'. "#EC NOTEXT
+    CONSTANTS error_import_sas_key TYPE sotr_conc VALUE 'AC162D8534601ED78CF8D69E1657144B'. "#EC NOTEXT
+    CONSTANTS rfc_destination_not_maintained TYPE sotr_conc VALUE 'AC162D8534601ED78CF8E0ADB9E5944B'. "#EC NOTEXT
+    CONSTANTS error_read_encoded_saskey TYPE sotr_conc VALUE 'AC162D8534601ED78CF8EF5F6EA4144B'. "#EC NOTEXT
+    CONSTANTS error_rest_api_instance TYPE sotr_conc VALUE 'AC162D8534601ED78D90A8CB34A0744B'. "#EC NOTEXT
+    CONSTANTS aad_token_not_found TYPE sotr_conc VALUE 'AC162D8534601ED797AB5CC36E759453'. "#EC NOTEXT
+    CONSTANTS parameter_invalid_type TYPE sotr_conc VALUE 'AC162D8534601ED78FF1D2161365B44F'. "#EC NOTEXT
+    CONSTANTS parameter_invalid_range TYPE sotr_conc VALUE 'AC162D8534601ED78FF1D2161365D44F'. "#EC NOTEXT
+    CONSTANTS error_aad_token TYPE sotr_conc VALUE 'AC162D8534601ED797AB2500EF95B453'. "#EC NOTEXT
+    CONSTANTS error_restapi_response TYPE sotr_conc VALUE 'AC162D8534601ED797AB4F44B77E1453'. "#EC NOTEXT
+    CONSTANTS kv_secret_not_found TYPE sotr_conc VALUE 'AC162D8534601ED797AB7F2552C69453'. "#EC NOTEXT
+    CONSTANTS execution_terminated TYPE sotr_conc VALUE 'AC162D8534601ED797AC1D7511E39453'. "#EC NOTEXT
+    CONSTANTS parse_error TYPE sotr_conc VALUE 'AC162D8534601ED7989A913D61095453'. "#EC NOTEXT
+    DATA format_type TYPE zadf_format_type .
+    DATA interface_id TYPE zinterface_id .
+
+    METHODS constructor
+      IMPORTING
+        !textid LIKE textid OPTIONAL
+        !previous LIKE previous OPTIONAL
+        !format_type TYPE zadf_format_type OPTIONAL
+        !interface_id TYPE zinterface_id OPTIONAL .
+
+  PROTECTED SECTION.
+
+  PRIVATE SECTION.
+
+ENDCLASS.                    "ZCX_ADF_SERVICE DEFINITION
+
+*----------------------------------------------------------------------*
+*       CLASS ZCX_ADF_SERVICE IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcx_adf_service IMPLEMENTATION.
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCX_ADF_SERVICE->CONSTRUCTOR
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] TEXTID                         LIKE        TEXTID(optional)
+* | [--->] PREVIOUS                       LIKE        PREVIOUS(optional)
+* | [--->] FORMAT_TYPE                    TYPE        ZADF_FORMAT_TYPE(optional)
+* | [--->] INTERFACE_ID                   TYPE        ZINTERFACE_ID(optional)
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD constructor.
+    CALL METHOD super->constructor
+      EXPORTING
+        textid   = textid
+        previous = previous.
+    me->format_type = format_type .
+    me->interface_id = interface_id .
+  ENDMETHOD.                    "CONSTRUCTOR
+
+ENDCLASS.                    "ZCX_ADF_SERVICE IMPLEMENTATION

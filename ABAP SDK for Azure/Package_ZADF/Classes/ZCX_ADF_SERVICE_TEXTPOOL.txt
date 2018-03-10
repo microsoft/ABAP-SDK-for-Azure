@@ -1,0 +1,33 @@
+Exception-text
+AAD_TOKEN_NOT_FOUND	AAD token not found for &INTERFACE_ID&
+CALL_TYPE_NOT_MAINTAINED	Service Call type not maintained for &INTERFACE_ID&
+ERROR_AAD_TOKEN	Error in receiving token from AAD for &INTERFACE_ID&
+ERROR_ATTRIBUTES_CERTIFICATE	Error in retrieving attributes of certificate for &INTERFACE_ID&
+ERROR_CON_SASKEY_STRING	Error in conversion of SAS Key String for &INTERFACE_ID&
+ERROR_DECODE_SAS_KEY	Error in decoding of SAS key for &INTERFACE_ID&
+ERROR_GET_CERTIFICATE_INSTANCE	Error in getting instance of certificate for &INTERFACE_ID&
+ERROR_IMPORT_SAS_KEY	Error in importing encoded SAS Key value for &INTERFACE_ID&
+ERROR_IN_APPEND_BLOB_CREATION	Error in AppendBlob creation for &INTERFACE_ID&
+ERROR_IN_SAS_KEY_ENCRYPTION	Error in SAS Key encryption for &INTERFACE_ID&
+ERROR_READ_ENCODED_SASKEY	Error in retrieving encoded SAS Key for &INTERFACE_ID&
+ERROR_RESTAPI_RESPONSE	Error in Rest API response for &INTERFACE_ID&
+ERROR_REST_API_INSTANCE	Error in Rest API instance creation for &INTERFACE_ID&
+EXECUTION_TERMINATED	Execution process terminated
+EXPIRY_TIME_NOT_SET	Expiry time not set for &INTERFACE_ID&
+EXPIRY_UTC_TIME_NOT_SET	Expiry UTC time not set for &INTERFACE_ID&
+FORMAT_NOT_SUPPORTED	Format Type &FORMAT_TYPE& Not Supported
+INTERFACE_NOT_AVAILABLE	Interface &INTERFACE_ID& not Available
+INTERFACE_TYPE_NOT_MAINTAINED	Interface Type not Maintained for Interface &INTERFACE_ID&
+KV_SECRET_NOT_FOUND	Keyvault secret not found for &INTERFACE_ID&
+PARAMETER_INVALID_RANGE	Error in Epoch time calculation &INTERFACE_ID&
+PARAMETER_INVALID_TYPE	Error in Epoch time calculation for &INTERFACE_ID&
+PARSE_ERROR	Error in parsing Rest API response for &INTERFACE_ID&
+READ_ERROR_PSE_FILENAME	Error in getting PSE filename for &INTERFACE_ID&
+READ_ERROR_RFC_DESTINATION	Error in reading attributes of RFC destnation for &INTERFACE_ID&
+RESTAPI_RESPONSE_NOT_FOUND	Rest API response not found for &INTERFACE_ID&
+RFC_DESTINATION_NOT_MAINTAINED	RFC destination not maintained for &INTERFACE_ID&
+SAS_KEY_NOT_GENERATED	SAS Key not generated for &INTERFACE_ID&
+SAS_KEY_NOT_MAINTAINED	SAS Key not Maintained for &INTERFACE_ID&
+STRING_TO_SIGN_NOT_GENERATED	String to Sign not generated for &INTERFACE_ID&
+URI_NOT_MAINTAINED	URI not Maintained for &INTERFACE_ID&
+

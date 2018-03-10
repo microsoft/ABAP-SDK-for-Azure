@@ -1,0 +1,5 @@
+Description	
+Language	E
+
+Number	Message
+057	No Authorization to execute this function

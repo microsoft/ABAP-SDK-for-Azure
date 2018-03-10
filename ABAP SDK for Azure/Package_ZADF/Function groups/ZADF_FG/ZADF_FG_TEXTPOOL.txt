@@ -1,0 +1,14 @@
+Text-symbols
+001	Interface ID not maintained in table ZREST_CONFIG
+002	RFC Destination not maintained in table ZREST_CONFIG
+003	SAS Key value should be maintained
+004	SAS key value cannot be changed. Please delete the corresponding Interface ID and create the same again with new SAS Key Value.
+005	Error in Reading attributes of RFC destination
+006	Error in getting PSE file name
+007	Error in getting certificate instance
+008	Error in Getting attributes of certificate
+009	Error in conversion of SAS key
+010	Error in SAS Key encryption
+011	Update failed for SAS key encryption
+012	Interface type should be maintained
+

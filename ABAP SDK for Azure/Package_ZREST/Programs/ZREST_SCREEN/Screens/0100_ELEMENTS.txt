@@ -1,0 +1,3 @@
+%#AUTOTEXT001	Select One or More Rows And Click the Rightmost Button of the Toolbar
+BCALVC_TOOLBAR_D100_C1	
+OK_CODE	____________________

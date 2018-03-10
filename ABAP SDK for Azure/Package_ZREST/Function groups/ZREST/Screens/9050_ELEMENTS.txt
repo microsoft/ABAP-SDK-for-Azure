@@ -1,0 +1,12 @@
+TCTRL_ZOBFUSCATE	
+VIM_FRAME_FIELD	____________________________________________________________
+*ZOBFUSCATE-INETRFACE	Inter ID
+*ZOBFUSCATE-FIELDTAG	ORGINAL
+*ZOBFUSCATE-LENGTH	Number
+VIM_MARKED	_
+ZOBFUSCATE-INETRFACE	__________
+ZOBFUSCATE-FIELDTAG	__________________________________________________
+ZOBFUSCATE-LENGTH	__________
+VIM_POSI_PUSH	____________________
+VIM_POSITION_INFO	______________________________
+OK_CODE	____

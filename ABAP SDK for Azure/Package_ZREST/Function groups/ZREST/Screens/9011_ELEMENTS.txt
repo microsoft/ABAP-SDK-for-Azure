@@ -1,0 +1,6 @@
+ZREST_CONFIG-INTERFACE_ID	Inter ID
+ZREST_CONFIG-INTERFACE_ID	__________
+VIM_FRAME_FIELD	______________________________________________
+ZREST_CONFIG-DESTINATION	Destination
+ZREST_CONFIG-DESTINATION	________________________________
+OK_CODE	____

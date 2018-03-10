@@ -1,0 +1,26 @@
+*----------------------------------------------------------------------*
+*       CLASS ZCL_ADF_SERVICE_DOCUMENTDB DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcl_adf_service_documentdb DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_adf_service
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+  PROTECTED SECTION.
+
+  PRIVATE SECTION.
+
+ENDCLASS.                    "ZCL_ADF_SERVICE_DOCUMENTDB DEFINITION
+
+*----------------------------------------------------------------------*
+*       CLASS ZCL_ADF_SERVICE_DOCUMENTDB IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcl_adf_service_documentdb IMPLEMENTATION.
+ENDCLASS.                    "ZCL_ADF_SERVICE_DOCUMENTDB IMPLEMENTATION

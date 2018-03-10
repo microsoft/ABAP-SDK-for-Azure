@@ -1,0 +1,9 @@
+Selection-text
+S_BUSID	D       .
+S_COMPDT	D       .
+S_COMPTM	D       .
+S_HTTPST	Http Status
+S_ID	D       .
+S_MSGID	D       .
+S_STARTD	D       .
+S_STIME	D       .

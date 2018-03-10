@@ -1,0 +1,10 @@
+TCTRL_ZADF_EHUB_POLICY	
+VIM_FRAME_FIELD	____________________________________________________________
+*ZADF_EHUB_POLICY-INTERFACE_ID	Inter ID
+*ZADF_EHUB_POLICY-POLICY	Policy
+VIM_MARKED	_
+ZADF_EHUB_POLICY-INTERFACE_ID	__________
+ZADF_EHUB_POLICY-POLICY	______________________________
+VIM_POSI_PUSH	____________________
+VIM_POSITION_INFO	______________________________
+OK_CODE	____

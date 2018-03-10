@@ -1,0 +1,47 @@
+*----------------------------------------------------------------------*
+*       CLASS ZCL_ADF_SQLDB_SCHEDULER DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcl_adf_sqldb_scheduler DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    DATA gv_dbcon TYPE dbcon_name .
+    DATA gv_tabname TYPE tabname .
+
+    METHODS constructor
+      IMPORTING
+        value(iv_dbcon) TYPE dbcon_name
+        value(iv_tabname) TYPE tabname .
+
+  PROTECTED SECTION.
+
+  PRIVATE SECTION.
+
+ENDCLASS.                    "ZCL_ADF_SQLDB_SCHEDULER DEFINITION
+
+*----------------------------------------------------------------------*
+*       CLASS ZCL_ADF_SQLDB_SCHEDULER IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcl_adf_sqldb_scheduler IMPLEMENTATION.
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_ADF_SQLDB_SCHEDULER->CONSTRUCTOR
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_DBCON                       TYPE        DBCON_NAME
+* | [--->] IV_TABNAME                     TYPE        TABNAME
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD constructor.
+
+    gv_dbcon = iv_dbcon.
+    gv_tabname = iv_tabname.
+
+  ENDMETHOD.                    "constructor
+
+ENDCLASS.                    "ZCL_ADF_SQLDB_SCHEDULER IMPLEMENTATION

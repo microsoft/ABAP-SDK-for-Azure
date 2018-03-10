@@ -1,0 +1,3 @@
+Field	Key	Data-element	Data-type	Length	Decimals	Domain	Check-table	Include-table
+ZNAME		ZHEADERPARAM	CHAR	000255	000000	ZHEADERPARAM		
+ZVALUE		ZHEADERPARAM	CHAR	000255	000000	ZHEADERPARAM		

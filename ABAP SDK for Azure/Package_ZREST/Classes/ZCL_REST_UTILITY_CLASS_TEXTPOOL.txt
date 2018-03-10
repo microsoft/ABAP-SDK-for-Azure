@@ -1,0 +1,8 @@
+Text-symbols
+001	Error in Importing SAS Key
+002	RFC destination not maintained
+003	Error in reading encoded SAS key
+004	Error in conversion of SAS key string
+005	Error in decoding SAS key
+006	Error in reading attributes of Certificate
+007	Error in getting certificate Instance

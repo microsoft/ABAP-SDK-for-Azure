@@ -1,0 +1,51 @@
+*----------------------------------------------------------------------*
+*       CLASS ZCX_HTTP_CLIENT_FAILED DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcx_http_client_failed DEFINITION
+  PUBLIC
+  INHERITING FROM cx_static_check
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_t100_message .
+
+    METHODS constructor
+      IMPORTING
+        !textid LIKE if_t100_message=>t100key OPTIONAL
+        !previous LIKE previous OPTIONAL .
+
+  PROTECTED SECTION.
+
+  PRIVATE SECTION.
+
+ENDCLASS.                    "ZCX_HTTP_CLIENT_FAILED DEFINITION
+
+*----------------------------------------------------------------------*
+*       CLASS ZCX_HTTP_CLIENT_FAILED IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS zcx_http_client_failed IMPLEMENTATION.
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCX_HTTP_CLIENT_FAILED->CONSTRUCTOR
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] TEXTID                         LIKE        IF_T100_MESSAGE=>T100KEY(optional)
+* | [--->] PREVIOUS                       LIKE        PREVIOUS(optional)
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD constructor.
+    CALL METHOD super->constructor
+      EXPORTING
+        previous = previous.
+    CLEAR me->textid.
+    IF textid IS INITIAL.
+      if_t100_message~t100key = if_t100_message=>default_textid.
+    ELSE.
+      if_t100_message~t100key = textid.
+    ENDIF.
+  ENDMETHOD.                    "CONSTRUCTOR
+
+ENDCLASS.                    "ZCX_HTTP_CLIENT_FAILED IMPLEMENTATION
