@@ -580,7 +580,6 @@ ENDMETHOD.
       ENDIF.
     ENDIF.
     gv_is_try = ls_config-is_try.
-    gv_sas_key = ls_config-sas_key. "Added by KRDASH
   ENDMETHOD.                    "get_interface_details
 
 * <SIGNATURE>---------------------------------------------------------------------------------------+
