@@ -105,7 +105,7 @@ CLASS zcl_adf_service_keyvault IMPLEMENTATION.
       clear wa_params.
       go_rest_api->set_request_header( iv_name = 'Content-Type'  iv_value = lv_mediatype ).
       go_rest_api->set_string_body( cl_http_utility=>fields_to_string( it_params ) ) .
-      clear lv_secret.
+      clear: lv_secret, it_params.
     END-OF-DEFINITION.
     IF go_rest_api IS BOUND.
       set_headers .
