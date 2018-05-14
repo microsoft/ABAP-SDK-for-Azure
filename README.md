@@ -3,6 +3,7 @@ This repository contains objects of ABAP SDK for Azure. As ABAP is not an open s
 Please follow the steps provided in the following documents to install and implement ABAP SDK in your landscape.
 1. Installation guide - INSTALLATION GUIDE ON ABAP SDK FOR AZURE V1.0.txt
 2. Implementation guide -  IMPLEMENTATION GUIDE ON ABAP SDK FOR AZURE V1.0.txt
+
 These documents can be found in the repository along with the source code.
 
 As of version 1.0, ABAP SDK supports native integration of SAP with following Azure services,
