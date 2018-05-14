@@ -56,7 +56,7 @@ CLASS zcx_adf_service DEFINITION
 
   PRIVATE SECTION.
 
-ENDCLASS.                    "ZCX_ADF_SERVICE DEFINITION
+ENDCLASS.                   "ZCX_ADF_SERVICE DEFINITION
 
 *----------------------------------------------------------------------*
 *       CLASS ZCX_ADF_SERVICE IMPLEMENTATION
