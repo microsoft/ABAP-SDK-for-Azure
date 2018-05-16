@@ -109,6 +109,8 @@
     <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_RETRIES.txt</item>
     <item>/ABAP SDKfor Azure/Package_ZADF/Function groups/ZEHUBPOLICY/LZEHUBPOLICYTOP.txt</item>
     <item>/ABAP SDKfor Azure/Package_ZREST/Function groups/ZREST/Screens/9001_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZEHUBPOLICY/LZEHUBPOLICYTOP.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9001_ELEMENTS.txt</item>
    </IGNORE>
   </DATA>
  </asx:values>
