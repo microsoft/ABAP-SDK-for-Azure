@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_TOBJ" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <OBJH>
+    <OBJECTNAME>ZREST_GLOBAL</OBJECTNAME>
+    <OBJECTTYPE>S</OBJECTTYPE>
+    <OBJCATEG>CUSY</OBJCATEG>
+    <OBJTRANSP>2</OBJTRANSP>
+    <IMPORTABLE>3</IMPORTABLE>
+   </OBJH>
+   <OBJT>
+    <LANGUAGE>E</LANGUAGE>
+    <OBJECTNAME>ZREST_GLOBAL</OBJECTNAME>
+    <OBJECTTYPE>S</OBJECTTYPE>
+    <DDTEXT>REST Global Parameters</DDTEXT>
+   </OBJT>
+   <OBJS>
+    <OBJS>
+     <OBJECTNAME>ZREST_GLOBAL</OBJECTNAME>
+     <OBJECTTYPE>S</OBJECTTYPE>
+     <TABNAME>ZREST_GLOBAL</TABNAME>
+     <DDIC>X</DDIC>
+     <PRIM_TABLE>X</PRIM_TABLE>
+    </OBJS>
+   </OBJS>
+   <TOBJ>
+    <TDDAT>
+     <TABNAME>ZREST_GLOBAL</TABNAME>
+     <CCLASS>ZRES</CCLASS>
+    </TDDAT>
+    <TVDIR>
+     <TABNAME>ZREST_GLOBAL</TABNAME>
+     <AREA>ZREST</AREA>
+     <DEVCLASS>ZREST</DEVCLASS>
+     <TYPE>2</TYPE>
+     <LISTE>9089</LISTE>
+     <DETAIL>9090</DETAIL>
+     <BASTAB>X</BASTAB>
+    </TVDIR>
+    <TVIMF>
+     <TVIMF>
+      <TABNAME>ZREST_GLOBAL</TABNAME>
+      <EVENT>02</EVENT>
+      <FORMNAME>AUTHORIZATION_CHECK</FORMNAME>
+     </TVIMF>
+    </TVIMF>
+   </TOBJ>
+  </asx:values>
+ </asx:abap>
+</abapGit>
