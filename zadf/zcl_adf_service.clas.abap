@@ -670,12 +670,6 @@ METHOD json_to_http_fields.
       reader = cl_sxml_string_reader=>create( json ).
       " after parse, the json response should look like following
 
-*          <object>
-*          	<str name="access_token">ya29.AHES6ZR2S7rsK4a13j9MwOGuJipk6cXQ9_ynkLxkZI6cvw</str>
-*          	<str name="token_type">Bearer</str>
-*          	<num name="expires_in">3600</num>
-*          	<str name="refresh_token">1/KLS_LRVubymiCnszl-lROdQhSwSOP3P9hgCB1S0uCkc</str>
-*          </object>
       DO.
         CLEAR ls_fields.
         l_node = reader->read_next_node( ).
