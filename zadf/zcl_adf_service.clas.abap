@@ -191,129 +191,120 @@ METHOD decode_sign.
 *-----------|----------|------------|------------|---------------------*
 *11.07.2017 | KRDASH   |            |Logic chnaged related to encryption
 *----------------------------------------------------------------------*
-  CONSTANTS: lc_profile TYPE ztvarvc-varname VALUE 'SSL_CLIENT_ID'."KRDASH
-  DATA : lv_rfc_destination     TYPE zrest_config-destination,
-         lv_srtfd               TYPE zadf_con_indx-srtfd,
-         lw_indx                TYPE zadf_con_indx,
-         lt_enveloped_data      TYPE TABLE OF ssfbin,
-         lv_cert_string         TYPE xstring,
-         lt_recipients          TYPE TABLE OF ssfinfo,
-         lw_recipient           TYPE ssfinfo,
-         lt_input_data          TYPE TABLE OF ssfbin,
-         lw_input_data          TYPE ssfbin,
-         lv_env_data_len        TYPE i,
-         lv_env_len_total       TYPE i,
-         lv_subject             TYPE string,
-         lw_enveloped_data      TYPE ssfbin,
-         lv_xstr_input          TYPE xstring,
-         lv_len_output          TYPE i,
-         lv_len_input           TYPE i,
-         lt_decoded_bin         TYPE TABLE OF x,
-         lv_decoded_str         TYPE string,
-         lv_applic              TYPE rfcdisplay-sslapplic,
-         lv_psename             TYPE ssfpsename,
-         lv_flag_ssf            TYPE c, "Added by KRDASH
+  CONSTANTS: lc_profile TYPE tvarvc-name VALUE 'SSL_CLIENT_ID'."KRDASH
+  DATA : lv_rfc_destination TYPE zrest_config-destination,
+         lv_srtfd           TYPE zadf_con_indx-srtfd,
+         lw_indx            TYPE zadf_con_indx,
+         lt_enveloped_data  TYPE TABLE OF ssfbin,
+         lv_cert_string     TYPE xstring,
+         lt_recipients      TYPE TABLE OF ssfinfo,
+         lw_recipient       TYPE ssfinfo,
+         lt_input_data      TYPE TABLE OF ssfbin,
+         lw_input_data      TYPE ssfbin,
+         lv_env_data_len    TYPE i,
+         lv_env_len_total   TYPE i,
+         lv_subject         TYPE string,
+         lw_enveloped_data  TYPE ssfbin,
+         lv_xstr_input      TYPE xstring,
+         lv_len_output      TYPE i,
+         lv_len_input       TYPE i,
+         lt_decoded_bin     TYPE TABLE OF x,
+         lv_decoded_str     TYPE string,
+         lv_applic          TYPE rfcdisplay-sslapplic,
+         lv_psename         TYPE ssfpsename,
+         lv_flag_ssf        TYPE c, "Added by KRDASH
 **Start of changes by KRDASH MS2K960975
-        lv_profilename          TYPE localfile,
+         lv_profilename     TYPE localfile,
 **End of changes by KRDASH MS2K960975
-         lv_profile             TYPE ssfparms-pab.
+         lv_profile         TYPE ssfparms-pab.
   lv_srtfd = gv_interface_id.
-define decode_key.
-*Import internal table as a cluster from INDX
-  IMPORT tab  = lt_enveloped_data[]
-         FROM DATABASE zadf_con_indx(zd)
-         TO lw_indx
-         ID lv_srtfd.
-**Start of changes by KRDASH
-**Fetching data using new encryption framework
-  IF ( lt_enveloped_data[] IS INITIAL ) OR
-     ( gv_sas_key IS INITIAL ).
-    lv_flag_ssf = abap_true.
+
+  DEFINE decode_key.
 *Import internal table as a cluster from INDX
     IMPORT tab  = lt_enveloped_data[]
-           FROM DATABASE zssf_con_indx(ze)
+           FROM DATABASE zadf_con_indx(zd)
            TO lw_indx
            ID lv_srtfd.
-  ENDIF.
+**Start of changes by KRDASH
+**Fetching data using new encryption framework
+    IF ( lt_enveloped_data[] IS INITIAL ) OR
+       ( gv_sas_key IS INITIAL ).
+      lv_flag_ssf = abap_true.
+*Import internal table as a cluster from INDX
+      IMPORT tab  = lt_enveloped_data[]
+             FROM DATABASE zssf_con_indx(ze)
+             TO lw_indx
+             ID lv_srtfd.
+    ENDIF.
 **End of changes by KRDASH
-  IF NOT lt_enveloped_data[] IS INITIAL.
+    IF NOT lt_enveloped_data[] IS INITIAL.
 **Old encryption framework
-    IF lv_flag_ssf EQ abap_false. "Added by KRDASH
-      CLEAR lv_rfc_destination.
-      SELECT SINGLE destination FROM zrest_config
-                                INTO lv_rfc_destination
-                                WHERE interface_id EQ gv_interface_id.
-      IF NOT lv_rfc_destination IS INITIAL .
-        CALL FUNCTION 'RFC_READ_HTTP_DESTINATION'
-          EXPORTING
-            destination             = lv_rfc_destination
-            authority_check         = ' '
-          IMPORTING
-            sslapplic               = lv_applic
-          EXCEPTIONS
-            authority_not_available = 1
-            destination_not_exist   = 2
-            information_failure     = 3
-            internal_failure        = 4
-            no_http_destination     = 5
-            OTHERS                  = 6.
-        IF sy-subrc NE 0.
+      IF lv_flag_ssf EQ abap_false. "Added by KRDASH
+        CLEAR lv_rfc_destination.
+        SELECT SINGLE destination FROM zrest_config
+                                  INTO lv_rfc_destination
+                                  WHERE interface_id EQ gv_interface_id.
+        IF NOT lv_rfc_destination IS INITIAL .
+          CALL FUNCTION 'RFC_READ_HTTP_DESTINATION'
+            EXPORTING
+              destination             = lv_rfc_destination
+              authority_check         = ' '
+            IMPORTING
+              sslapplic               = lv_applic
+            EXCEPTIONS
+              authority_not_available = 1
+              destination_not_exist   = 2
+              information_failure     = 3
+              internal_failure        = 4
+              no_http_destination     = 5
+              OTHERS                  = 6.
+          IF sy-subrc NE 0.
+            RAISE EXCEPTION TYPE zcx_adf_service
+              EXPORTING
+                textid       = zcx_adf_service=>read_error_rfc_destination
+                interface_id = gv_interface_id.
+          ENDIF.
+**Start of changes by KRDASH
+        ELSE.
           RAISE EXCEPTION TYPE zcx_adf_service
             EXPORTING
-              textid       = zcx_adf_service=>read_error_rfc_destination
+              textid       = zcx_adf_service=>rfc_destination_not_maintained
               interface_id = gv_interface_id.
         ENDIF.
-**Start of changes by KRDASH
       ELSE.
+**New Encryption framework
+**Fetching PSE profile name from TVARVC table
+        CLEAR lv_applic.
+        SELECT SINGLE low FROM tvarvc
+                      INTO lv_applic
+                      WHERE name EQ lc_profile.
+        if sy-subrc <> 0.
+          CLEAR lv_applic.
+          SELECT SINGLE low FROM tvarvc
+                        INTO lv_applic
+                        WHERE name EQ 'DFAULT'.
+        ENdif.
+      ENDIF.
+**End of changes by KRDASH
+      CALL FUNCTION 'SSFPSE_FILENAME'
+        EXPORTING
+          mandt         = sy-mandt
+          context       = 'SSLC'
+          applic        = lv_applic
+        IMPORTING
+          psename       = lv_psename
+          profile       = lv_profilename
+        EXCEPTIONS
+          pse_not_found = 1
+          OTHERS        = 2.
+      IF sy-subrc NE 0.
         RAISE EXCEPTION TYPE zcx_adf_service
           EXPORTING
-            textid       = zcx_adf_service=>rfc_destination_not_maintained
+            textid       = zcx_adf_service=>read_error_pse_filename
             interface_id = gv_interface_id.
       ENDIF.
-    ELSE.
-**New Encryption framework
-**Fetching PSE profile name from ZTVARVC table
-      CLEAR lv_applic.
-      SELECT SINGLE low FROM ztvarvc
-                    INTO lv_applic
-                    WHERE varname EQ lc_profile.
-    ENDIF.
-**End of changes by KRDASH
-    CALL FUNCTION 'SSFPSE_FILENAME'
-      EXPORTING
-        mandt         = sy-mandt
-        context       = 'SSLC'
-        applic        = lv_applic
-      IMPORTING
-        psename       = lv_psename
-        profile       = lv_profilename
-      EXCEPTIONS
-        pse_not_found = 1
-        OTHERS        = 2.
-    IF sy-subrc NE 0.
-      RAISE EXCEPTION TYPE zcx_adf_service
-        EXPORTING
-          textid       = zcx_adf_service=>read_error_pse_filename
-          interface_id = gv_interface_id.
-    ENDIF.
-    IF NOT lv_psename IS INITIAL.
-      lv_profile = lv_psename.
-      CALL FUNCTION 'SSFC_GET_CERTIFICATE'
-        EXPORTING
-          profile               = lv_profile
-        IMPORTING
-          certificate           = lv_cert_string
-        EXCEPTIONS
-          ssf_krn_error         = 1
-          ssf_krn_nomemory      = 2
-          ssf_krn_nossflib      = 3
-          ssf_krn_invalid_par   = 4
-          ssf_krn_nocertificate = 5
-          OTHERS                = 6.
-      IF sy-subrc NE 0.
-**Start of chnages by KRDASH MS2K960975
-**Addinng complete profile path for reading certificate instance
-        lv_profile = lv_profilename.
+      IF NOT lv_psename IS INITIAL.
+        lv_profile = lv_psename.
         CALL FUNCTION 'SSFC_GET_CERTIFICATE'
           EXPORTING
             profile               = lv_profile
@@ -327,102 +318,118 @@ define decode_key.
             ssf_krn_nocertificate = 5
             OTHERS                = 6.
         IF sy-subrc NE 0.
+**Start of chnages by KRDASH MS2K960975
+**Addinng complete profile path for reading certificate instance
+          lv_profile = lv_profilename.
+          CALL FUNCTION 'SSFC_GET_CERTIFICATE'
+            EXPORTING
+              profile               = lv_profile
+            IMPORTING
+              certificate           = lv_cert_string
+            EXCEPTIONS
+              ssf_krn_error         = 1
+              ssf_krn_nomemory      = 2
+              ssf_krn_nossflib      = 3
+              ssf_krn_invalid_par   = 4
+              ssf_krn_nocertificate = 5
+              OTHERS                = 6.
+          IF sy-subrc NE 0.
 **End of chnages by KRDASH MS2K960975
 **Raise Exception
+            RAISE EXCEPTION TYPE zcx_adf_service
+              EXPORTING
+                textid       = zcx_adf_service=>error_get_certificate_instance
+                interface_id = gv_interface_id.
+          ENDIF. "Added by KRDASH MS2K960975
+        ENDIF.
+        CALL FUNCTION 'SSFC_PARSE_CERTIFICATE'
+          EXPORTING
+            certificate         = lv_cert_string
+          IMPORTING
+            subject             = lv_subject
+          EXCEPTIONS
+            ssf_krn_error       = 1
+            ssf_krn_nomemory    = 2
+            ssf_krn_nossflib    = 3
+            ssf_krn_invalid_par = 4
+            OTHERS              = 5.
+        IF sy-subrc NE 0.
+**Raise Exception
           RAISE EXCEPTION TYPE zcx_adf_service
             EXPORTING
-              textid       = zcx_adf_service=>error_get_certificate_instance
+              textid       = zcx_adf_service=>error_attributes_certificate
               interface_id = gv_interface_id.
-        ENDIF. "Added by KRDASH MS2K960975
-      ENDIF.
-      CALL FUNCTION 'SSFC_PARSE_CERTIFICATE'
-        EXPORTING
-          certificate         = lv_cert_string
-        IMPORTING
-          subject             = lv_subject
-        EXCEPTIONS
-          ssf_krn_error       = 1
-          ssf_krn_nomemory    = 2
-          ssf_krn_nossflib    = 3
-          ssf_krn_invalid_par = 4
-          OTHERS              = 5.
-      IF sy-subrc NE 0.
-**Raise Exception
-        RAISE EXCEPTION TYPE zcx_adf_service
+        ENDIF.
+        lw_recipient-id      = lv_subject.
+        lw_recipient-profile = lv_profile.
+        APPEND lw_recipient TO lt_recipients.
+        LOOP AT lt_enveloped_data INTO lw_enveloped_data.
+          lv_env_data_len = xstrlen( lw_enveloped_data-bindata ).
+          lv_env_len_total = lv_env_len_total + lv_env_data_len.
+          CLEAR lw_enveloped_data.
+        ENDLOOP.
+        CALL FUNCTION 'SSF_KRN_DEVELOPE'
           EXPORTING
-            textid       = zcx_adf_service=>error_attributes_certificate
-            interface_id = gv_interface_id.
-      ENDIF.
-      lw_recipient-id      = lv_subject.
-      lw_recipient-profile = lv_profile.
-      APPEND lw_recipient TO lt_recipients.
-      LOOP AT lt_enveloped_data INTO lw_enveloped_data.
-        lv_env_data_len = xstrlen( lw_enveloped_data-bindata ).
-        lv_env_len_total = lv_env_len_total + lv_env_data_len.
-        CLEAR lw_enveloped_data.
-      ENDLOOP.
-      CALL FUNCTION 'SSF_KRN_DEVELOPE'
-        EXPORTING
-          ssftoolkit                   = 'SAPSECULIB'
-          str_format                   = 'PKCS7'
+            ssftoolkit                   = 'SAPSECULIB'
+            str_format                   = 'PKCS7'
 *         B_OUTDEC                     = 'X'
 *         IO_SPEC                      = 'T'
-          ostr_enveloped_data_l        = lv_env_len_total
-        IMPORTING
-          ostr_output_data_l           = lv_len_input
-*         CRC                          =
-        TABLES
-          ostr_enveloped_data          = lt_enveloped_data
-          recipient                    = lt_recipients
-          ostr_output_data             = lt_input_data
-        EXCEPTIONS
-          ssf_krn_error                = 1
-          ssf_krn_noop                 = 2
-          ssf_krn_nomemory             = 3
-          ssf_krn_opinv                = 4
-          ssf_krn_nossflib             = 5
-          ssf_krn_recipient_error      = 6
-          ssf_krn_input_data_error     = 7
-          ssf_krn_invalid_par          = 8
-          ssf_krn_invalid_parlen       = 9
-          ssf_fb_input_parameter_error = 10
-          OTHERS                       = 11.
-      IF sy-subrc NE 0.
-**Raise Exception
-        RAISE EXCEPTION TYPE zcx_adf_service
-          EXPORTING
-            textid       = zcx_adf_service=>error_decode_sas_key
-            interface_id = gv_interface_id.
-      ENDIF.
-      IF NOT lt_input_data[] IS INITIAL.
-        CALL FUNCTION 'SCMS_BINARY_TO_STRING'
-          EXPORTING
-            input_length  = lv_len_input
+            ostr_enveloped_data_l        = lv_env_len_total
           IMPORTING
-            text_buffer   = lv_decoded_str
-            output_length = lv_len_output
+            ostr_output_data_l           = lv_len_input
+*         CRC                          =
           TABLES
-            binary_tab    = lt_input_data
+            ostr_enveloped_data          = lt_enveloped_data
+            recipient                    = lt_recipients
+            ostr_output_data             = lt_input_data
           EXCEPTIONS
-            failed        = 1
-            OTHERS        = 2.
-        IF lv_decoded_str IS INITIAL.
+            ssf_krn_error                = 1
+            ssf_krn_noop                 = 2
+            ssf_krn_nomemory             = 3
+            ssf_krn_opinv                = 4
+            ssf_krn_nossflib             = 5
+            ssf_krn_recipient_error      = 6
+            ssf_krn_input_data_error     = 7
+            ssf_krn_invalid_par          = 8
+            ssf_krn_invalid_parlen       = 9
+            ssf_fb_input_parameter_error = 10
+            OTHERS                       = 11.
+        IF sy-subrc NE 0.
+**Raise Exception
+          RAISE EXCEPTION TYPE zcx_adf_service
+            EXPORTING
+              textid       = zcx_adf_service=>error_decode_sas_key
+              interface_id = gv_interface_id.
+        ENDIF.
+        IF NOT lt_input_data[] IS INITIAL.
+          CALL FUNCTION 'SCMS_BINARY_TO_STRING'
+            EXPORTING
+              input_length  = lv_len_input
+            IMPORTING
+              text_buffer   = lv_decoded_str
+              output_length = lv_len_output
+            TABLES
+              binary_tab    = lt_input_data
+            EXCEPTIONS
+              failed        = 1
+              OTHERS        = 2.
+          IF lv_decoded_str IS INITIAL.
+**Raise exception
+            RAISE EXCEPTION TYPE zcx_adf_service
+              EXPORTING
+                textid       = zcx_adf_service=>error_con_saskey_string
+                interface_id = gv_interface_id.
+          ELSE.
+            rv_secret = lv_decoded_str.
+          ENDIF.
+        ELSE.
 **Raise exception
           RAISE EXCEPTION TYPE zcx_adf_service
             EXPORTING
-              textid       = zcx_adf_service=>error_con_saskey_string
+              textid       = zcx_adf_service=>error_read_encoded_saskey
               interface_id = gv_interface_id.
-        ELSE.
-          rv_secret = lv_decoded_str.
         ENDIF.
-      ELSE.
-**Raise exception
-        RAISE EXCEPTION TYPE zcx_adf_service
-          EXPORTING
-            textid       = zcx_adf_service=>error_read_encoded_saskey
-            interface_id = gv_interface_id.
       ENDIF.
-    ENDIF.
 **Start of comment by KRDASH
 **Below lines of code validation have been moved to line no.74
 *    ELSE.
@@ -432,21 +439,21 @@ define decode_key.
 *          interface_id = gv_interface_id.
 *    ENDIF.
 **End of comment by KRDASH
-  ELSE.
+    ELSE.
 **Raise Exception
-    RAISE EXCEPTION TYPE zcx_adf_service
-      EXPORTING
-        textid       = zcx_adf_service=>error_import_sas_key
-        interface_id = gv_interface_id.
-  ENDIF.
-  IF rv_secret IS INITIAL.
-    RAISE EXCEPTION TYPE zcx_adf_service
-      EXPORTING
-        textid       = zcx_adf_service=>sas_key_not_maintained
-        interface_id = gv_interface_id.
-  ENDIF.
-END-OF-DEFINITION.
-decode_key.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>error_import_sas_key
+          interface_id = gv_interface_id.
+    ENDIF.
+    IF rv_secret IS INITIAL.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>sas_key_not_maintained
+          interface_id = gv_interface_id.
+    ENDIF.
+  END-OF-DEFINITION.
+  decode_key.
 ENDMETHOD.
 
 

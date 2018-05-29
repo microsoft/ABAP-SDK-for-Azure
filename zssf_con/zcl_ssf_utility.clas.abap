@@ -31,28 +31,28 @@ METHOD decode_sign.
 *-----------|----------|------------|------------|---------------------*
 *13.10.2017 | KRDASH   |            | Initial Development              *
 *----------------------------------------------------------------------*
-  CONSTANTS : lc_profile TYPE ztvarvc-varname VALUE 'SSL_CLIENT_ID'.
-  DATA : lv_srtfd               TYPE zssf_con_indx-srtfd,
-         lw_indx                TYPE zssf_con_indx,
-         lt_enveloped_data      TYPE TABLE OF ssfbin,
-         lv_cert_string         TYPE xstring,
-         lt_recipients          TYPE TABLE OF ssfinfo,
-         lw_recipient           TYPE ssfinfo,
-         lt_input_data          TYPE TABLE OF ssfbin,
-         lw_input_data          TYPE ssfbin,
-         lv_env_data_len        TYPE i,
-         lv_env_len_total       TYPE i,
-         lv_subject             TYPE string,
-         lw_enveloped_data      TYPE ssfbin,
-         lv_xstr_input          TYPE xstring,
-         lv_len_output          TYPE i,
-         lv_len_input           TYPE i,
-         lt_decoded_bin         TYPE TABLE OF x,
-         lv_decoded_str         TYPE string,
-         lv_applic              TYPE rfcdisplay-sslapplic,
-         lv_psename             TYPE ssfpsename,
-         lv_profilename         TYPE localfile,
-         lv_profile             TYPE ssfparms-pab.
+  CONSTANTS : lc_profile TYPE tvarvc-name VALUE 'SSL_CLIENT_ID'.
+  DATA : lv_srtfd          TYPE zssf_con_indx-srtfd,
+         lw_indx           TYPE zssf_con_indx,
+         lt_enveloped_data TYPE TABLE OF ssfbin,
+         lv_cert_string    TYPE xstring,
+         lt_recipients     TYPE TABLE OF ssfinfo,
+         lw_recipient      TYPE ssfinfo,
+         lt_input_data     TYPE TABLE OF ssfbin,
+         lw_input_data     TYPE ssfbin,
+         lv_env_data_len   TYPE i,
+         lv_env_len_total  TYPE i,
+         lv_subject        TYPE string,
+         lw_enveloped_data TYPE ssfbin,
+         lv_xstr_input     TYPE xstring,
+         lv_len_output     TYPE i,
+         lv_len_input      TYPE i,
+         lt_decoded_bin    TYPE TABLE OF x,
+         lv_decoded_str    TYPE string,
+         lv_applic         TYPE rfcdisplay-sslapplic,
+         lv_psename        TYPE ssfpsename,
+         lv_profilename    TYPE localfile,
+         lv_profile        TYPE ssfparms-pab.
   DATA: t_abap_stack TYPE  abap_callstack,
         t_sys_stack  TYPE  sys_callst.
 
@@ -66,9 +66,9 @@ METHOD decode_sign.
            id lv_srtfd.
     if not lt_enveloped_data[] is initial.
       clear lv_applic.
-      select single low  from ztvarvc
+      select single low  from tvarvc
                          into lv_applic
-                         where varname eq lc_profile.
+                         where name eq lc_profile.
       if ( sy-subrc eq 0 ) and ( not lv_applic is initial ) .
         call function 'SSFPSE_FILENAME'
           exporting
@@ -86,6 +86,26 @@ METHOD decode_sign.
             exporting
               textid       = zcx_ssf_utility=>read_error_pse_filename
               interface_id = iv_interfaceid.
+        endif.
+        else.
+         call function 'SSFPSE_FILENAME'
+          exporting
+            mandt         = sy-mandt
+            context       = 'SSLC'
+            applic        = 'DFAULT'
+          importing
+            psename       = lv_psename
+            profile       = lv_profilename
+          exceptions
+            pse_not_found = 1
+            others        = 2.
+        if sy-subrc ne 0.
+          raise exception type zcx_ssf_utility
+            exporting
+              textid       = zcx_ssf_utility=>read_error_pse_filename
+              interface_id = iv_interfaceid.
+        endif.
+
         endif.
         if not lv_psename is initial.
           lv_profile = lv_profilename. "lv_psename.
@@ -196,12 +216,12 @@ METHOD decode_sign.
                 interface_id = iv_interfaceid.
           endif.
         endif.
-      else.
-        raise exception type zcx_ssf_utility
-          exporting
-            textid       = zcx_ssf_utility=>ssl_clientid_not_maintained
-            interface_id = iv_interfaceid.
-      endif.
+*      else.
+*        raise exception type zcx_ssf_utility
+*          exporting
+*            textid       = zcx_ssf_utility=>ssl_clientid_not_maintained
+*            interface_id = iv_interfaceid.
+*      endif.
     else.
 **Raise Exception
       raise exception type zcx_ssf_utility
@@ -221,8 +241,8 @@ METHOD decode_sign.
 **                       Begin of Authority check                          *
 ****************************************************************************
   DATA : it_registered_programs TYPE STANDARD TABLE OF zregister,
-         wa_register TYPE zregister,
-         lv_found TYPE abap_bool.
+         wa_register            TYPE zregister,
+         lv_found               TYPE abap_bool.
 
   CALL FUNCTION 'SYSTEM_CALLSTACK'
 *      EXPORTING

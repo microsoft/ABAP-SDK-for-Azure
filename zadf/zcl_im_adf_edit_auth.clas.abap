@@ -39,7 +39,11 @@ CLASS ZCL_IM_ADF_EDIT_AUTH IMPLEMENTATION.
             ID 'P_ACTION' FIELD 'X'.
         IF sy-subrc <> 0.
 *     Hardcoded alias for testing. to be removed post testing.
-          IF sy-uname <> 'NAKURMAD'.
+          IF sy-uname <> 'NAKURMAD' OR
+             sy-uname <> 'KRDASH' OR
+             sy-uname <> 'CHANDBS' OR
+             sy-uname <> 'TAMANDAL' OR
+             sy-uname <> 'MANOJKK'.
             MESSAGE 'No Change Authorization for ZADF Objects' TYPE 'E'.
           ENDIF.
         ENDIF.
