@@ -398,6 +398,25 @@
     </item>
     <item>
      <HEADER>
+      <CONCEPT>000D3A0180251ED8999B73223E2700DC</CONCEPT>
+      <CREA_LAN>E</CREA_LAN>
+      <TRALA_TYPE>1</TRALA_TYPE>
+      <OBJID_VEC>CA==</OBJID_VEC>
+     </HEADER>
+     <ENTRIES>
+      <SOTR_TEXT>
+       <CONCEPT>000D3A0180251ED8999B73223E2700DC</CONCEPT>
+       <LANGU>E</LANGU>
+       <LFD_NUM>0001</LFD_NUM>
+       <FLAG_CNTXT>X</FLAG_CNTXT>
+       <STATUS>R</STATUS>
+       <LENGTH>255</LENGTH>
+       <TEXT>Method name not maintained for &amp;INTERFACE_ID&amp;</TEXT>
+      </SOTR_TEXT>
+     </ENTRIES>
+    </item>
+    <item>
+     <HEADER>
       <CONCEPT>AC162D8534601ED78FF1D2161365D44F</CONCEPT>
       <CREA_LAN>E</CREA_LAN>
       <TRALA_TYPE>1</TRALA_TYPE>

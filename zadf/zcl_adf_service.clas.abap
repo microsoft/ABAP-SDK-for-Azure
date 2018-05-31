@@ -573,23 +573,25 @@ ENDMETHOD.
 
 METHOD get_rest_api_ref.
   DATA : lcx_interface TYPE REF TO zcx_interace_config_missing,
-         lcx_http      TYPE REF TO zcx_http_client_failed.
+         lcx_http      TYPE REF TO zcx_http_client_failed,
+         lv_method     TYPE char20.
   IF go_rest_api IS INITIAL.
+    CLEAR lv_method.
+    SELECT SINGLE method FROM zrest_conf_misc
+                         INTO lv_method
+                         WHERE interface_id EQ gv_interface_id.
+    IF lv_method IS INITIAL.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>method_not_maintained
+          interface_id = gv_interface_id.
+    ENDIF.
     TRY.
-        CASE gv_service_id.
-          WHEN gc_service_blob.
-            CREATE OBJECT go_rest_api
-              EXPORTING
-                interface_name      = gv_interface_id       "Mandatory
-                business_identifier = iv_business_identifier
-                method              = 'PUT'.               "For troubleshooting
-          WHEN OTHERS.
-            CREATE OBJECT go_rest_api
-              EXPORTING
-                interface_name      = gv_interface_id       "Mandatory
-                business_identifier = iv_business_identifier
-                method              = 'POST'.               "For troubleshooting
-        ENDCASE.
+        CREATE OBJECT go_rest_api
+          EXPORTING
+            interface_name      = gv_interface_id       "Mandatory
+            business_identifier = iv_business_identifier
+            method              = lv_method.               "For troubleshooting
       CATCH zcx_interace_config_missing INTO lcx_interface.
         RAISE EXCEPTION lcx_interface.
       CATCH zcx_http_client_failed INTO lcx_http .
