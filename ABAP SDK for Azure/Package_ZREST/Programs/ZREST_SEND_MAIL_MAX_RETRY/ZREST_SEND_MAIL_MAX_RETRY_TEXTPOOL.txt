@@ -1,6 +1,0 @@
-Text-symbols
-001	Selection Screen for input
-
-Selection-text
-S_DATE	Date
-S_TIME	Time
