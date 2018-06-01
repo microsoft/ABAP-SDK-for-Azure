@@ -591,8 +591,54 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
            lv_method TYPE char20.
     DATA:lv_textid2 TYPE scx_t100key,
          wa_paylod  TYPE zrest_mo_payload.
-    DATA:  lv_text2 TYPE scx_t100key,
+    DATA:  lv_text2  TYPE scx_t100key,
            lv_textid TYPE REF TO zcx_http_client_failed.
+    DATA :   lv_rfc_destination      TYPE zrest_config-destination,
+             lv_srtfd                TYPE zadf_con_indx-srtfd,
+             lw_indx                 TYPE zadf_con_indx,
+             lt_enveloped_data       TYPE TABLE OF ssfbin,
+             lv_cert_string          TYPE xstring,
+             lt_recipients           TYPE TABLE OF ssfinfo,
+             lw_recipient            TYPE ssfinfo,
+             lt_input_data           TYPE TABLE OF ssfbin,
+             lw_input_data           TYPE ssfbin,
+             lv_env_data_len         TYPE i,
+             lv_env_len_total        TYPE i,
+             lv_subject              TYPE string,
+             lw_enveloped_data       TYPE ssfbin,
+             lv_xstr_input           TYPE xstring,
+             lv_len_output           TYPE i,
+             lv_len_input            TYPE i,
+             lt_decoded_bin          TYPE TABLE OF x,
+             lv_decoded_str          TYPE string,
+             lv_applic               TYPE rfcdisplay-sslapplic,
+             lv_psename              TYPE ssfpsename,
+             lv_profilename          TYPE localfile,
+             lv_profile              TYPE ssfparms-pab,
+             lv_current_timestamp    TYPE timestampl,
+             lv_date_adf             TYPE datum,
+             lv_time_adf             TYPE uzeit,
+             lv_seconds_adf          TYPE p,
+             lv_input_seconds_adf    TYPE p,
+             lv_expiry_time_adf      TYPE string,
+             lv_new_expiry_adf       TYPE string,
+             lv_format               TYPE i,
+             lv_string_to_sign       TYPE string,
+             lv_encoded_base_address TYPE string,
+             lv_body_xstring         TYPE xstring,
+             lv_sign                 TYPE string,
+             lv_final_token          TYPE string,
+             lv_decoded              TYPE xstring,
+             lo_conv                 TYPE REF TO cl_abap_conv_out_ce,
+             lv_sas_key              TYPE string,
+             lw_zadf_config          TYPE zadf_config,
+             lv_host                 TYPE string,
+             lv_zone                 TYPE sy-zonlo,
+             lv_baseaddress          TYPE string.
+    CONSTANTS: lc_i          TYPE c VALUE 'I',
+               lc_servicebus TYPE zadf_config-interface_type VALUE 'SERVICEBUS',
+               lc_eventhub   TYPE zadf_config-interface_type VALUE 'EVENTHUB',
+               lc_auth       TYPE ihttpnvp-name VALUE 'Authorization'.
     CREATE OBJECT lv_textid.
 *-----------------------check message id ------------------------------*
     check_messageid( EXPORTING message_id = message_id ).
@@ -700,7 +746,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
     ENDIF.
 *    end of change.
 *------------------------------------- --------------------------------*
-    DATA: cx_http_failed TYPE REF TO zcx_http_client_failed,
+    DATA: cx_http_failed    TYPE REF TO zcx_http_client_failed,
           cx_config_missing TYPE REF TO zcx_interace_config_missing.
     CREATE OBJECT: cx_http_failed,
                    cx_config_missing.
@@ -734,15 +780,243 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
       IMPORTING
         ex_string   = lv_string.
 
-    DATA:wa_header TYPE ihttpnvp,
-         result_tab TYPE TABLE OF string,
+    DATA:wa_header     TYPE ihttpnvp,
+         result_tab    TYPE TABLE OF string,
          wa_result_tab TYPE string.
 *    SPLIT lv_string AT '|' INTO table data(result_tab) IN CHARACTER MODE.  v-jobpau
     SPLIT lv_string AT '|' INTO TABLE result_tab IN CHARACTER MODE.
 *    LOOP AT result_tab INTO data(wa_result_tab).  v-jobpau
+*****
+**Regenerating SAS key token with new expiry time
+    CLEAR lw_zadf_config.
+    SELECT SINGLE * FROM zadf_config
+             INTO lw_zadf_config
+             WHERE interface_id EQ interface_name.
+    IF sy-subrc EQ 0.
+      CASE lw_zadf_config-interface_type.
+        WHEN lc_servicebus OR lc_eventhub. "Azure ServiceBus or eventhub
+          lv_srtfd = interface_name.
+*Import internal table as a cluster from INDX for decoding SAS Primary key
+          IMPORT tab  = lt_enveloped_data[]
+                 FROM DATABASE zadf_con_indx(zd)
+                 TO lw_indx
+                 ID lv_srtfd.
+          IF NOT lt_enveloped_data[] IS INITIAL.
+            CLEAR lv_rfc_destination.
+            SELECT SINGLE destination FROM zrest_config
+                                      INTO lv_rfc_destination
+                                      WHERE interface_id EQ interface_name.
+            IF NOT lv_rfc_destination IS INITIAL .
+              CALL FUNCTION 'RFC_READ_HTTP_DESTINATION'
+                EXPORTING
+                  destination             = lv_rfc_destination
+                  authority_check         = ' '
+                IMPORTING
+                  sslapplic               = lv_applic
+                EXCEPTIONS
+                  authority_not_available = 1
+                  destination_not_exist   = 2
+                  information_failure     = 3
+                  internal_failure        = 4
+                  no_http_destination     = 5
+                  OTHERS                  = 6.
+              IF sy-subrc NE 0.
+                MESSAGE text-008 TYPE lc_i.
+              ELSE.
+                CALL FUNCTION 'SSFPSE_FILENAME'
+                  EXPORTING
+                    mandt         = sy-mandt
+                    context       = 'SSLC'
+                    applic        = lv_applic
+                  IMPORTING
+                    psename       = lv_psename
+                  EXCEPTIONS
+                    pse_not_found = 1
+                    OTHERS        = 2.
+                IF NOT lv_psename IS INITIAL.
+                  lv_profile = lv_psename.
+                  CALL FUNCTION 'SSFC_GET_CERTIFICATE'
+                    EXPORTING
+                      profile               = lv_profile
+                    IMPORTING
+                      certificate           = lv_cert_string
+                    EXCEPTIONS
+                      ssf_krn_error         = 1
+                      ssf_krn_nomemory      = 2
+                      ssf_krn_nossflib      = 3
+                      ssf_krn_invalid_par   = 4
+                      ssf_krn_nocertificate = 5
+                      OTHERS                = 6.
+                  IF sy-subrc NE 0.
+**Adding complete profile path for reading certificate instance
+                    lv_profile = lv_profilename.
+                    CALL FUNCTION 'SSFC_GET_CERTIFICATE'
+                      EXPORTING
+                        profile               = lv_profile
+                      IMPORTING
+                        certificate           = lv_cert_string
+                      EXCEPTIONS
+                        ssf_krn_error         = 1
+                        ssf_krn_nomemory      = 2
+                        ssf_krn_nossflib      = 3
+                        ssf_krn_invalid_par   = 4
+                        ssf_krn_nocertificate = 5
+                        OTHERS                = 6.
+                    IF sy-subrc NE 0.
+                      MESSAGE text-007 TYPE lc_i.
+                    ENDIF.
+                  ELSE.
+                    CALL FUNCTION 'SSFC_PARSE_CERTIFICATE'
+                      EXPORTING
+                        certificate         = lv_cert_string
+                      IMPORTING
+                        subject             = lv_subject
+                      EXCEPTIONS
+                        ssf_krn_error       = 1
+                        ssf_krn_nomemory    = 2
+                        ssf_krn_nossflib    = 3
+                        ssf_krn_invalid_par = 4
+                        OTHERS              = 5.
+                    IF sy-subrc NE 0.
+                      MESSAGE text-006 TYPE lc_i.
+                    ELSE.
+                      lw_recipient-id      = lv_subject.
+                      lw_recipient-profile = lv_profile.
+                      APPEND lw_recipient TO lt_recipients.
+                      LOOP AT lt_enveloped_data INTO lw_enveloped_data.
+                        lv_env_data_len = xstrlen( lw_enveloped_data-bindata ).
+                        lv_env_len_total = lv_env_len_total + lv_env_data_len.
+                        CLEAR lw_enveloped_data.
+                      ENDLOOP.
+                      CALL FUNCTION 'SSF_KRN_DEVELOPE'
+                        EXPORTING
+                          ssftoolkit                   = 'SAPSECULIB'
+                          str_format                   = 'PKCS7'
+*                         B_OUTDEC                     = 'X'
+*                         IO_SPEC                      = 'T'
+                          ostr_enveloped_data_l        = lv_env_len_total
+                        IMPORTING
+                          ostr_output_data_l           = lv_len_input
+*                         CRC                          =
+                        TABLES
+                          ostr_enveloped_data          = lt_enveloped_data
+                          recipient                    = lt_recipients
+                          ostr_output_data             = lt_input_data
+                        EXCEPTIONS
+                          ssf_krn_error                = 1
+                          ssf_krn_noop                 = 2
+                          ssf_krn_nomemory             = 3
+                          ssf_krn_opinv                = 4
+                          ssf_krn_nossflib             = 5
+                          ssf_krn_recipient_error      = 6
+                          ssf_krn_input_data_error     = 7
+                          ssf_krn_invalid_par          = 8
+                          ssf_krn_invalid_parlen       = 9
+                          ssf_fb_input_parameter_error = 10
+                          OTHERS                       = 11.
+                      IF sy-subrc NE 0.
+                        MESSAGE text-005 TYPE lc_i.
+                      ELSE.
+                        IF NOT lt_input_data[] IS INITIAL.
+                          CALL FUNCTION 'SCMS_BINARY_TO_STRING'
+                            EXPORTING
+                              input_length  = lv_len_input
+                            IMPORTING
+                              text_buffer   = lv_decoded_str
+                              output_length = lv_len_output
+                            TABLES
+                              binary_tab    = lt_input_data
+                            EXCEPTIONS
+                              failed        = 1
+                              OTHERS        = 2.
+                          IF lv_decoded_str IS INITIAL.
+                            MESSAGE text-004 TYPE lc_i.
+                          ELSE.
+                            lv_sas_key = lv_decoded_str.
+                          ENDIF.
+                        ELSE.
+                          MESSAGE text-003 TYPE lc_i.
+                        ENDIF.
+                      ENDIF.
+                    ENDIF.
+                  ENDIF.
+                ENDIF.
+              ENDIF.
+            ELSE.
+              MESSAGE text-002 TYPE lc_i.
+            ENDIF.
+          ELSE.
+            MESSAGE text-001 TYPE lc_i.
+          ENDIF.
+**Calculating Epoch time for SAS Token
+          IF NOT lv_sas_key IS INITIAL.
+*Get the current timestamp
+            GET TIME STAMP FIELD  lv_current_timestamp .
+*Get the time difference
+            CONVERT TIME STAMP lv_current_timestamp TIME ZONE lv_zone INTO DATE lv_date_adf TIME lv_time_adf.
+            TRY.
+                CALL METHOD cl_abap_tstmp=>td_subtract
+                  EXPORTING
+                    date1    = lv_date_adf
+                    time1    = lv_time_adf
+                    date2    = '19700101'
+                    time2    = '000000'
+                  IMPORTING
+                    res_secs = lv_seconds_adf.
+* Add expiry time in seconds
+                lv_input_seconds_adf =  900 . "Setting expiry time as 15 mins
+                lv_seconds_adf = lv_seconds_adf + lv_input_seconds_adf.
+                lv_expiry_time_adf = lv_seconds_adf.
+                CONDENSE lv_expiry_time_adf.
+              CATCH cx_parameter_invalid_type.
+              CATCH cx_parameter_invalid_range .
+            ENDTRY.
+**Generating SAS token with new expiry time
+            IF NOT lv_expiry_time_adf IS INITIAL.
+              lv_baseaddress = lw_zadf_config-uri.
+              lv_format = 18.
+              lv_encoded_base_address = escape( val = lv_baseaddress format = lv_format  ).
+              CONCATENATE lv_encoded_base_address  cl_abap_char_utilities=>newline lv_expiry_time_adf INTO lv_string_to_sign.
+
+              lo_conv = cl_abap_conv_out_ce=>create( encoding = 'UTF-8' ).
+              lo_conv->convert( EXPORTING data = lv_string_to_sign IMPORTING buffer = lv_body_xstring ).
+
+              lo_conv = cl_abap_conv_out_ce=>create( encoding = 'UTF-8' ).
+              lo_conv->convert( EXPORTING data = lv_sas_key IMPORTING buffer = lv_decoded ).
+              TRY.
+                  CALL METHOD cl_abap_hmac=>calculate_hmac_for_raw
+                    EXPORTING
+                      if_algorithm     = 'sha-256'
+                      if_key           = lv_decoded
+                      if_data          = lv_body_xstring
+                      if_length        = 0
+                    IMPORTING
+                      ef_hmacb64string = lv_sign.
+                CATCH cx_abap_message_digest.
+              ENDTRY.
+              lv_new_expiry_adf = lv_expiry_time_adf.
+              CONDENSE lv_new_expiry_adf.
+              IF NOT lv_sign IS INITIAL.
+                DATA wa_policy TYPE zadf_ehub_policy.
+                SELECT SINGLE * FROM zadf_ehub_policy INTO wa_policy WHERE interface_id EQ interface_name.
+                lv_sign = escape( val = lv_sign format = lv_format  ).
+                CONCATENATE 'SharedAccessSignature sig=' lv_encoded_base_address  '&sig=' lv_sign '&se=' lv_new_expiry_adf '&skn='
+                wa_policy-policy INTO lv_final_token.
+              ENDIF.
+            ENDIF.
+          ENDIF.
+      ENDCASE.
+    ENDIF.
     LOOP AT result_tab INTO wa_result_tab.
       SPLIT wa_result_tab AT ':' INTO wa_header-name wa_header-value.
-      rest_handler->set_request_header( iv_name = wa_header-name  iv_value = wa_header-value  ).
+**Replacing Authorization header value with newly generated SAS Token
+      IF ( lw_zadf_config-interface_type EQ lc_servicebus or lw_zadf_config-interface_type EQ lc_eventhub ) AND
+         ( wa_header-name EQ lc_auth ) AND
+         ( NOT lv_final_token IS INITIAL ).
+        rest_handler->set_request_header( iv_name = wa_header-name  iv_value = lv_final_token ).
+      ELSE.
+        rest_handler->set_request_header( iv_name = wa_header-name  iv_value = wa_header-value  ).
+      ENDIF.
     ENDLOOP.
     rest_handler->set_callingprogram('ZCL_REST_UTILITY_CLASS').
     lv_string = wa_paylod-uri.

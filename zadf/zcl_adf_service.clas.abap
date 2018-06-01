@@ -5,9 +5,9 @@ class ZCL_ADF_SERVICE definition
 
 public section.
 
-  constants GC_SERVICE_BLOB type ZAZURE_DEST value 'BLOB'. "#EC NOTEXT
-  constants GC_SERVICE_AAD type ZAZURE_DEST value 'AAD'. "#EC NOTEXT
-  constants GC_SERVICE_KV type ZAZURE_DEST value 'KV'. "#EC NOTEXT
+  constants GC_SERVICE_BLOB type ZAZURE_DEST value 'BLOB' ##NO_TEXT.
+  constants GC_SERVICE_AAD type ZAZURE_DEST value 'AAD' ##NO_TEXT.
+  constants GC_SERVICE_KV type ZAZURE_DEST value 'KV' ##NO_TEXT.
 
   methods SEND
     importing
@@ -68,7 +68,7 @@ public section.
       ZCX_ADF_SERVICE .
 protected section.
 
-  constants GC_ERROR type CHAR1 value 'E'. "#EC NOTEXT
+  constants GC_ERROR type CHAR1 value 'E' ##NO_TEXT.
   data GV_INTERFACE_ID type ZINTERFACE_ID .
   data GV_SAS_KEY type STRING .
   data GV_URI type STRING .
@@ -81,6 +81,9 @@ protected section.
   data GV_EXPIRY_SEC type I .
   data GV_STRING_TO_SIGN type STRING .
   data GV_SERVICE_VERSION type STRING .
+  data GV_RFC_DESTINATION type RFCDEST .
+  data GV_PATH_PREFIX type STRING .
+  data GV_HOST type STRING .
 
   methods ADD_REQUEST_HEADER
     importing
@@ -103,12 +106,22 @@ protected section.
       value(RV_SECRET) type STRING
     raising
       ZCX_ADF_SERVICE .
+  methods GET_TARGET_HOST
+    importing
+      !IV_DESTINATION type RFCDES-RFCDEST
+      !IV_AUTHORITY_CHECK type RFCDISPLAY-RFCTRACE default ' '
+      !IV_BYPASS_BUFF type CHAR1 optional
+    exporting
+      !EV_SERVER type RFCDISPLAY-RFCHOST
+      !EV_PATH_PREFIX type STRING
+    raising
+      ZCX_ADF_SERVICE .
 private section.
 
-  constants GC_FORMAT_XML type ZADF_FORMAT_TYPE value 'XML'. "#EC NOTEXT
-  constants GC_FORMAT_JSON type ZADF_FORMAT_TYPE value 'JSON'. "#EC NOTEXT
-  constants GC_ASYNCHRONOUS type CHAR1 value 'A'. "#EC NOTEXT
-  constants GC_SYNCHRONOUS type CHAR1 value 'S'. "#EC NOTEXT
+  constants GC_FORMAT_XML type ZADF_FORMAT_TYPE value 'XML' ##NO_TEXT.
+  constants GC_FORMAT_JSON type ZADF_FORMAT_TYPE value 'JSON' ##NO_TEXT.
+  constants GC_ASYNCHRONOUS type CHAR1 value 'A' ##NO_TEXT.
+  constants GC_SYNCHRONOUS type CHAR1 value 'S' ##NO_TEXT.
   data GV_DESTINATION type ZAZURE_DEST .
   data GV_SERVICE_ID type ZAZURE_DEST .
 
@@ -533,7 +546,10 @@ endmethod.
 
 METHOD get_interface_details.
 
-  DATA : ls_config TYPE zadf_config.
+  DATA : ls_config      TYPE zadf_config,
+         lv_host        TYPE rfcdisplay-rfchost,
+         lv_host_s      TYPE string,
+         lv_path_prefix TYPE string.
 
   SELECT SINGLE * FROM zadf_config
          INTO ls_config
@@ -544,15 +560,18 @@ METHOD get_interface_details.
         textid       = zcx_adf_service=>interface_not_available
         interface_id = gv_interface_id.
   ENDIF.
-  IF ( ls_config-uri IS INITIAL ) AND ( ( gv_service_id NE gc_service_blob ) AND
-                                        ( gv_service_id NE gc_service_aad ) and
-                                        ( gv_service_id ne gc_service_kv  ) ).
+**Getting Target host of RFC destination
+  get_target_host( EXPORTING iv_destination = gv_rfc_destination IMPORTING  ev_server = lv_host
+                                                                  ev_path_prefix = lv_path_prefix ).
+  gv_host = lv_host.
+  gv_path_prefix = lv_path_prefix.
+  lv_host_s = lv_host.
+  CONCATENATE lv_host_s lv_path_prefix INTO gv_uri.
+  IF gv_uri IS INITIAL.
     RAISE EXCEPTION TYPE zcx_adf_service
       EXPORTING
         textid       = zcx_adf_service=>uri_not_maintained
         interface_id = gv_interface_id.
-  ELSE.
-    gv_uri = ls_config-uri.
   ENDIF.
   IF ls_config-service_type IS INITIAL.
     RAISE EXCEPTION TYPE zcx_adf_service
@@ -567,7 +586,7 @@ METHOD get_interface_details.
     ENDIF.
   ENDIF.
   gv_is_try = ls_config-is_try.
-  gv_sas_key = ls_config-SAS_KEY. "Added by KRDASH
+  gv_sas_key = ls_config-sas_key. "Added by KRDASH
 ENDMETHOD.
 
 
@@ -661,6 +680,32 @@ METHOD get_sas_token.
         interface_id = gv_interface_id.
   ENDIF.
 ENDMETHOD.
+
+
+  method GET_TARGET_HOST.
+     CALL FUNCTION 'RFC_READ_HTTP_DESTINATION'
+    EXPORTING
+      destination             = iv_destination
+      authority_check         = ' '
+      bypass_buf              = iv_bypass_buff
+    IMPORTING
+      server                  = ev_server
+      path_prefix             = ev_path_prefix
+    EXCEPTIONS
+      authority_not_available = 1
+      destination_not_exist   = 2
+      information_failure     = 3
+      internal_failure        = 4
+      no_http_destination     = 5
+      OTHERS                  = 6.
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+    RAISE EXCEPTION TYPE zcx_adf_service
+      EXPORTING
+        textid       = zcx_adf_service=>read_error_rfc_destination
+        interface_id = gv_interface_id.
+  ENDIF.
+  endmethod.
 
 
 METHOD json_to_http_fields.

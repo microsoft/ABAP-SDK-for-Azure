@@ -138,27 +138,27 @@ ENDMETHOD.
 
 
 METHOD get_key_from_kv.
-  DATA : rest_handler TYPE REF TO zcl_rest_framework,
-         go_response  TYPE REF TO if_rest_entity,
-         go_request   TYPE REF TO if_rest_entity,
-         gv_client    TYPE string,
-         gv_body      TYPE string,
-         gv_langu     TYPE langu,
-         lv_key       TYPE string,
-         lv_content_type TYPE string,
-         lo_http_client  TYPE REF TO if_http_client,
-         lv_requestid TYPE string,
-         lcx_interface TYPE REF TO zcx_interace_config_missing,
-         lcx_http TYPE REF TO zcx_http_client_failed,
-         lv_response_data TYPE string,
-         lt_response_fields  TYPE tihttpnvp,
-         lv_token            TYPE string,
-         ls_response_fields  TYPE ihttpnvp,
-         form_data_helper TYPE REF TO cl_rest_form_data,
-         it_params TYPE tihttpnvp,
-         wa_params TYPE ihttpnvp,
-         lv_mediatype TYPE string,
-         lv_http_status TYPE i.
+  DATA : rest_handler       TYPE REF TO zcl_rest_framework,
+         go_response        TYPE REF TO if_rest_entity,
+         go_request         TYPE REF TO if_rest_entity,
+         gv_client          TYPE string,
+         gv_body            TYPE string,
+         gv_langu           TYPE langu,
+         lv_key             TYPE string,
+         lv_content_type    TYPE string,
+         lo_http_client     TYPE REF TO if_http_client,
+         lv_requestid       TYPE string,
+         lcx_interface      TYPE REF TO zcx_interace_config_missing,
+         lcx_http           TYPE REF TO zcx_http_client_failed,
+         lv_response_data   TYPE string,
+         lt_response_fields TYPE tihttpnvp,
+         lv_token           TYPE string,
+         ls_response_fields TYPE ihttpnvp,
+         form_data_helper   TYPE REF TO cl_rest_form_data,
+         it_params          TYPE tihttpnvp,
+         wa_params          TYPE ihttpnvp,
+         lv_mediatype       TYPE string,
+         lv_http_status     TYPE i.
   CREATE OBJECT lcx_interface.
   CREATE OBJECT lcx_http.
   TRY .
@@ -176,6 +176,7 @@ METHOD get_key_from_kv.
   rest_handler->set_callingmethod('GET_KEY_FROM_KV').
 *Optional - To help developer understand the origin of call
   rest_handler->set_callingprogram('ZCL_ADF_SERVICE_KEYVAULT').
+  rest_handler->zif_rest_framework~set_uri( '?api-version=2016-10-01' ).
 ************************************************************************
   CONCATENATE 'Bearer' gv_token INTO lv_token SEPARATED BY space.
   rest_handler->zif_rest_framework~set_request_header( iv_name = 'Authorization' iv_value = lv_token ).
@@ -191,7 +192,7 @@ METHOD get_key_from_kv.
       lv_content_type = lo_http_client->response->get_content_type( ).
       go_rest_api->close( ).
     ENDIF.
-    IF lv_http_status EQ '201'.
+    IF lv_http_status EQ '201' OR lv_http_status EQ '200'.
       IF lv_content_type CP `text/plain*` OR
          lv_content_type   CP `text/javascript*` OR
          lv_content_type   CP `application/x-www-form-urlencoded*`.
