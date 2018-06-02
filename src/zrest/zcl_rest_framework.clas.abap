@@ -327,7 +327,11 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
 
 
   METHOD  create_request_entity.
-    request = rest_client->if_rest_client~create_request_entity( iv_multipart ).
+**To allow GET and DELETE request entity in REST call
+    IF method_call EQ 'GET' or method_call eq 'DELETE'.
+    ELSE.
+      request = rest_client->if_rest_client~create_request_entity( iv_multipart ).
+    ENDIF.
   ENDMETHOD.
 
 
@@ -722,7 +726,7 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
 
   METHOD  zif_rest_framework~set_string_body.
     IF body IS NOT INITIAL.
-         request->set_string_data( body ).
+         http_client->request->set_cdata( body ).
     ENDIF.
   ENDMETHOD.
 
