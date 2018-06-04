@@ -11,6 +11,8 @@
     <item>/README.md</item>
     <item>/package.json</item>
     <item>/.travis.yml</item>
+    <item>/ABAP SDK Implementation Guide for Azure Event hubs.pdf</item>
+    <item>/ABAP SDK for Azure - Github.pdf</item>
    </IGNORE>
   </DATA>
  </asx:values>
