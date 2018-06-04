@@ -11,6 +11,114 @@
     <item>/README.md</item>
     <item>/package.json</item>
     <item>/.travis.yml</item>
+    <item>/IMPLEMENTATION GUIDE ON ABAP SDK FOR AZURE V1.0.docx</item>
+    <item>/INSTALLATION GUIDE ON ABAP SDK FOR AZURE V1.0.docx</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCL_ADF_SERVICE.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCL_ADF_SERVICE_AAD.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCL_ADF_SERVICE_BLOB.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCL_ADF_SERVICE_DOCUMENTDB.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCL_ADF_SERVICE_EVENTHUB.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCL_ADF_SERVICE_FACTORY.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCL_ADF_SERVICE_KEYVAULT.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCL_ADF_SERVICE_SERVICEBUS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCL_ADF_SQLDB.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCX_ADF_SERVICE.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCX_ADF_SERVICE_TEXTPOOL.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Classes/ZCX_ADF_SQLDB.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/LZADF_FGF00.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/LZADF_FGF01.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/LZADF_FGI00.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/LZADF_FGI01.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/LZADF_FGTOP.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/LZADF_FGU01.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/LZADF_FGU02.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/ZADF_FG.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/ZADF_FG_TEXTPOOL.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/Screens/0001.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZADF_FG/Screens/0001_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZEHUBPOLICY/LZEHUBPOLICYF00.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZEHUBPOLICY/LZEHUBPOLICYI00.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZEHUBPOLICY/LZEHUBPOLICYU01.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZEHUBPOLICY/LZEHUBPOLICYU02.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZEHUBPOLICY/ZEHUBPOLICY.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZEHUBPOLICY/Screens/9000.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZEHUBPOLICY/Screens/9000_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Tables/ZADF_CONFIG.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Tables/ZADF_CON_INDX.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Tables/ZADF_EHUB_POLICY.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Classes/ZCL_REST_FRAMEWORK.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Classes/ZCL_REST_UTILITY_CLASS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Classes/ZCL_REST_UTILITY_CLASS_TEXTPOOL.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Classes/ZCX_HTTP_CLIENT_FAILED.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Classes/ZCX_INTERACE_CONFIG_MISSING.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Classes/Z_RESTCALL_FROM_DB.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/LZRESTF00.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/LZRESTF01.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/LZRESTF02.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/LZRESTI00.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/LZRESTTOP.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/LZRESTU01.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/LZRESTU02.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/ZREST.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Function modules/ZSAVE_REST_LOG.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Function modules/ZUPDATES_TABLES.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Function modules/ZUPDATES_TABLES_UPDATE.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9001.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9002.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9002_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9003.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9003_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9004.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9004_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9010.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9010_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9011.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9011_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9050.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9050_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9089.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9089_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9090.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9090_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Interfaces/ZIF_REST_FRAMEWORK.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Message classes/Z_FI_MDG.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Programs/ZREST_CALL_DEMO/ZREST_CALL_DEMO.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Programs/ZREST_SCHEDULER/ZREST_SCHEDULER.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Programs/ZREST_SCHEDULER/ZREST_SCHEDULER_TEXTPOOL.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Programs/ZREST_SCREEN/ZREST_SCREEN.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Programs/ZREST_SCREEN/ZREST_SCREEN_TEXTPOOL.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Programs/ZREST_SCREEN/Screens/0100.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Programs/ZREST_SCREEN/Screens/0100_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Programs/ZREST_SEND_MAIL_MAX_RETRY/ZREST_SEND_MAIL_MAX_RETRY.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Programs/ZREST_SEND_MAIL_MAX_RETRY/ZREST_SEND_MAIL_MAX_RETRY_TEXTPOOL.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Structures/ZHEADER_STRUCTURE.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Structures/ZNAMEVALUEPAIR.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Structures/ZREST_APPLOG_MESSAGE.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Structures/ZREST_RETRY_LIMI.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Structures/ZREST_SRTUCT_CONFIG.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZOBFUSCATE.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_CONFIG.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_CONF_HEAD.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_CONF_MISC.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_GLOBAL.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_MONITOR.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_MONITORLOG.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_MON_HEADER.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_MON_TRACE.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_MO_PAYLOAD.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Tables/ZREST_RETRIES.txt</item>
+    <item>/ABAP SDKfor Azure/Package_ZADF/Function groups/ZEHUBPOLICY/LZEHUBPOLICYTOP.txt</item>
+    <item>/ABAP SDKfor Azure/Package_ZREST/Function groups/ZREST/Screens/9001_ELEMENTS.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZADF/Function groups/ZEHUBPOLICY/LZEHUBPOLICYTOP.txt</item>
+    <item>/ABAP SDK for Azure/Package_ZREST/Function groups/ZREST/Screens/9001_ELEMENTS.txt</item>
+    <item>/ABAP SDK Implementation Guide for Azure Event hubs.pdf</item>
+    <item>/ABAP SDK for Azure - Github.pdf</item>
+    <item>/src/zrest/zrest_sched_batch_f01.prog.abap</item>
+    <item>/src/zrest/zrest_sched_batch_f01.prog.xml</item>
+    <item>/src/zrest/zrest_sched_batch_sel.prog.abap</item>
+    <item>/src/zrest/zrest_sched_batch_sel.prog.xml</item>
+    <item>/src/zrest/zrest_sched_batch_top.prog.abap</item>
+    <item>/src/zrest/zrest_sched_batch_top.prog.xml</item>
    </IGNORE>
   </DATA>
  </asx:values>
