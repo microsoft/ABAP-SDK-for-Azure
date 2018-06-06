@@ -560,6 +560,16 @@ METHOD get_interface_details.
         textid       = zcx_adf_service=>interface_not_available
         interface_id = gv_interface_id.
   ENDIF.
+
+  SELECT SINGLE destination FROM zrest_config INTO gv_rfc_destination
+       WHERE interface_id = gv_interface_id.
+  IF sy-subrc <> 0.
+    RAISE EXCEPTION TYPE zcx_adf_service
+      EXPORTING
+        textid       = zcx_adf_service=>interface_not_available
+        interface_id = gv_interface_id.
+  ENDIF.
+
 **Getting Target host of RFC destination
   get_target_host( EXPORTING iv_destination = gv_rfc_destination IMPORTING  ev_server = lv_host
                                                                   ev_path_prefix = lv_path_prefix ).
