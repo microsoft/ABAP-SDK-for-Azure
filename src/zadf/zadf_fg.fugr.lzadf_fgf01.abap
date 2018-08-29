@@ -132,7 +132,6 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
           lw_input_data-bindata = lv_xstring.
           APPEND lw_input_data TO lt_input_data.
           CLEAR lw_input_data.
-          l_env_str_pab_password = ''.
           CALL FUNCTION 'SSF_KRN_ENVELOPE'
             EXPORTING
               ssftoolkit                   = 'SAPSECULIB'
