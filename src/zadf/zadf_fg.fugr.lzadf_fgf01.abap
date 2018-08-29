@@ -27,9 +27,7 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
           lv_xstring             TYPE xstring,
           lv_applic              TYPE rfcdisplay-sslapplic,
           lv_psename             TYPE ssfpsename,
-**Start of changes by KRDASH MS2K960975
           lv_profilename         TYPE localfile,
-**End of chnages by KRDASH MS2K960975
           lv_profile             TYPE ssfparms-pab.
   IF NOT p_sas_key IS INITIAL.
     CALL FUNCTION 'RFC_READ_HTTP_DESTINATION'
@@ -78,7 +76,6 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
             ssf_krn_nocertificate = 5
             OTHERS                = 6.
         IF sy-subrc NE 0.
-**Start of changes by KRDASH MS2K960975
 **Addinng complete profile path for reading certificate instance
           lv_profile = lv_profilename.
           CALL FUNCTION 'SSFC_GET_CERTIFICATE'
@@ -94,10 +91,9 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
               ssf_krn_nocertificate = 5
               OTHERS                = 6.
           IF sy-subrc NE 0.
-**End of changes by KRDASH MS2K960975
             MESSAGE text-007 TYPE lc_e.
           ENDIF.
-        ENDIF. "Added by KRDASH MS2K960975
+        ENDIF.
         CALL FUNCTION 'SSFC_PARSE_CERTIFICATE'
           EXPORTING
             certificate         = lv_cert_string
@@ -182,7 +178,7 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
       ENDIF.
     ENDIF.
   ELSE.
-*    MESSAGE  text-003 TYPE lc_e. "Commented by KRDASH
+    MESSAGE  text-003 TYPE lc_e.
   ENDIF.
 ENDFORM.                    " F_ENCRYPT_DATA
 *&---------------------------------------------------------------------*
@@ -207,11 +203,9 @@ FORM f_create_entry.
         IF NOT zadf_config-interface_type IS INITIAL. "Added by KRDASH
           PERFORM f_encrypt_data USING lw_zrest
                                        zadf_config-sas_key.
-**Start of changes by KRDASH
         ELSE.
           MESSAGE text-012 TYPE lc_e.
         ENDIF.
-**end of changes by KRDASH
       ELSE.
         MESSAGE text-002 TYPE lc_e.
       ENDIF.
