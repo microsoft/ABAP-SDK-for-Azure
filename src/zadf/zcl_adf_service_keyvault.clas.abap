@@ -11,6 +11,7 @@ public section.
       !IV_KV_INTERFACE_ID type ZINTERFACE_ID
       !IV_CLIENT_ID type STRING
       !IV_RESOURCE type STRING
+      !IT_HEADERS type TIHTTPNVP optional
     exporting
       !EV_KEY type STRING
       !EV_RESPONSE type STRING
@@ -50,20 +51,21 @@ CLASS ZCL_ADF_SERVICE_KEYVAULT IMPLEMENTATION.
 
 METHOD get_aad_token.
   DATA : lo_request         TYPE REF TO if_rest_entity,
-        lo_response         TYPE REF TO if_rest_entity,
-        lv_response_data    TYPE string,
-        lt_response_fields  TYPE tihttpnvp,
-        lv_token            TYPE string,
-        ls_response_fields  TYPE ihttpnvp,
-        reader1             TYPE REF TO if_sxml_reader,
-        form_data_helper    TYPE REF TO cl_rest_form_data,
-        it_params           TYPE tihttpnvp,
-        wa_params           TYPE ihttpnvp,
-        lv_mediatype        TYPE string,
-        lv_secret           TYPE string,
-        lo_http_client      TYPE REF TO if_http_client,
-        lv_content_type     TYPE string,
-        lv_http_status      TYPE i.
+         lo_response        TYPE REF TO if_rest_entity,
+         lv_response_data   TYPE string,
+         lt_response_fields TYPE tihttpnvp,
+         lv_token           TYPE string,
+         ls_response_fields TYPE ihttpnvp,
+         reader1            TYPE REF TO if_sxml_reader,
+         form_data_helper   TYPE REF TO cl_rest_form_data,
+         it_params          TYPE tihttpnvp,
+         wa_params          TYPE ihttpnvp,
+         lv_mediatype       TYPE string,
+         lv_secret          TYPE string,
+         lo_http_client     TYPE REF TO if_http_client,
+         lv_content_type    TYPE string,
+         lw_headers         TYPE ihttpnvp,
+         lv_http_status     TYPE i.
   DEFINE set_headers.
     lv_mediatype = if_rest_media_type=>gc_appl_www_form_url_encoded.
     create object form_data_helper
@@ -88,7 +90,7 @@ METHOD get_aad_token.
     clear wa_params.
     go_rest_api->set_request_header( iv_name = 'Content-Type'  iv_value = lv_mediatype ).
     go_rest_api->set_string_body( cl_http_utility=>fields_to_string( it_params ) ) .
-    clear: lv_secret, it_params.
+    clear: lv_secret, it_params,gt_headers.
   END-OF-DEFINITION.
   IF go_rest_api IS BOUND.
     set_headers .
@@ -232,6 +234,7 @@ METHOD get_kv_details.
   gv_kv_interface     = iv_kv_interface_id.
   gv_client_id        = iv_client_id.
   gv_resource         = iv_resource.
+  gt_headers = it_headers.
   get_aad_token( RECEIVING rv_aad_token = gv_token ).
   IF NOT gv_token IS INITIAL.
     get_key_from_kv( RECEIVING rv_kv_key = lv_kv_key ).
@@ -243,6 +246,6 @@ METHOD get_kv_details.
   ENDIF.
   ev_key = lv_kv_key.
   ev_response = gv_response.
-  CLEAR gv_token.
+  CLEAR: gv_token, gt_headers.
 ENDMETHOD.
 ENDCLASS.
