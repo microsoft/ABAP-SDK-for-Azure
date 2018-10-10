@@ -560,13 +560,19 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
 
 
   METHOD set_guid.
+    DATA: uuid_16  TYPE sysuuid_x16.
+    DATA: cx       TYPE REF TO cx_uuid_error.
+
     IF retry EQ abap_false.
-      CALL FUNCTION 'GUID_CREATE'
-        IMPORTING
-          ev_guid_16 = guid.
-      message_id = guid.
-    ELSE.
+      TRY.
+          uuid_16 = cl_system_uuid=>create_uuid_x16_static( ).
+        CATCH cx_uuid_error INTO cx.
+          uuid_16 = '0'.
+      ENDTRY.
+
+      message_id = uuid_16.
     ENDIF.
+
   ENDMETHOD.
 
 
