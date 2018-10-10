@@ -1,15 +1,16 @@
-class ZCL_ADF_SERVICE_DOCUMENTDB definition
-  public
-  inheriting from ZCL_ADF_SERVICE
-  final
-  create public .
+CLASS zcl_adf_service_documentdb DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_adf_service
+  FINAL
+  CREATE PRIVATE
+  GLOBAL FRIENDS zcl_adf_service_factory.
 
-public section.
-protected section.
-private section.
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
 
-CLASS ZCL_ADF_SERVICE_DOCUMENTDB IMPLEMENTATION.
+CLASS zcl_adf_service_documentdb IMPLEMENTATION.
 ENDCLASS.
