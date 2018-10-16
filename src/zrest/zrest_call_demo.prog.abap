@@ -22,11 +22,9 @@ TRY .
       EXPORTING
         interface_name      = c_interface               "Mandatory
         business_identifier = 'Inv/SO/Deli-ID'
-        method              = 'POST'.    "For troubleshooting
-*  CATCH zcx_interace_config_missing INTO DATA(cx_interface). v-jobpau
+        method              = zif_rest_http_constants=>c_http_method_post.    "For troubleshooting
   CATCH zcx_interace_config_missing INTO cx_interface.
     WRITE:/10 'Handle logic Here-Interface Missing'.
-*  CATCH zcx_http_client_failed INTO DATA(cx_http) . v-jobpau
   CATCH zcx_http_client_failed INTO cx_http .
     WRITE:/10 'Handle logic Here-HTTP Failed'.
 ENDTRY.
@@ -43,15 +41,7 @@ rest_handler->set_request_header( iv_name = 'header2' iv_value = 'value for head
 lv_requestid = 'Microsoft'.  "Vetting by Organization
 CONCATENATE '/org1/' lv_requestid INTO lv_requestid.
 rest_handler->set_uri( lv_requestid ).
-*gv_body = '{"IndividualData":{"Email": "v-gugam@microsoft.com"},"OrganizationData":{"OrganizationName":"Microsoft corporation Ltd","Address": {"StateProvinceCode":"IN",'.
-*CONCATENATE gv_body '"Country":"US","AddressLine1":"","City":"","PostalCode":""}},' into gv_body.
-*CONCATENATE gv_body '"EmailOwnershipData":{"RecipientFirstName": "Marshall","RecipientLastName": "Jhonson","RejectUrl" : "http://www.Bing.com","SuccessUrl": "http://www.msn.com",' into gv_body.
-*CONCATENATE gv_body '"ExpiredUrl": "http://www.google.com","ExpirationTime": 1440},"Parameters": {"TriggerMiniInvestigation": true,"ValidateEmailOwnership": true,"TriggerManualReview" : true }};' into gv_body.
-************************************************************************
-*In case of 'POST'
-*gv_body = '<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Dont forget me this weekend!</body></note>'.
-*rest_handler->zif_rest_framework~set_string_body( gv_body ).
-************************************************************************
+
 *------------------------read requests---------------------------------*
 DATA : ts  TYPE timestampl,
        ts1 TYPE timestampl.
@@ -61,21 +51,13 @@ go_response = rest_handler->zif_rest_framework~execute( io_entity = go_request a
 GET TIME STAMP FIELD ts1.
 WRITE:/10 ts , 50 ts1.
 DATA : r_secs TYPE tzntstmpl.
-*TRY.
-CALL METHOD cl_abap_tstmp=>subtract
-  EXPORTING
-    tstmp1 = ts1
-    tstmp2 = ts
-  RECEIVING
-    r_secs = r_secs.
-WRITE:/10 r_secs.
-* CATCH cx_parameter_invalid_range .
-* CATCH cx_parameter_invalid_type .
-*ENDTRY.
 
+r_secs = cl_abap_tstmp=>subtract(
+    tstmp1 = ts1
+    tstmp2 = ts ).
+WRITE:/10 r_secs.
 
 IF go_response IS BOUND.
-*  data(v_string) = go_response->get_string_data( ). v-jobpau
   v_string = go_response->get_string_data( ).
   WRITE:/10 v_string.
 ENDIF.

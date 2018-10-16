@@ -588,6 +588,8 @@
        <FROM_DICT>X</FROM_DICT>
        <MODIFIC>X</MODIFIC>
        <PARAM_ID>RFC</PARAM_ID>
+       <SET_PARAM>X</SET_PARAM>
+       <GET_PARAM>X</GET_PARAM>
        <UP_LOWER>X</UP_LOWER>
        <FOREIGNKEY>X</FOREIGNKEY>
        <INPUT_FLD>X</INPUT_FLD>
@@ -820,7 +822,7 @@
        <CONT_NAME>TCTRL_ZREST_CONF_MISC</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZREST_CONF_MISC-METHOD</NAME>
-       <TEXT>Method__________________________________</TEXT>
+       <TEXT>HTTP_Method_____________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>002</COLUMN>
        <LENGTH>040</LENGTH>
@@ -950,6 +952,7 @@
        <FOREIGNKEY>X</FOREIGNKEY>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
+       <DICT_I_VAL>X</DICT_I_VAL>
       </RPY_DYFATC>
       <RPY_DYFATC>
        <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
@@ -1962,6 +1965,8 @@
        <FROM_DICT>X</FROM_DICT>
        <MODIFIC>X</MODIFIC>
        <PARAM_ID>RFC</PARAM_ID>
+       <SET_PARAM>X</SET_PARAM>
+       <GET_PARAM>X</GET_PARAM>
        <UP_LOWER>X</UP_LOWER>
        <FOREIGNKEY>X</FOREIGNKEY>
        <INPUT_FLD>X</INPUT_FLD>
@@ -2169,6 +2174,8 @@
        <FORMAT>CHAR</FORMAT>
        <FROM_DICT>X</FROM_DICT>
        <PARAM_ID>RFC</PARAM_ID>
+       <SET_PARAM>X</SET_PARAM>
+       <GET_PARAM>X</GET_PARAM>
        <UP_LOWER>X</UP_LOWER>
        <FOREIGNKEY>X</FOREIGNKEY>
        <INPUT_FLD>X</INPUT_FLD>

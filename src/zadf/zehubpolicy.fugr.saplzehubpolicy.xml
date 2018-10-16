@@ -5,7 +5,7 @@
    <PROGDIR>
     <NAME>SAPLZEHUBPOLICY</NAME>
     <STATE>A</STATE>
-    <SQLX>X</SQLX>
+    <VARCL>X</VARCL>
     <DBAPL>S</DBAPL>
     <DBNA>D$</DBNA>
     <SUBC>F</SUBC>

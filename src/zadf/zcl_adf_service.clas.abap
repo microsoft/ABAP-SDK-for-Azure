@@ -564,7 +564,7 @@ ENDMETHOD.
 METHOD get_rest_api_ref.
   DATA : lcx_interface TYPE REF TO zcx_interace_config_missing,
          lcx_http      TYPE REF TO zcx_http_client_failed,
-         lv_method     TYPE char20.
+         lv_method     TYPE zinterface_method.
   IF go_rest_api IS INITIAL.
     CLEAR lv_method.
     SELECT SINGLE method FROM zrest_conf_misc

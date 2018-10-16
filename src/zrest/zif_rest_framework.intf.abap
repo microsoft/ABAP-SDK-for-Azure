@@ -1,32 +1,32 @@
-interface ZIF_REST_FRAMEWORK
-  public .
+INTERFACE zif_rest_framework
+  PUBLIC .
 
 
-  methods EXECUTE
-    importing
-      !METHOD type CHAR20 default 'GET'
-      !IO_ENTITY type ref to IF_REST_ENTITY optional
-      !ASYNC type ABAP_BOOL
-      !IS_RETRY type CHAR1
-      !MESSAGEID type GUID_16 optional
-      !RETRY_COUNT type ZQ_COUNTE optional
-    returning
-      value(RESPONSE) type ref to IF_REST_ENTITY .
-  methods SET_STRING_BODY
-    importing
-      !BODY type STRING .
-  methods SET_BINARY_BODY
-    importing
-      !BODY type XSTRING .
-  methods SET_URI
-    importing
-      !URI type STRING .
-  methods SET_REQUEST_HEADER
-    importing
-      !IV_NAME type STRING
-      !IV_VALUE type STRING .
-  methods SET_REQUEST_HEADERS
-    importing
-      !IT_HEADER_FIELDS type TIHTTPNVP .
+  METHODS execute
+    IMPORTING
+      !method         TYPE zinterface_method DEFAULT zif_rest_http_constants=>c_http_method_get
+      !io_entity      TYPE REF TO if_rest_entity OPTIONAL
+      !async          TYPE abap_bool
+      !is_retry       TYPE char1
+      !messageid      TYPE guid_16 OPTIONAL
+      !retry_count    TYPE zq_counte OPTIONAL
+    RETURNING
+      VALUE(response) TYPE REF TO if_rest_entity .
+  METHODS set_string_body
+    IMPORTING
+      !body TYPE string .
+  METHODS set_binary_body
+    IMPORTING
+      !body TYPE xstring .
+  METHODS set_uri
+    IMPORTING
+      !uri TYPE string .
+  METHODS set_request_header
+    IMPORTING
+      !iv_name  TYPE string
+      !iv_value TYPE string .
+  METHODS set_request_headers
+    IMPORTING
+      !it_header_fields TYPE tihttpnvp .
 
-endinterface.
+ENDINTERFACE.
