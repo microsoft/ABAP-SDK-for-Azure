@@ -301,11 +301,11 @@
       <PROGRAM>SAPLZADF_FG</PROGRAM>
       <SCREEN>0001</SCREEN>
       <LANGUAGE>E</LANGUAGE>
-      <DESCRIPT>View maint: Overview screen ZADF_CONFIG</DESCRIPT>
+      <DESCRIPT>View Maintenance: Overview Screen ZADF_CONFIG</DESCRIPT>
       <TYPE>N</TYPE>
       <NEXTSCREEN>0001</NEXTSCREEN>
       <LINES>061</LINES>
-      <COLUMNS>083</COLUMNS>
+      <COLUMNS>255</COLUMNS>
      </HEADER>
      <CONTAINERS>
       <RPY_DYCATT>
@@ -318,7 +318,7 @@
        <ELEMENT_OF>SCREEN</ELEMENT_OF>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
-       <LENGTH>083</LENGTH>
+       <LENGTH>255</LENGTH>
        <HEIGHT>059</HEIGHT>
        <C_RESIZE_V>X</C_RESIZE_V>
        <C_RESIZE_H>X</C_RESIZE_H>
@@ -637,21 +637,20 @@
       </RPY_DYFATC>
      </FIELDS>
      <FLOW_LOGIC>
-      <RPY_DYFLOW/>
       <RPY_DYFLOW>
        <LINE>PROCESS BEFORE OUTPUT.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_initialisieren.</LINE>
+       <LINE>MODULE LISTE_INITIALISIEREN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>LOOP AT extract WITH CONTROL</LINE>
+       <LINE>LOOP AT EXTRACT WITH CONTROL</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>tctrl_zadf_config CURSOR nextline.</LINE>
+       <LINE>TCTRL_ZADF_CONFIG CURSOR NEXTLINE.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_show_liste.</LINE>
+       <LINE>MODULE LISTE_SHOW_LISTE.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>ENDLOOP.</LINE>
@@ -663,67 +662,55 @@
        <LINE>PROCESS AFTER INPUT.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_exit_command AT EXIT-COMMAND.</LINE>
+       <LINE>MODULE LISTE_EXIT_COMMAND AT EXIT-COMMAND.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_before_loop.</LINE>
+       <LINE>MODULE LISTE_BEFORE_LOOP.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>LOOP AT extract.</LINE>
+       <LINE>LOOP AT EXTRACT.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_init_workarea.</LINE>
+       <LINE>MODULE LISTE_INIT_WORKAREA.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-interface_id .</LINE>
+       <LINE>FIELD ZADF_CONFIG-INTERFACE_ID .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-interface_type .</LINE>
+       <LINE>FIELD ZADF_CONFIG-INTERFACE_TYPE .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-sas_key .</LINE>
+       <LINE>FIELD ZADF_CONFIG-SAS_KEY .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-uri .</LINE>
+       <LINE>FIELD ZADF_CONFIG-URI .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-service_type .</LINE>
+       <LINE>FIELD ZADF_CONFIG-SERVICE_TYPE .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-is_try .</LINE>
+       <LINE>FIELD ZADF_CONFIG-IS_TRY .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE set_update_flag ON CHAIN-REQUEST.</LINE>
+       <LINE>MODULE SET_UPDATE_FLAG ON CHAIN-REQUEST.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD vim_marked MODULE liste_mark_checkbox.</LINE>
+       <LINE>FIELD VIM_MARKED MODULE LISTE_MARK_CHECKBOX.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-interface_id .</LINE>
+       <LINE>FIELD ZADF_CONFIG-INTERFACE_ID .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_update_liste.</LINE>
-      </RPY_DYFLOW>
-      <RPY_DYFLOW>
-       <LINE>ENDCHAIN.</LINE>
-      </RPY_DYFLOW>
-      <RPY_DYFLOW>
-       <LINE>CHAIN.</LINE>
-      </RPY_DYFLOW>
-      <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-sas_key.</LINE>
-      </RPY_DYFLOW>
-      <RPY_DYFLOW>
-       <LINE>MODULE validate_saskey ON CHAIN-REQUEST.</LINE>
+       <LINE>MODULE LISTE_UPDATE_LISTE.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>ENDCHAIN.</LINE>
@@ -732,43 +719,38 @@
        <LINE>ENDLOOP.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_after_loop.</LINE>
+       <LINE>MODULE LISTE_AFTER_LOOP.</LINE>
       </RPY_DYFLOW>
      </FLOW_LOGIC>
      <SPACES>
       <item>0</item>
-      <item>0</item>
-      <item>2</item>
+      <item>1</item>
+      <item>1</item>
       <item>2</item>
       <item>3</item>
-      <item>4</item>
-      <item>2</item>
+      <item>1</item>
       <item>0</item>
       <item>0</item>
-      <item>2</item>
-      <item>2</item>
-      <item>2</item>
-      <item>4</item>
-      <item>4</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
+      <item>1</item>
+      <item>1</item>
+      <item>1</item>
+      <item>3</item>
+      <item>3</item>
       <item>4</item>
       <item>4</item>
       <item>4</item>
-      <item>6</item>
-      <item>6</item>
       <item>4</item>
       <item>4</item>
-      <item>6</item>
-      <item>6</item>
       <item>4</item>
-      <item>2</item>
-      <item>2</item>
+      <item>4</item>
+      <item>3</item>
+      <item>3</item>
+      <item>3</item>
+      <item>4</item>
+      <item>4</item>
+      <item>3</item>
+      <item>1</item>
+      <item>1</item>
      </SPACES>
     </item>
    </DYNPROS>

@@ -55,6 +55,13 @@
      <DOMVALUE_L>KV</DOMVALUE_L>
      <DDTEXT>Azure Keyvault</DDTEXT>
     </DD07V>
+    <DD07V>
+     <DOMNAME>ZAZURE_DEST</DOMNAME>
+     <VALPOS>0007</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>GRAPH</DOMVALUE_L>
+     <DDTEXT>Azure Graph</DDTEXT>
+    </DD07V>
    </DD07V_TAB>
   </asx:values>
  </asx:abap>
