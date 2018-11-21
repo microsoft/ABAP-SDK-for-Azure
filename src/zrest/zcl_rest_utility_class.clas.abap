@@ -770,7 +770,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
     IF wa_paylod-payload IS NOT INITIAL.
       rest_handler->zif_rest_framework~set_binary_body( wa_paylod-payload ).
     ENDIF.
-    rest_handler->set_callingmethod('RETRY').
+    rest_handler->set_callingmethod( 'RETRY' ).
 *   Append the headers to the message
     CLEAR lv_string.
     CALL FUNCTION 'ECATT_CONV_XSTRING_TO_STRING'
@@ -1018,7 +1018,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
         rest_handler->set_request_header( iv_name = wa_header-name  iv_value = wa_header-value  ).
       ENDIF.
     ENDLOOP.
-    rest_handler->set_callingprogram('ZCL_REST_UTILITY_CLASS').
+    rest_handler->set_callingprogram( 'ZCL_REST_UTILITY_CLASS' ).
     lv_string = wa_paylod-uri.
     rest_handler->set_uri( lv_string ).
 *   Retry
@@ -1527,7 +1527,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
         lo_send_request->add_recipient( i_recipient = lo_recipient ).
 
 *//     ---------- send document ---------------------------------------
-        lo_send_request->set_send_immediately('X').
+        lo_send_request->set_send_immediately( 'X' ).
         CALL METHOD lo_send_request->send(
           EXPORTING
             i_with_error_screen = 'X'
