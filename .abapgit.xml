@@ -17,6 +17,9 @@
     <item>/src/zrest/zrest_sched_batch_sel.prog.xml</item>
     <item>/src/zrest/zrest_sched_batch_top.prog.abap</item>
     <item>/src/zrest/zrest_sched_batch_top.prog.xml</item>
+    <item>/ABAP SDK Implementation Guide for Azure Active  Directory.pdf</item>
+    <item>/ABAP SDK Implementation Guide for Azure Event hubs.pdf</item>
+    <item>/ABAP SDK for Azure - Github.pdf</item>
    </IGNORE>
   </DATA>
  </asx:values>
