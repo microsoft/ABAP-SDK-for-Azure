@@ -5,6 +5,7 @@
    <PROGDIR>
     <NAME>SAPLZADF_FG</NAME>
     <STATE>A</STATE>
+    <SQLX>X</SQLX>
     <VARCL>X</VARCL>
     <DBAPL>S</DBAPL>
     <DBNA>D$</DBNA>

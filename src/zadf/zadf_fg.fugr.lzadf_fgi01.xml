@@ -5,6 +5,7 @@
    <PROGDIR>
     <NAME>LZADF_FGI01</NAME>
     <STATE>A</STATE>
+    <SQLX>X</SQLX>
     <VARCL>X</VARCL>
     <SUBC>I</SUBC>
     <APPL>S</APPL>

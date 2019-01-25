@@ -5,10 +5,8 @@
    <PROGDIR>
     <NAME>LZADF_FGT00</NAME>
     <STATE>A</STATE>
-    <VARCL>X</VARCL>
     <SUBC>I</SUBC>
     <RLOAD>E</RLOAD>
-    <UCCHECK>X</UCCHECK>
    </PROGDIR>
   </asx:values>
  </asx:abap>
