@@ -7,7 +7,6 @@
     <STATE>A</STATE>
     <VARCL>X</VARCL>
     <SUBC>1</SUBC>
-    <SECU>ZAPP_SUP</SECU>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
     <UCCHECK>X</UCCHECK>
@@ -37,8 +36,6 @@
        <COLUMN>001</COLUMN>
        <LENGTH>120</LENGTH>
        <HEIGHT>024</HEIGHT>
-       <C_LINE_MIN>001</C_LINE_MIN>
-       <C_COLN_MIN>001</C_COLN_MIN>
       </RPY_DYCATT>
      </CONTAINERS>
      <FIELDS>

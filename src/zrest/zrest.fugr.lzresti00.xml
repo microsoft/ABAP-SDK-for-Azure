@@ -5,9 +5,10 @@
    <PROGDIR>
     <NAME>LZRESTI00</NAME>
     <STATE>A</STATE>
-    <SQLX>X</SQLX>
+    <VARCL>X</VARCL>
     <SUBC>I</SUBC>
     <RLOAD>E</RLOAD>
+    <UCCHECK>X</UCCHECK>
    </PROGDIR>
   </asx:values>
  </asx:abap>
