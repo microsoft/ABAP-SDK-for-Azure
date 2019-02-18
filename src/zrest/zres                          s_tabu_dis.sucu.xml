@@ -8,14 +8,6 @@
      <OBJECT>S_TABU_DIS</OBJECT>
     </TBRG_AUTH>
    </TBRG_AUTH>
-   <TBRG_AUTHT>
-    <TBRG_AUTHT>
-     <SPRAS>E</SPRAS>
-     <BRGRU>ZRES</BRGRU>
-     <OBJECT>S_TABU_DIS</OBJECT>
-     <BEZEI>Auth Group for Rest framework tables</BEZEI>
-    </TBRG_AUTHT>
-   </TBRG_AUTHT>
   </asx:values>
  </asx:abap>
 </abapGit>

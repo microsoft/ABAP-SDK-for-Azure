@@ -1,20 +1,30 @@
 INTERFACE zif_adf_service_graph
   PUBLIC .
   TYPES: BEGIN OF recipient,
-           emailaddress TYPE string,
+           BEGIN OF emailaddress,
+             name    TYPE string,
+             address TYPE string,
+           END OF emailaddress,
          END OF recipient,
 
+
+         BEGIN OF datetime,      " Date/time in ISO format
+           datetime TYPE string,
+           timezone TYPE string,
+         END OF datetime,
+
+
          BEGIN OF calendar_event,
-           subject   TYPE string,
-           organizer TYPE recipient,
-           BEGIN OF start,
-             datetime TYPE timestamp,
-             timezone TYPE string,
-           END OF start,
-           BEGIN OF end,
-             datetime TYPE timestamp,
-             timezone TYPE string,
-           END OF end,
+           id          TYPE string,
+           subject     TYPE string,
+           organizer   TYPE recipient,
+           bodypreview TYPE string,
+           start       TYPE datetime,
+           end         TYPE datetime,
+           BEGIN OF body,
+             contenttype TYPE string,
+             content     TYPE string,
+           END OF body,
          END OF calendar_event,
 
          BEGIN OF user,
@@ -49,6 +59,7 @@ INTERFACE zif_adf_service_graph
 
   METHODS get_events
     IMPORTING
+      iv_userprincipaltoken     TYPE string
       VALUE(iv_aad_token)       TYPE string
     EXPORTING
       VALUE(ev_http_status)     TYPE i
@@ -59,7 +70,6 @@ INTERFACE zif_adf_service_graph
 
   METHODS get_users
     IMPORTING
-      userprincipalname     TYPE string OPTIONAL
       VALUE(iv_aad_token)   TYPE string
     EXPORTING
       VALUE(ev_http_status) TYPE i

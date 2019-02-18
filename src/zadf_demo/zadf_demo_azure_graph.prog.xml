@@ -18,7 +18,79 @@
      <ENTRY>Demo Program for Graph Support</ENTRY>
      <LENGTH>30</LENGTH>
     </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_CREATE</KEY>
+     <ENTRY>Create Calendar Event</ENTRY>
+     <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_C_ID</KEY>
+     <ENTRY>Azure Client ID</ENTRY>
+     <LENGTH>23</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_READC</KEY>
+     <ENTRY>Read Calendar Events</ENTRY>
+     <LENGTH>28</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_READU</KEY>
+     <ENTRY>Read Users</ENTRY>
+     <LENGTH>18</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_TOKEN</KEY>
+     <ENTRY>Request Token</ENTRY>
+     <LENGTH>21</LENGTH>
+    </item>
    </TPOOL>
+   <I18N_TPOOL>
+    <item>
+     <LANGUAGE>V</LANGUAGE>
+     <TEXTPOOL>
+      <item>
+       <ID>R</ID>
+       <ENTRY>Demoprogram för Azure Graph</ENTRY>
+       <LENGTH>70</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_CREATE</KEY>
+       <ENTRY>Skapa kalenderbokning</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_C_ID</KEY>
+       <ENTRY>Azure klient-id</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_READC</KEY>
+       <ENTRY>Lista kalenderbokningar</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_READU</KEY>
+       <ENTRY>Lista användare</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+      <item>
+       <ID>S</ID>
+       <KEY>P_TOKEN</KEY>
+       <ENTRY>Efterfråga token</ENTRY>
+       <LENGTH>38</LENGTH>
+      </item>
+     </TEXTPOOL>
+    </item>
+   </I18N_TPOOL>
   </asx:values>
  </asx:abap>
 </abapGit>
