@@ -1,8 +1,8 @@
 # ABAP SDK for Azure
 
 ABAP SDK for Azure consists of ABAP objects/classes which simplify SAP and Azure Integration. Now using ABAP code, you can directly send SAP business process data to various Azure services without having to depend on middleware products and solutions.
-For more information on ABAP SDK for Azure and it’s installation process,
-Please check document [ABAP SDK for Azure – Github](https://github.com/Microsoft/ABAP-SDK-for-Azure/blob/master/ABAP%20SDK%20for%20Azure%20-%20Github.pdf)
+For more information on ABAP SDK for Azure and itâ€™s installation process,
+Please check document [ABAP SDK for Azure â€“ Github](https://github.com/Microsoft/ABAP-SDK-for-Azure/blob/master/ABAP%20SDK%20for%20Azure%20-%20Github.pdf)
 
 
 As of now, ABAP SDK supports direct integration with following Azure services,
@@ -12,6 +12,7 @@ As of now, ABAP SDK supports direct integration with following Azure services,
 * Active Directory
 * Blob
 * SQL DB
+* Graph API V1.0
 
 Note: We are continuously enhancing these libraries and you may find few class methods unimplemented. These will be released in next versions.
 
