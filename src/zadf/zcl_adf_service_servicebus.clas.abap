@@ -18,18 +18,18 @@ CLASS ZCL_ADF_SERVICE_SERVICEBUS IMPLEMENTATION.
 
 
 METHOD get_sas_token.
-  DATA : lv_string_to_sign       TYPE string,
-         encoded_base_address    TYPE string,
-         body_xstring            TYPE xstring,
-         sign                    TYPE string,
-         final_token             TYPE string,
-         decoded                 TYPE xstring,
-         conv                    TYPE REF TO cl_abap_conv_out_ce,
-         conv_in                 TYPE REF TO cl_abap_conv_in_ce,
-         format                  TYPE i,
-         new_expiry              TYPE string,
-         lv_sas_key              TYPE string,
-         lv_expiry_time          TYPE string.
+  DATA : lv_string_to_sign    TYPE string,
+         encoded_base_address TYPE string,
+         body_xstring         TYPE xstring,
+         sign                 TYPE string,
+         final_token          TYPE string,
+         decoded              TYPE xstring,
+         conv                 TYPE REF TO cl_abap_conv_out_ce,
+         conv_in              TYPE REF TO cl_abap_conv_in_ce,
+         format               TYPE i,
+         new_expiry           TYPE string,
+         lv_sas_key           TYPE string,
+         lv_expiry_time       TYPE string.
   get_epoch_time( RECEIVING rv_expiry_time =  lv_expiry_time ).
   format = 18.
   encoded_base_address = escape( val = iv_baseaddress format = format  ).
@@ -56,9 +56,13 @@ METHOD get_sas_token.
   new_expiry = lv_expiry_time.
   CONDENSE new_expiry.
   IF NOT sign IS INITIAL.
-    sign = escape( val = sign format = format  ).
-    CONCATENATE 'SharedAccessSignature sig=' sign '&se=' new_expiry '&skn=' 'RootManageSharedAccessKey' '&sr=' encoded_base_address INTO final_token.
-    rv_sas_token = final_token.
+    DATA wa_policy TYPE zadf_ehub_policy.
+    SELECT SINGLE * FROM zadf_ehub_policy INTO wa_policy WHERE interface_id EQ  gv_interface_id.
+    IF sy-subrc EQ 0.
+      sign = escape( val = sign format = format  ).
+      CONCATENATE 'SharedAccessSignature sig=' sign '&se=' new_expiry '&skn=' wa_policy '&sr=' encoded_base_address INTO final_token.
+      rv_sas_token = final_token.
+    ENDIF.
   ELSE.
     RAISE EXCEPTION TYPE zcx_adf_service
       EXPORTING
