@@ -5,6 +5,7 @@
    <PROGDIR>
     <NAME>LZSSF_FGTOP</NAME>
     <STATE>A</STATE>
+    <VARCL>X</VARCL>
     <DBAPL>S</DBAPL>
     <DBNA>D$</DBNA>
     <SUBC>I</SUBC>
