@@ -1,0 +1,17 @@
+{
+  "license": "MIT",
+  "scripts": {
+    "pretest": "abaplint --version && abaplint \"src/**/*.*\"",
+    "test": "npm run eslint",
+    "lint": "abaplint \"src/**/*.*\"",
+    "eslint": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Microsoft/ABAP-SDK-for-Azure.git"
+  },
+  "devDependencies": {
+    "abaplint": "^1.5.0",
+    "eslint": "^5.11.1"
+  }
+}
