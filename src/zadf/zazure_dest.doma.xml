@@ -60,11 +60,8 @@
      <VALPOS>0007</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>GRAPH</DOMVALUE_L>
-<<<<<<< HEAD
      <DDTEXT>Azure Graph</DDTEXT>
-=======
      <DDTEXT>Graph 1.0</DDTEXT>
->>>>>>> pr/35
     </DD07V>
    </DD07V_TAB>
   </asx:values>
