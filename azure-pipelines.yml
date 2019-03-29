@@ -1,0 +1,18 @@
+pool:
+  vmImage: 'windows-2019'
+
+steps:
+- script: |
+    npm install abaplint -g
+  displayName: 'abaplint Install'
+- script: |
+    abaplint --version
+  displayName: 'abaplint Version'
+- script: |
+    abaplint -f standard --outformat junit --outfile report.xml "src/**/*.*" || true
+  displayName: 'abaplint Run'
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'report.xml' 
+    failTaskOnFailedTests: true

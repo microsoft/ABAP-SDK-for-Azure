@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/ms/ABAP-SDK-for-Azure/_apis/build/status/Microsoft.ABAP-SDK-for-Azure?branchName=master)](https://dev.azure.com/ms/ABAP-SDK-for-Azure/_build/latest?definitionId=97&branchName=master)
+
 # ABAP SDK for Azure
 
 ABAP SDK for Azure consists of ABAP objects/classes which simplify SAP and Azure Integration. Now using ABAP code, you can directly send SAP business process data to various Azure services without having to depend on middleware products and solutions.

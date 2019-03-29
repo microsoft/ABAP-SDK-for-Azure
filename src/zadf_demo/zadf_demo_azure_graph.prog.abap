@@ -21,12 +21,27 @@ DATA: filter          TYPE zbusinessid,
       cx_graph        TYPE REF TO zcx_adf_service_graph,
       oref_aad_token  TYPE REF TO zcl_adf_service_aad,
       oref_graph      TYPE REF TO zcl_adf_service_graph,
+<<<<<<< HEAD
       oref_graph_post TYPE REF TO zcl_adf_service_graph.
 
 PARAMETERS:
   p_token  RADIOBUTTON GROUP rg1,
   p_readal RADIOBUTTON GROUP rg1 DEFAULT 'X',
   p_create RADIOBUTTON GROUP rg1.
+=======
+      oref_graph_post TYPE REF TO zcl_adf_service_graph,
+      lt_smtp         TYPE  bapiadsmtp_t,
+      lt_return       TYPE bapiret2_t,
+      lv_http_status  TYPE i,
+      ls_end_ts       TYPE timestamp,
+      ls_address      TYPE bapiaddr3.
+
+PARAMETERS:
+  p_token  RADIOBUTTON GROUP rg1,
+  p_readc  RADIOBUTTON GROUP rg1 DEFAULT 'X',
+  p_readu  RADIOBUTTON GROUP rg1,
+  p_c_id   TYPE string.
+>>>>>>> pr/35
 
 TRY.
     DATA(oref) = zcl_adf_service_factory=>create( iv_interface_id        = gc_token_interface
@@ -34,6 +49,7 @@ TRY.
 
     oref_aad_token ?= oref.
 
+<<<<<<< HEAD
     DATA: lv_description TYPE rfcdoc_d.
 
     " To avoid storing the client id in this report
@@ -51,6 +67,12 @@ TRY.
       EXPORTING
         iv_client_id                = lv_client_id
         iv_resource                 = lv_resource
+=======
+    oref_aad_token->get_aad_token(
+      EXPORTING
+        iv_client_id                = p_c_id " Input client id as per implementation guide for AAD
+        iv_resource                 = 'https://graph.microsoft.com' "lv_resource
+>>>>>>> pr/35
       IMPORTING
         ev_aad_token                = DATA(lv_aad_token)
         ev_response                 = DATA(lv_response)
@@ -59,6 +81,7 @@ TRY.
     CASE abap_true.
       WHEN p_token.
         WRITE: / 'Token :', lv_aad_token.
+<<<<<<< HEAD
       WHEN p_create.
 
         oref = zcl_adf_service_factory=>create( iv_interface_id        = gc_graph_post
@@ -126,10 +149,48 @@ TRY.
 
       WHEN p_readal.
         oref = zcl_adf_service_factory=>create( iv_interface_id        = gc_graph_get
+=======
+
+      WHEN p_readu.
+        oref = zcl_adf_service_factory=>create( iv_interface_id        = gc_graph_get
                                                 iv_business_identifier = filter ).
 
         oref_graph ?= oref.
 
+
+        DATA(lt_users) = oref_graph->zif_adf_service_graph~get_users(
+          EXPORTING
+            iv_aad_token    = lv_aad_token
+          IMPORTING
+            ev_http_status  = lv_http_status
+        ).
+
+        DATA(lv_json_result) = /ui2/cl_json=>serialize( data = lt_users pretty_name = abap_true ).
+
+        WRITE: / 'HTTP Status: ', lv_http_status.
+        cl_demo_output=>display_json( lv_json_result ).
+      WHEN p_readc.
+
+           " Get email of current user
+        CALL FUNCTION 'BAPI_USER_GET_DETAIL'
+          EXPORTING
+            username = sy-uname                " User Name
+          IMPORTING
+            address  = ls_address
+          TABLES
+            return   = lt_return
+            addsmtp  = lt_smtp.                " E-Mail Addresses BAPI Structure
+
+        " In demo program assume we only have one and only one email address
+        data(ls_smtp) = lt_smtp[ 1 ].
+
+      oref = zcl_adf_service_factory=>create( iv_interface_id        = gc_graph_get
+>>>>>>> pr/35
+                                                iv_business_identifier = filter ).
+
+        oref_graph ?= oref.
+
+<<<<<<< HEAD
         oref_graph->get_users(
           EXPORTING
             iv_aad_token    = lv_aad_token
@@ -140,6 +201,21 @@ TRY.
 
         WRITE: / 'HTTP Status: ', lv_http_status.
         cl_demo_output=>display_json( lv_user_response ).
+=======
+
+        DATA(lt_events) = oref_graph->zif_adf_service_graph~get_events(
+          EXPORTING
+          iv_userprincipaltoken = conv #( ls_smtp-e_mail )
+            iv_aad_token    = lv_aad_token
+          IMPORTING
+            ev_http_status  = lv_http_status
+        ).
+
+        lv_json_result = /ui2/cl_json=>serialize( data = lt_events pretty_name = abap_true ).
+
+        WRITE: / 'HTTP Status: ', lv_http_status.
+        cl_demo_output=>display_json( lv_json_result ).
+>>>>>>> pr/35
     ENDCASE.
   CATCH zcx_adf_service_graph INTO cx_graph.
     DATA(lv_string) = cx_graph->get_text( ).

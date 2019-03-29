@@ -7,7 +7,7 @@
 *&---------------------------------------------------------------------*
 REPORT zadf_demo_azure_eventhub.
 
-CONSTANTS: gc_interface TYPE zinterface_id VALUE 'DEMO_EHUB'.
+CONSTANTS: gc_interface TYPE zinterface_id VALUE 'HACK_CL'.
 
 TYPES: BEGIN OF lty_data,
          carrid    TYPE     s_carr_id,
@@ -16,21 +16,21 @@ TYPES: BEGIN OF lty_data,
          planetype TYPE    s_planetye,
        END OF lty_data.
 
-DATA:       it_headers     TYPE tihttpnvp,
-            wa_headers     TYPE LINE OF tihttpnvp,
-            lv_string      TYPE string,
-            lv_response    TYPE string,
-            cx_interface   TYPE REF TO zcx_interace_config_missing,
-            cx_http        TYPE REF TO zcx_http_client_failed,
-            cx_adf_service TYPE REF TO zcx_adf_service,
-            oref_eventhub  TYPE REF TO zcl_adf_service_eventhub,
-            oref           TYPE REF TO zcl_adf_service,
-            filter         TYPE zbusinessid,
-            lv_http_status TYPE i,
-            lo_json        TYPE REF TO cl_trex_json_serializer,
-            lv1_string     TYPE string,
-            lv_xstring     TYPE xstring,
-            it_data        TYPE STANDARD TABLE OF lty_data.
+DATA: it_headers     TYPE tihttpnvp,
+      wa_headers     TYPE LINE OF tihttpnvp,
+      lv_string      TYPE string,
+      lv_response    TYPE string,
+      cx_interface   TYPE REF TO zcx_interace_config_missing,
+      cx_http        TYPE REF TO zcx_http_client_failed,
+      cx_adf_service TYPE REF TO zcx_adf_service,
+      oref_eventhub  TYPE REF TO zcl_adf_service_eventhub,
+      oref           TYPE REF TO zcl_adf_service,
+      filter         TYPE zbusinessid,
+      lv_http_status TYPE i,
+      lo_json        TYPE REF TO cl_trex_json_serializer,
+      lv1_string     TYPE string,
+      lv_xstring     TYPE xstring,
+      it_data        TYPE STANDARD TABLE OF lty_data.
 
 *Sample data population for sending it to Azure eventhub
 SELECT  carrid connid fldate planetype

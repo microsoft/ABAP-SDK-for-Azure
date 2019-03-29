@@ -1,228 +1,202 @@
-class ZCL_REST_FRAMEWORK definition
-  public
-  final
-  create public .
+CLASS zcl_rest_framework DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  interfaces ZIF_REST_FRAMEWORK .
-  interfaces IF_SERIALIZABLE_OBJECT .
+    INTERFACES zif_rest_framework .
+    INTERFACES if_serializable_object .
 
-  aliases EXECUTE
-    for ZIF_REST_FRAMEWORK~EXECUTE .
-  aliases SET_BINARY_BODY
-    for ZIF_REST_FRAMEWORK~SET_BINARY_BODY .
-  aliases SET_REQUEST_HEADER
-    for ZIF_REST_FRAMEWORK~SET_REQUEST_HEADER .
-  aliases SET_REQUEST_HEADERS
-    for ZIF_REST_FRAMEWORK~SET_REQUEST_HEADERS .
-  aliases SET_STRING_BODY
-    for ZIF_REST_FRAMEWORK~SET_STRING_BODY .
-  aliases SET_URI
-    for ZIF_REST_FRAMEWORK~SET_URI .
+    ALIASES execute
+      FOR zif_rest_framework~execute .
+    ALIASES set_binary_body
+      FOR zif_rest_framework~set_binary_body .
+    ALIASES set_request_header
+      FOR zif_rest_framework~set_request_header .
+    ALIASES set_request_headers
+      FOR zif_rest_framework~set_request_headers .
+    ALIASES set_string_body
+      FOR zif_rest_framework~set_string_body .
+    ALIASES set_uri
+      FOR zif_rest_framework~set_uri .
 
-  methods CONSTRUCTOR
-    importing
-      !INTERFACE_NAME type ZINTERFACE_ID
-      !BUSINESS_IDENTIFIER type ZBUSINESSID optional
-      !METHOD type CHAR20
-      !LOGDATA_IN_UPDATETASK type CHAR1 optional
-    raising
-      ZCX_INTERACE_CONFIG_MISSING
-      ZCX_HTTP_CLIENT_FAILED .
-  methods GET_CALLINGPROGRAM
-    returning
-      value(ZECLASSNAME) type ZCLASSNAME .
-  methods GET_CALLINGMETHOD
-    returning
-      value(ZEMETHOD) type ZCLASSNAME .
-  methods GET_STARTTIME
-    returning
-      value(RV_STARTTIME) type SY-UZEIT .
-  methods GET_STARTDATE
-    returning
-      value(RV_STARTDATE) type SY-DATUM .
-  methods GET_SUBMITTIME
-    returning
-      value(RV_SUBMITTIME) type SY-UZEIT .
-  methods GET_SUBMITDATE
-    returning
-      value(RV_SUBMITDATE) type SY-DATUM .
-  methods GET_ENDTIME
-    returning
-      value(RV_ENDTIME) type SY-UZEIT .
-  methods GET_ENDATE
-    returning
-      value(RV_ENDDATE) type DATUM .
-  methods GET_RESPONSE_HEADER
-    importing
-      !IV_NAME type STRING
-    returning
-      value(RV_VALUE) type STRING .
-  methods GET_RESPONSE_HEADERS
-    returning
-      value(RT_HEADER_FIELDS) type TIHTTPNVP .
-  methods SET_GUID
-    returning
-      value(GUID) type GUID_16 .
-  methods GET_USER
-    returning
-      value(RV_USER) type SY-UNAME .
-  methods GET_STATUS
-    returning
-      value(RV_STATUS) type I .
-  methods GET_HTTP_CLIENT
-    returning
-      value(RESULT) type ref to IF_HTTP_CLIENT .
-  methods GET_REST_CLIENT
-    returning
-      value(RESULT) type ref to CL_REST_HTTP_CLIENT .
-  methods IS_RETRY
-    returning
-      value(RESULT) type ABAP_BOOL .
-  methods GET_REQUEST
-    returning
-      value(RESULT) type ref to IF_REST_ENTITY .
-  methods GET_GUID
-    returning
-      value(RESULT) type GUID_16 .
-  methods GET_INTERFACE
-    returning
-      value(INTERFACE_NAME) type ZINTERFACE_ID .
-  methods GET_BUSINESSID
-    returning
-      value(RESULT) type ZBUSINESSID .
-  methods SET_CALLINGPROGRAM
-    importing
-      !ZICLASSNAME type ZCLASSNAME .
-  methods SET_CALLINGMETHOD
-    importing
-      !ZIMETHODNAME type ZMETHODNAME .
-  methods GET_URI
-    returning
-      value(RESULT) type ZURI .
-  methods GET_RETRYNUM
-    returning
-      value(RESULT) type ZQ_COUNTE .
-  methods GET_METHOD
-    returning
-      value(RESULT) type CHAR20 .
-  methods GET_DURATION
-    returning
-      value(R_SECS) type TZNTSTMPL .
-  methods GET_PROGRAM_HEADERS
-    returning
-      value(RESULT) type TIHTTPNVP .
-  methods CLOSE .
-protected section.
-private section.
+    METHODS constructor
+      IMPORTING
+        !interface_name        TYPE zinterface_id
+        !business_identifier   TYPE zbusinessid OPTIONAL
+        !method                TYPE zinterface_method
+        !logdata_in_updatetask TYPE char1 OPTIONAL
+      RAISING
+        zcx_interace_config_missing
+        zcx_http_client_failed .
+    METHODS get_callingprogram
+      RETURNING
+        VALUE(zeclassname) TYPE zclassname .
+    METHODS get_callingmethod
+      RETURNING
+        VALUE(zemethod) TYPE zclassname .
+    METHODS get_starttime
+      RETURNING
+        VALUE(rv_starttime) TYPE sy-uzeit .
+    METHODS get_startdate
+      RETURNING
+        VALUE(rv_startdate) TYPE sy-datum .
+    METHODS get_submittime
+      RETURNING
+        VALUE(rv_submittime) TYPE sy-uzeit .
+    METHODS get_submitdate
+      RETURNING
+        VALUE(rv_submitdate) TYPE sy-datum .
+    METHODS get_endtime
+      RETURNING
+        VALUE(rv_endtime) TYPE sy-uzeit .
+    METHODS get_endate
+      RETURNING
+        VALUE(rv_enddate) TYPE datum .
+    METHODS get_response_header
+      IMPORTING
+        !iv_name        TYPE string
+      RETURNING
+        VALUE(rv_value) TYPE string .
+    METHODS get_response_headers
+      RETURNING
+        VALUE(rt_header_fields) TYPE tihttpnvp .
+    METHODS set_guid
+      RETURNING
+        VALUE(guid) TYPE guid_16 .
+    METHODS get_user
+      RETURNING
+        VALUE(rv_user) TYPE sy-uname .
+    METHODS get_status
+      RETURNING
+        VALUE(rv_status) TYPE i .
+    METHODS get_http_client
+      RETURNING
+        VALUE(result) TYPE REF TO if_http_client .
+    METHODS get_rest_client
+      RETURNING
+        VALUE(result) TYPE REF TO cl_rest_http_client .
+    METHODS is_retry
+      RETURNING
+        VALUE(result) TYPE abap_bool .
+    METHODS get_request
+      RETURNING
+        VALUE(result) TYPE REF TO if_rest_entity .
+    METHODS get_guid
+      RETURNING
+        VALUE(result) TYPE guid_16 .
+    METHODS get_interface
+      RETURNING
+        VALUE(interface_name) TYPE zinterface_id .
+    METHODS get_businessid
+      RETURNING
+        VALUE(result) TYPE zbusinessid .
+    METHODS set_callingprogram
+      IMPORTING
+        !ziclassname TYPE zclassname .
+    METHODS set_callingmethod
+      IMPORTING
+        !zimethodname TYPE zmethodname .
+    METHODS get_uri
+      RETURNING
+        VALUE(result) TYPE zuri .
+    METHODS get_retrynum
+      RETURNING
+        VALUE(result) TYPE zq_counte .
+    METHODS get_method
+      RETURNING
+        VALUE(result) TYPE char20 .
+    METHODS get_duration
+      RETURNING
+        VALUE(r_secs) TYPE tzntstmpl .
+    METHODS get_program_headers
+      RETURNING
+        VALUE(result) TYPE tihttpnvp .
+    METHODS close .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
 *"* private components of class ZCL_REST_FRAMEWORK
 *"* do not include other source files here!!!
-  types WA type ZREST_MON_TRACE .
-  types WA_EKKO type ZREST_MON_TRACE .
-  types ZREST_MON_TRACE type ZREST_MON_TRACE .
+    DATA calling_program_name TYPE zclassname .
+    DATA calling_method_name TYPE zclassname .
+    DATA rest_client TYPE REF TO cl_rest_http_client .
+    DATA http_client TYPE REF TO if_http_client .
+    DATA submit_date TYPE sy-datum .
+    DATA submit_time TYPE sy-uzeit .
+    DATA start_time TYPE sy-uzeit .
+    DATA start_date TYPE sy-datum .
+    DATA end_time TYPE sy-uzeit .
+    DATA end_date TYPE sy-datum .
+    DATA message_id TYPE guid_16 .
+    DATA retry TYPE abap_bool .
+    DATA user TYPE uname .
+    DATA gwa_log TYPE zrest_monitor .
+    DATA request TYPE REF TO if_rest_entity .
+    DATA response TYPE REF TO if_rest_entity .
+    CLASS-DATA interface TYPE zinterface_id .
+    CLASS-DATA businessid TYPE zbusinessid .
+    CLASS-DATA uri_final TYPE zuri .
+    CLASS-DATA retry_cnt TYPE zq_counte .
+    CLASS-DATA method_call TYPE zinterface_method .
+    CLASS-DATA pre_timestamp TYPE timestampl .
+    CLASS-DATA pro_timestamp TYPE timestampl .
+    CLASS-DATA duration TYPE tzntstmpl .
+    CLASS-DATA log_update_task TYPE char1 .
+    CLASS-DATA program_headers TYPE tihttpnvp .
 
-  constants CREATE_BY_DESTINATION type CHAR1 value 1 ##NO_TEXT.
-  class-data GWA_HEADER type ZREST_MON_HEADER .
-  class-data IT_LOG_HEADERS type ZRT_HEADER_LOG .
-  data ERROR type C .
-  class-data RESPONSE_HEADER_STRING type STRING .
-  class-data REQUEST_HEADER_STRING type STRING .
-  data CALLING_PROGRAM_NAME type ZCLASSNAME .
-  data CALLING_METHOD_NAME type ZCLASSNAME .
-  data REST_CLIENT type ref to CL_REST_HTTP_CLIENT .
-  data HTTP_CLIENT type ref to IF_HTTP_CLIENT .
-  data SUBMIT_DATE type SY-DATUM .
-  data SUBMIT_TIME type SY-UZEIT .
-  data START_TIME type SY-UZEIT .
-  data START_DATE type SY-DATUM .
-  data END_TIME type SY-UZEIT .
-  data END_DATE type SY-DATUM .
-  data MESSAGE_ID type GUID_16 .
-  data INDENTIFIER type STRING .
-  data RETRY type ABAP_BOOL .
-  data USER type UNAME .
-  data GT_LOG type ZRT_MONITOR .
-  data GWA_LOG type ZREST_MONITOR .
-  constants HEAD type CHAR8 value 'HEAD' ##NO_TEXT.
-  constants GET type CHAR8 value 'GET' ##NO_TEXT.
-  constants DELETE type CHAR8 value 'DELETE' ##NO_TEXT.
-  constants OPTIONS type CHAR8 value 'OPTIONS' ##NO_TEXT.
-  constants POST type CHAR8 value 'POST' ##NO_TEXT.
-  constants PUT type CHAR8 value 'PUT' ##NO_TEXT.
-  data REQUEST type ref to IF_REST_ENTITY .
-  data RESPONSE type ref to IF_REST_ENTITY .
-  data HTTP_STATUS type I .
-  class-data CONTENT_TYPE type ZCHAR75 .
-  class-data INTERFACE type ZINTERFACE_ID .
-  class-data BUSINESSID type ZBUSINESSID .
-  class-data URI_FINAL type ZURI .
-  class-data RETRY_CNT type ZQ_COUNTE .
-  class-data METHOD_CALL type CHAR20 .
-  class-data PRE_TIMESTAMP type TIMESTAMPL .
-  class-data PRO_TIMESTAMP type TIMESTAMPL .
-  class-data DURATION type TZNTSTMPL .
-  class-data LOG_UPDATE_TASK type CHAR1 .
-  class-data PROGRAM_HEADERS type TIHTTPNVP .
-
-  methods SET_INTERFACE_ID
-    importing
-      !INTERFACE type ZINTERFACE_ID .
-  methods LOG_END_PARAMS .
-  methods LOG_START_PARAMS .
-  methods LOG_SUBMIT_PARAMS .
-  methods SET_USER .
-  methods SET_ENDDATE
-    importing
-      !IV_ENDATE type DATUM .
-  methods SET_ENDTIME
-    importing
-      !IV_ENDTIME type SY-UZEIT .
-  methods SET_STARTDATE .
-  methods SET_SUBMITDATE .
-  methods SET_SUBMITTIME .
-  methods SET_STARTTIME .
-  methods CREATEHTTPCLIENT
-    importing
-      !INTERFACE type ZINTERFACE_ID
-      !METHOD type CHAR20
-    returning
-      value(HTTP_CLIENT) type ref to IF_HTTP_CLIENT
-    raising
-      ZCX_INTERACE_CONFIG_MISSING
-      ZCX_HTTP_CLIENT_FAILED .
-  methods SAVE_LOG .
-  methods CREATERESTCLIENT
-    importing
-      !IV_HTTP_CLIENT type ref to IF_HTTP_CLIENT
-    returning
-      value(RV_REST_CLIENT) type ref to CL_REST_HTTP_CLIENT .
-  methods CREATE_REQUEST_ENTITY
-    importing
-      !IV_MULTIPART type ABAP_BOOL default ABAP_FALSE
-    returning
-      value(RO_ENTITY) type ref to IF_REST_ENTITY .
-  methods GET_RESPONSE_ENTITY
-    returning
-      value(RO_RESPONSE_ENTITY) type ref to IF_REST_ENTITY .
+    METHODS set_interface_id
+      IMPORTING
+        !interface TYPE zinterface_id .
+    METHODS log_end_params .
+    METHODS log_start_params .
+    METHODS log_submit_params .
+    METHODS set_user .
+    METHODS set_enddate
+      IMPORTING
+        !iv_endate TYPE datum .
+    METHODS set_endtime
+      IMPORTING
+        !iv_endtime TYPE sy-uzeit .
+    METHODS set_startdate .
+    METHODS set_submitdate .
+    METHODS set_submittime .
+    METHODS set_starttime .
+    METHODS createhttpclient
+      IMPORTING
+        !interface         TYPE zinterface_id
+        !method            TYPE zinterface_method
+      RETURNING
+        VALUE(http_client) TYPE REF TO if_http_client
+      RAISING
+        zcx_interace_config_missing
+        zcx_http_client_failed .
+    METHODS save_log .
+    METHODS createrestclient
+      IMPORTING
+        !iv_http_client       TYPE REF TO if_http_client
+      RETURNING
+        VALUE(rv_rest_client) TYPE REF TO cl_rest_http_client .
+    METHODS create_request_entity
+      IMPORTING
+        !iv_multipart    TYPE abap_bool DEFAULT abap_false
+      RETURNING
+        VALUE(ro_entity) TYPE REF TO if_rest_entity .
+    METHODS get_response_entity
+      RETURNING
+        VALUE(ro_response_entity) TYPE REF TO if_rest_entity .
 ENDCLASS.
 
 
 
-CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
+CLASS zcl_rest_framework IMPLEMENTATION.
 
 
   METHOD  close.
-*----------------------------------------------------------------------*
-*                       Modification History                           *
-*----------------------------------------------------------------------*
-* Date      | USER ID  |  VSTF  | Transport  | Remarks                 *
-*-----------|----------|--------|------------|-------------------------*
-*05/26/2016| KRDASH    |2165812 | MS2K955227 | Closing Http client     *
-*                                              connection              *
-*----------------------------------------------------------------------*
-    DATA :rest_exception TYPE REF TO cx_rest_client_exception.
+
+    DATA: rest_exception TYPE REF TO cx_rest_client_exception.
+
     TRY.
         rest_client->if_rest_client~close( ).
       CATCH cx_rest_client_exception INTO rest_exception.
@@ -236,10 +210,12 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
 **   and retrieving the information related to REST calls
 *    message_id = me->set_guid( ).
 *   Set the calling interface.This needs to be provided by while creating instance
-    DATA: cx_interface_missing TYPE REF TO   zcx_interace_config_missing,
+    DATA: cx_interface_missing  TYPE REF TO   zcx_interace_config_missing,
           cx_http_client_failed TYPE REF TO zcx_http_client_failed.
+
     CREATE OBJECT: cx_interface_missing,
                    cx_http_client_failed.
+
     interface = interface_name.
     businessid = business_identifier.
     method_call = method.
@@ -247,20 +223,13 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
 *   Create the HTTP client and raise exception if interface is not found in the config
 *   Propagate the error to the calling program
     TRY .
-**http_client = createhttpclient( EXPORTING interface = interface_name  method = method ).  v-jobpau
 
-*TRY.
-        CALL METHOD me->createhttpclient
-          EXPORTING
+        http_client =  createhttpclient(
             interface   = interface_name
-            method      = method
-          RECEIVING
-            http_client = http_client.
+            method      = method ).
 
-*      CATCH zcx_interace_config_missing INTO DATA(cx_interface_missing).  v-jobpau
       CATCH zcx_interace_config_missing INTO cx_interface_missing.
         RAISE EXCEPTION cx_interface_missing.
-*      CATCH zcx_http_client_failed INTO DATA(cx_http_client_failed).   v-jobpau
       CATCH zcx_http_client_failed INTO cx_http_client_failed.
         RAISE EXCEPTION cx_http_client_failed.
     ENDTRY.
@@ -277,14 +246,11 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
 *   Check against the configuration table ZREST_CONFIG and see if there exists entry. if not
 *   Raise an exception if either destination is missing or inteface Id is missing.There is no
 *   point in proceeding further.Calling program would need to catch this exception !
-    data: wa_config TYPE ZREST_SRTUCT_CONFIG.
+    DATA: wa_config TYPE zrest_srtuct_config.
 *    DATA(wa_config) = zcl_rest_utility_class=>get_config_data( exporting interface_id = interface  method = method ). v-jobpau
-    CALL METHOD zcl_rest_utility_class=>get_config_data
-      EXPORTING
+    wa_config = zcl_rest_utility_class=>get_config_data(
         interface_id = interface
-        method       = method
-      RECEIVING
-        config_data  = wa_config .
+        method       = method ).
 
     IF sy-subrc NE 0.
       RAISE EXCEPTION TYPE zcx_interace_config_missing.
@@ -292,7 +258,7 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
       RAISE EXCEPTION TYPE zcx_interace_config_missing.
     ENDIF.
 *   Create the http client by destination
-    CALL METHOD cl_http_client=>create_by_destination
+    cl_http_client=>create_by_destination(
       EXPORTING
         destination              = wa_config-destination
       IMPORTING
@@ -303,7 +269,7 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
         destination_no_authority = 3
         plugin_not_active        = 4
         internal_error           = 5
-        OTHERS                   = 6.
+        OTHERS                   = 6 ).
     CASE sy-subrc.
       WHEN 1 OR 2 OR 3 OR 4 OR 5 OR 6.
         RAISE EXCEPTION TYPE zcx_http_client_failed.
@@ -328,16 +294,16 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
 
   METHOD  create_request_entity.
 **To allow GET and DELETE request entity in REST call
-    IF method_call EQ 'GET' or method_call eq 'DELETE'.
+    IF method_call EQ zif_rest_http_constants=>c_http_method_get OR method_call EQ zif_rest_http_constants=>c_http_method_delete.
     ELSE.
       request = rest_client->if_rest_client~create_request_entity( iv_multipart ).
     ENDIF.
   ENDMETHOD.
 
 
-  method GET_BUSINESSID.
+  METHOD get_businessid.
     result = businessid.
-  endmethod.
+  ENDMETHOD.
 
 
   METHOD  get_callingmethod.
@@ -351,10 +317,8 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
 
 
   METHOD get_duration.
-
     r_secs = duration.
     r_secs = r_secs * -1000. "microseconds
-
   ENDMETHOD.
 
 
@@ -369,23 +333,23 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
 
 
   METHOD get_guid.
-      result = message_id.
+    result = message_id.
   ENDMETHOD.
 
 
-  method GET_HTTP_CLIENT.
+  METHOD get_http_client.
     result = http_client.
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_INTERFACE.
+  METHOD get_interface.
     interface_name = interface.
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_METHOD.
+  METHOD get_method.
     result = method_call.
-  endmethod.
+  ENDMETHOD.
 
 
   METHOD get_program_headers.
@@ -394,58 +358,21 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
   ENDMETHOD.
 
 
-  method GET_REQUEST.
+  METHOD get_request.
     result = request.
-  endmethod.
+  ENDMETHOD.
 
 
   METHOD  get_response_entity.
     ro_response_entity = me->rest_client->if_rest_client~get_response_entity( ).
     response  = ro_response_entity.
-*    IF ro_response_entity IS BOUND.
-*      gwa_log-status =  ro_response_entity->get_header_field( '~status_code' ).
-*      gwa_log-reason  = ro_response_entity->get_header_field( '~status_reason' ).
-*      gwa_log-content_length  = ro_response_entity->get_header_field( 'content-length' ).
-*      gwa_log-location = ro_response_entity->get_header_field( 'location' ).
-*      gwa_log-content_type = ro_response_entity->get_header_field( 'content-type' ).
-*      gwa_log-response = ro_response_entity->get_string_data( ).
-*
-*      gwa_log-status =  'S'.
-*      gwa_log-reason  = 'Response Recieved'.
-*
-*      wa_error_log-zmessageid   =  message_id.
-*      counter = counter + 1.
-*      wa_error_log-counter      = counter.
-*      wa_error_log-zmessageclass = 'No Response Recieved'.
-*      APPEND wa_error_log TO it_error_log.
-*      CLEAR  wa_error_log.
-*
-*    ELSE.
-*
-*      gwa_log-status =  'E'.
-*      gwa_log-reason  = 'No Response Recieved'.
-*
-*      wa_error_log-zmessageid   =  message_id.
-*      counter = counter + 1.
-*      wa_error_log-counter      = counter.
-*      wa_error_log-zmessageclass = 'No Response Recieved'.
-*      APPEND wa_error_log TO it_error_log.
-*      CLEAR  wa_error_log.
-*
-*    ENDIF.
   ENDMETHOD.
 
 
   METHOD  get_response_header.
-*    rv_value = me->rest_client->if_rest_client~get_response_header( EXPORTING iv_name = iv_name ). v-jobpau
-CALL METHOD me->rest_client->if_rest_client~get_response_header
-  EXPORTING
-    iv_name  =  iv_name
-  receiving
-    rv_value =  rv_value
-    .
-
-
+    rv_value = rest_client->if_rest_client~get_response_header(
+      EXPORTING
+        iv_name  = iv_name ).
   ENDMETHOD.
 
 
@@ -454,14 +381,14 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
   ENDMETHOD.
 
 
-  method GET_REST_CLIENT.
+  METHOD get_rest_client.
     result = rest_client.
-  endmethod.
+  ENDMETHOD.
 
 
-  method GET_RETRYNUM.
+  METHOD get_retrynum.
     result = retry_cnt.
-  endmethod.
+  ENDMETHOD.
 
 
   METHOD  get_startdate.
@@ -491,9 +418,9 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
   ENDMETHOD.
 
 
-  method GET_URI.
+  METHOD get_uri.
     result = uri_final.
-  endmethod.
+  ENDMETHOD.
 
 
   METHOD  get_user.
@@ -530,11 +457,10 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
 
 
   METHOD  save_log.
-
     CALL FUNCTION 'ZSAVE_REST_LOG'
       EXPORTING
         framework_class = me
-        update_task = log_update_task.
+        update_task     = log_update_task.
   ENDMETHOD.
 
 
@@ -576,9 +502,9 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
   ENDMETHOD.
 
 
-  method SET_INTERFACE_ID.
-        gwa_log-interface_id = interface.
-  endmethod.
+  METHOD set_interface_id.
+    gwa_log-interface_id = interface.
+  ENDMETHOD.
 
 
   METHOD  set_startdate.
@@ -609,7 +535,7 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
   METHOD  zif_rest_framework~execute.
 
     DATA: lwa_config_data TYPE zrest_srtuct_config,
-          rest_exception TYPE REF TO cx_rest_client_exception.
+          rest_exception  TYPE REF TO cx_rest_client_exception.
     CREATE OBJECT rest_exception.
     GET TIME STAMP FIELD pre_timestamp.
 *   Create the unique guid . This is used across all the tables for storing
@@ -626,14 +552,10 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
 *   in the wating status till the async program flushes this out. Apart from executing the calls , this method will hold
 *   the metrics of data
 *   Get the configuration data for the inteface.
-*    DATA(lwa_config_data) = zcl_rest_utility_class=>get_config_data( EXPORTING interface_id  =  interface method = method_call ). v-jobpau
 
-    CALL METHOD zcl_rest_utility_class=>get_config_data
-      EXPORTING
+    lwa_config_data = zcl_rest_utility_class=>get_config_data(
         interface_id = interface
-        method       = method_call
-      RECEIVING
-        config_data  = lwa_config_data.
+        method       = method_call ).
 
 *   Get the static headers from the configuration
     rest_client->if_rest_client~set_request_headers( zcl_rest_utility_class=>get_static_headers( interface_id =  interface ) ).
@@ -648,22 +570,21 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
     IF async EQ abap_false.
       TRY .
           CASE lwa_config_data-method.
-            WHEN  head.
+            WHEN  zif_rest_http_constants=>c_http_method_head.
               rest_client->if_rest_resource~head( ).
-            WHEN  get.
+            WHEN zif_rest_http_constants=>c_http_method_get.
               rest_client->if_rest_resource~get( ).
-            WHEN  delete.
+            WHEN  zif_rest_http_constants=>c_http_method_delete.
               rest_client->if_rest_resource~delete( ).
-            WHEN  options.
+            WHEN zif_rest_http_constants=>c_http_method_options.
               rest_client->if_rest_resource~options( ).
-            WHEN  post.
+            WHEN  zif_rest_http_constants=>c_http_method_post.
               rest_client->if_rest_resource~post(  request ).
-            WHEN  put.
+            WHEN  zif_rest_http_constants=>c_http_method_put.
               rest_client->if_rest_resource~put(   request ).
           ENDCASE.
-*Log End parameters
+
           log_end_params( ).
-*        CATCH cx_rest_client_exception INTO data(rest_exception). v-jobpau
         CATCH cx_rest_client_exception INTO rest_exception.
           log_end_params( ).
           gwa_log-reason = rest_exception->get_text( ).
@@ -680,28 +601,18 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
     ENDIF.
 *   duration = duration * -1000. " Convert to microseconds
     GET TIME STAMP FIELD pro_timestamp.
-*    duration = cl_abap_tstmp=>subtract( exporting tstmp1 = pre_timestamp tstmp2 = pro_timestamp ). v-jobpau
-*    TRY.
-    CALL METHOD cl_abap_tstmp=>subtract
-      EXPORTING
+    duration = cl_abap_tstmp=>subtract(
         tstmp1 = pre_timestamp
-        tstmp2 = pro_timestamp
-      RECEIVING
-        r_secs =  duration
-        .
-*     CATCH cx_parameter_invalid_range .
-*     CATCH cx_parameter_invalid_type .
-*    ENDTRY.
-
+        tstmp2 = pro_timestamp ).
 
 *   Save the log to database for further reporing
-    me->save_log( ).
+    save_log( ).
   ENDMETHOD.
 
 
   METHOD zif_rest_framework~set_binary_body.
     IF body IS NOT INITIAL.
-        request->set_binary_data( body ).
+      request->set_binary_data( body ).
     ENDIF.
   ENDMETHOD.
 
@@ -717,9 +628,8 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
 
 
   METHOD zif_rest_framework~set_request_headers.
-    DATA: lv_tihttpnvp TYPE LINE OF tihttpnvp,
-          wa_modified_headers type IHTTPNVP.
-*    LOOP AT it_header_fields INTO DATA(wa_modified_headers). v-jobpau
+    DATA: lv_tihttpnvp        TYPE LINE OF tihttpnvp,
+          wa_modified_headers TYPE ihttpnvp.
     LOOP AT it_header_fields INTO wa_modified_headers.
       lv_tihttpnvp-name  = wa_modified_headers-name.
       lv_tihttpnvp-value = wa_modified_headers-value.
@@ -732,7 +642,7 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
 
   METHOD  zif_rest_framework~set_string_body.
     IF body IS NOT INITIAL.
-         http_client->request->set_cdata( body ).
+      http_client->request->set_cdata( body ).
     ENDIF.
   ENDMETHOD.
 
@@ -741,8 +651,8 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
     CHECK uri IS NOT INITIAL.
     cl_http_utility=>set_request_uri(
         request = http_client->request    " HTTP Framework (iHTTP) HTTP Request
-        uri     = uri                     " URI String (in the Form of /path?query-string)
-           ).
+        uri     = uri ).                  " URI String (in the Form of /path?query-string)
+
     uri_final = uri.
   ENDMETHOD.
 ENDCLASS.
