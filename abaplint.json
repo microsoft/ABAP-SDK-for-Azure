@@ -1,6 +1,6 @@
 {
   "global": {
-    "version": "v702",
+    "version": "v753",
     "skipGeneratedGatewayClasses": true,
     "skipGeneratedPersistentClasses": true,
     "skipGeneratedFunctionGroups": true
@@ -13,7 +13,7 @@
     "avoid_use": {
       "enabled": true,
       "exclude": [],
-      "define": false,
+      "define": true,
       "endselect": true,
       "execSQL": true,
       "kernelCall": true
@@ -23,7 +23,7 @@
       "exclude": []
     },
     "check_variables": {
-      "enabled": false,
+      "enabled": true,
       "exclude": []
     },
     "class_attribute_names": {
@@ -64,7 +64,7 @@
     "empty_line_in_statement": {
       "enabled": true,
       "exclude": [],
-      "allowChained": true
+      "allowChained": false
     },
     "empty_loop": {
       "enabled": true,
@@ -149,7 +149,7 @@
       "exclude": []
     },
     "message_exists": {
-      "enabled": false,
+      "enabled": true,
       "exclude": []
     },
     "method_length": {
@@ -189,10 +189,10 @@
     "object_naming": {
       "enabled": true,
       "exclude": [],
-      "clas": "^ZC(L|X)\\_ABAPGIT\\_",
-      "intf": "^ZIF\\_ABAPGIT\\_",
-      "prog": "^ZABAPGIT",
-      "fugr": "^ZABAPGIT",
+      "clas": "^ZC(L|X)\\_",
+      "intf": "^ZIF\\_",
+      "prog": "^Z",
+      "fugr": "^Z",
       "tabl": "^Z",
       "ttyp": "^Z",
       "dtel": "^Z",
@@ -233,7 +233,7 @@
       "enabled": true,
       "exclude": [],
       "length": 1,
-      "allow": ["iv_action", "sy"]
+      "allow": []
     },
     "space_before_colon": {
       "enabled": true,
@@ -244,10 +244,14 @@
       "exclude": []
     },
     "superclass_final": {
-      "enabled": false,
+      "enabled": true,
       "exclude": []
     },
     "tabl_enhancement_category": {
+      "enabled": true,
+      "exclude": []
+    },
+    "unreachable_code": {
       "enabled": true,
       "exclude": []
     },
