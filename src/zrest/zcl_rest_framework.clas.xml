@@ -12,14 +12,6 @@
     <FIXPT>X</FIXPT>
     <UNICODE>X</UNICODE>
    </VSEOCLASS>
-   <DESCRIPTIONS>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_REST_FRAMEWORK</CLSNAME>
-     <CMPNAME>CONTENT_TYPE</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Character 75</DESCRIPT>
-    </SEOCOMPOTX>
-   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>
