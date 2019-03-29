@@ -1,0 +1,14 @@
+pool:
+  vmImage: 'windows-2019'
+
+steps:
+- script: |
+    npm install abaplint -g
+  displayName: 'ABAPLint Install'
+- script: |
+    abaplint --version
+    abaplint -f standard --outformat junit --outfile report.xml "src/**/*.*"
+  displayName: 'ABAPLint Version'
+- script: |
+    abaplint -f standard --outformat junit --outfile report.xml "src/**/*.*"
+  displayName: 'ABAPLint Run'
