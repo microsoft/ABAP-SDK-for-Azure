@@ -60,7 +60,7 @@ METHOD get_sas_token.
     SELECT SINGLE * FROM zadf_ehub_policy INTO wa_policy WHERE interface_id EQ  gv_interface_id.
     IF sy-subrc EQ 0.
       sign = escape( val = sign format = format  ).
-      CONCATENATE 'SharedAccessSignature sig=' sign '&se=' new_expiry '&skn=' wa_policy '&sr=' encoded_base_address INTO final_token.
+      CONCATENATE 'SharedAccessSignature sig=' sign '&se=' new_expiry '&skn=' wa_policy-policy '&sr=' encoded_base_address INTO final_token.
       rv_sas_token = final_token.
     ENDIF.
   ELSE.
