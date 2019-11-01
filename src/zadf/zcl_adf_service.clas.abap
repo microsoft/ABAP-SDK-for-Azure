@@ -564,7 +564,7 @@ ENDMETHOD.
 METHOD get_rest_api_ref.
   DATA : lcx_interface TYPE REF TO zcx_interace_config_missing,
          lcx_http      TYPE REF TO zcx_http_client_failed,
-         lv_method     TYPE zinterface_method.
+         lv_method     TYPE char20.
   IF go_rest_api IS INITIAL.
     CLEAR lv_method.
     SELECT SINGLE method FROM zrest_conf_misc
@@ -603,43 +603,45 @@ ENDMETHOD.
 
 
 METHOD get_sas_token.
-  DATA : lv_string_to_sign    TYPE string,
-         encoded_base_address TYPE string,
-         body_xstring         TYPE xstring,
-         sign                 TYPE string,
-         final_token          TYPE string,
-         decoded              TYPE xstring,
-         conv                 TYPE REF TO cl_abap_conv_out_ce,
-         conv_in              TYPE REF TO cl_abap_conv_in_ce,
-         new_expiry           TYPE string,
-         lv_sas_key           TYPE string,
-         lv_expiry_time       TYPE string.
+  DATA : lv_string_to_sign       TYPE string,
+         encoded_base_address    TYPE string,
+         body_xstring            TYPE xstring,
+         sign                    TYPE string,
+         final_token             TYPE string,
+         decoded                 TYPE xstring,
+         conv                    TYPE REF TO cl_abap_conv_out_ce,
+         conv_in                 TYPE REF TO cl_abap_conv_in_ce,
+         format                  TYPE i,
+         new_expiry              TYPE string,
+         lv_sas_key              TYPE string,
+         lv_expiry_time          TYPE string.
   get_epoch_time( RECEIVING rv_expiry_time =  lv_expiry_time ).
-  encoded_base_address = escape( val = iv_baseaddress format = cl_abap_format=>e_uri_full ).
+  format = 18.
+  encoded_base_address = escape( val = iv_baseaddress format = format  ).
   CONCATENATE encoded_base_address  cl_abap_char_utilities=>newline lv_expiry_time INTO lv_string_to_sign.
 
   conv = cl_abap_conv_out_ce=>create( encoding = 'UTF-8' ).
   conv->convert( EXPORTING data = lv_string_to_sign IMPORTING buffer = body_xstring ).
   DEFINE encrypt_key.
-    decode_sign( RECEIVING rv_secret = lv_sas_key ).
+    decode_sign( receiving rv_secret = lv_sas_key ).
     conv = cl_abap_conv_out_ce=>create( encoding = 'UTF-8' ).
-    conv->convert( EXPORTING data = lv_sas_key IMPORTING buffer = decoded ).
+    conv->convert( exporting data = lv_sas_key importing buffer = decoded ).
 
-    CALL METHOD cl_abap_hmac=>calculate_hmac_for_raw
-      EXPORTING
+    call method cl_abap_hmac=>calculate_hmac_for_raw
+      exporting
         if_algorithm     = 'sha-256'
         if_key           = decoded
         if_data          = body_xstring
         if_length        = 0
-      IMPORTING
+      importing
         ef_hmacb64string = sign.
-    CLEAR : lv_sas_key, decoded.
+    clear : lv_sas_key, decoded.
   END-OF-DEFINITION.
   encrypt_key.
   new_expiry = lv_expiry_time.
   CONDENSE new_expiry.
   IF NOT sign IS INITIAL.
-    sign = escape( val = sign format = cl_abap_format=>e_uri_full ).
+    sign = escape( val = sign format = format  ).
     CONCATENATE 'SharedAccessSignature sr=' encoded_base_address  '&sig=' sign '&se=' new_expiry '&skn=' 'edit' INTO final_token.
     rv_sas_token = final_token.
   ELSE.
@@ -764,6 +766,12 @@ METHOD send.
           interface_id = gv_interface_id.
     ENDIF.
   ENDIF.
+
+* Demo code
+  if sy-subrc = 0.
+*  Demo program change -- Naveen
+  endif.
+
 ENDMETHOD.
 
 

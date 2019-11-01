@@ -69,18 +69,18 @@ METHOD create.
             iv_interface_id        = iv_interface_id
             iv_service_id          = lv_interface_type
             iv_business_identifier = iv_business_identifier.
-*      WHEN gc_service_keyvault.
-*        CREATE OBJECT ro_service TYPE zcl_adf_service_keyvault
-*          EXPORTING
-*            iv_interface_id        = iv_interface_id
-*            iv_service_id          = lv_interface_type
-*            iv_business_identifier = iv_business_identifier.
-*      WHEN gc_service_oms_la.
-*        CREATE OBJECT ro_service TYPE zcl_adf_service_oms_la
-*          EXPORTING
-*            iv_interface_id        = iv_interface_id
-*            iv_service_id          = lv_interface_type
-*            iv_business_identifier = iv_business_identifier.
+      WHEN gc_service_keyvault.
+        CREATE OBJECT ro_service TYPE zcl_adf_service_keyvault
+          EXPORTING
+            iv_interface_id        = iv_interface_id
+            iv_service_id          = lv_interface_type
+            iv_business_identifier = iv_business_identifier.
+      WHEN gc_service_oms_la.
+        CREATE OBJECT ro_service TYPE zcl_adf_service_oms_la
+          EXPORTING
+            iv_interface_id        = iv_interface_id
+            iv_service_id          = lv_interface_type
+            iv_business_identifier = iv_business_identifier.
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_adf_service
           EXPORTING
