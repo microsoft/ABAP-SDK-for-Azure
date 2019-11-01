@@ -13,7 +13,8 @@ As of now, ABAP SDK supports direct integration with following Azure services,
 * Key vault
 * Active Directory
 * Blob
-* SQL DB
+* Cosmos DB
+* OMS Log Analytics
 
 Note: We are continuously enhancing these libraries and you may find few class methods unimplemented. These will be released in next versions.
 
