@@ -20,6 +20,8 @@
     <item>/ABAP SDK Implementation Guide for Azure Active  Directory.pdf</item>
     <item>/ABAP SDK Implementation Guide for Azure Event hubs.pdf</item>
     <item>/ABAP SDK for Azure - Github.pdf</item>
+    <item>/src/zadf/zcl_adf_service_documentdb.clas.abap</item>
+    <item>/src/zadf/zcl_adf_service_documentdb.clas.xml</item>
    </IGNORE>
   </DATA>
  </asx:values>

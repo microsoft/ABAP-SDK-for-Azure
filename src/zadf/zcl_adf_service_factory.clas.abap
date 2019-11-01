@@ -5,12 +5,13 @@ class ZCL_ADF_SERVICE_FACTORY definition
 
 public section.
 
-  constants GC_SERVICE_EVENTHUB type ZAZURE_DEST value 'EVENTHUB'. "#EC NOTEXT
-  constants GC_SERVICE_BLOB type ZAZURE_DEST value 'BLOB'. "#EC NOTEXT
-  constants GC_SERVICE_DOCDB type ZAZURE_DEST value 'DOCUMENTDB'. "#EC NOTEXT
-  constants GC_SERVICE_SERVICEBUS type ZAZURE_DEST value 'SERVICEBUS'. "#EC NOTEXT
-  constants GC_SERVICE_AAD type ZAZURE_DEST value 'AAD'. "#EC NOTEXT
-  constants GC_SERVICE_KEYVAULT type ZAZURE_DEST value 'KV'. "#EC NOTEXT
+  constants GC_SERVICE_EVENTHUB type ZAZURE_DEST value 'EVENTHUB' ##NO_TEXT.
+  constants GC_SERVICE_BLOB type ZAZURE_DEST value 'BLOB' ##NO_TEXT.
+  constants GC_SERVICE_SERVICEBUS type ZAZURE_DEST value 'SERVICEBUS' ##NO_TEXT.
+  constants GC_SERVICE_AAD type ZAZURE_DEST value 'AAD' ##NO_TEXT.
+  constants GC_SERVICE_KEYVAULT type ZAZURE_DEST value 'KV' ##NO_TEXT.
+  constants GC_SERVICE_OMS_LA type ZAZURE_DEST value 'OMS_LA' ##NO_TEXT.
+  constants GC_SERVICE_COSMOSDB type ZAZURE_DEST value 'COSMOSDB' ##NO_TEXT.
 
   class-methods CREATE
     importing
@@ -50,8 +51,8 @@ METHOD create.
             iv_interface_id        = iv_interface_id
             iv_service_id          = lv_interface_type
             iv_business_identifier = iv_business_identifier.
-      WHEN gc_service_docdb.
-        CREATE OBJECT ro_service TYPE zcl_adf_service_documentdb
+      WHEN gc_service_cosmosdb.
+        CREATE OBJECT ro_service TYPE zcl_adf_service_cosmosdb
           EXPORTING
             iv_interface_id        = iv_interface_id
             iv_service_id          = lv_interface_type
@@ -68,12 +69,18 @@ METHOD create.
             iv_interface_id        = iv_interface_id
             iv_service_id          = lv_interface_type
             iv_business_identifier = iv_business_identifier.
-      WHEN gc_service_keyvault.
-        CREATE OBJECT ro_service TYPE zcl_adf_service_keyvault
-          EXPORTING
-            iv_interface_id        = iv_interface_id
-            iv_service_id          = lv_interface_type
-            iv_business_identifier = iv_business_identifier.
+*      WHEN gc_service_keyvault.
+*        CREATE OBJECT ro_service TYPE zcl_adf_service_keyvault
+*          EXPORTING
+*            iv_interface_id        = iv_interface_id
+*            iv_service_id          = lv_interface_type
+*            iv_business_identifier = iv_business_identifier.
+*      WHEN gc_service_oms_la.
+*        CREATE OBJECT ro_service TYPE zcl_adf_service_oms_la
+*          EXPORTING
+*            iv_interface_id        = iv_interface_id
+*            iv_service_id          = lv_interface_type
+*            iv_business_identifier = iv_business_identifier.
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_adf_service
           EXPORTING
