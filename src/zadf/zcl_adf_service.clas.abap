@@ -642,7 +642,7 @@ CLASS zcl_adf_service IMPLEMENTATION.
             no_http_destination     = 5
             OTHERS                  = 6.
         IF sy-subrc <> 0.
-    * Implement suitable error handling here
+* Implement suitable error handling here
           RAISE EXCEPTION TYPE zcx_adf_service
             EXPORTING
               textid       = zcx_adf_service=>read_error_rfc_destination
