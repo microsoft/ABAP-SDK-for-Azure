@@ -165,9 +165,9 @@ CLASS zcl_adf_service_keyvault IMPLEMENTATION.
         RAISE EXCEPTION lcx_http.
     ENDTRY.
 *Optional - To help developer understand the origin of call
-    rest_handler->set_callingmethod('GET_KEY_FROM_KV').
+    rest_handler->set_callingmethod( 'GET_KEY_FROM_KV' ).
 *Optional - To help developer understand the origin of call
-    rest_handler->set_callingprogram('ZCL_ADF_SERVICE_KEYVAULT').
+    rest_handler->set_callingprogram( 'ZCL_ADF_SERVICE_KEYVAULT' ).
     rest_handler->zif_rest_framework~set_uri( '?api-version=2016-10-01' ).
 ************************************************************************
     CONCATENATE 'Bearer' gv_token INTO lv_token SEPARATED BY space.
