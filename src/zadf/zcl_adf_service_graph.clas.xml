@@ -3,23 +3,16 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <VSEOCLASS>
-    <CLSNAME>ZCL_ADF_SERVICE_AAD</CLSNAME>
+    <CLSNAME>ZCL_ADF_SERVICE_GRAPH</CLSNAME>
     <VERSION>1</VERSION>
     <LANGU>E</LANGU>
-    <DESCRIPT>SAP- Azure Data Framework AAD service</DESCRIPT>
+    <DESCRIPT>SAP-Azure Data Framework Graph Service</DESCRIPT>
+    <EXPOSURE>2</EXPOSURE>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
     <UNICODE>X</UNICODE>
    </VSEOCLASS>
-   <DESCRIPTIONS>
-    <SEOCOMPOTX>
-     <CLSNAME>ZCL_ADF_SERVICE_AAD</CLSNAME>
-     <CMPNAME>GET_AAD_TOKEN</CMPNAME>
-     <LANGU>E</LANGU>
-     <DESCRIPT>Get AAD Token</DESCRIPT>
-    </SEOCOMPOTX>
-   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>

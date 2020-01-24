@@ -61,6 +61,9 @@
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>OMS_LA</DOMVALUE_L>
      <DDTEXT>Azure OMS Log Analytics</DDTEXT>
+     <DOMVALUE_L>GRAPH</DOMVALUE_L>
+     <DDTEXT>Azure Graph</DDTEXT>
+     <DDTEXT>Graph 1.0</DDTEXT>
     </DD07V>
    </DD07V_TAB>
   </asx:values>

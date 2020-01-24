@@ -5,7 +5,7 @@
     "skipGeneratedPersistentClasses": true,
     "skipGeneratedFunctionGroups": true,
     "applyUnspecifiedRules": false
-  },  
+  },
   "dependencies": [
     {
       "url": "https://github.com/abaplint/deps",
@@ -18,7 +18,7 @@
     "errorNamespace": "^(Z|Y)",
     "globalConstants": [],
     "globalMacros": []
-  },  
+  },
   "rules": {
     "7bit_ascii": {
       "enabled": true,

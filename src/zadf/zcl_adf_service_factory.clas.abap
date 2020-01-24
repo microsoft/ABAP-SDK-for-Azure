@@ -1,97 +1,92 @@
-class ZCL_ADF_SERVICE_FACTORY definition
-  public
-  final
-  create public .
+CLASS zcl_adf_service_factory DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
 
-public section.
 
-  constants GC_SERVICE_EVENTHUB type ZAZURE_DEST value 'EVENTHUB' ##NO_TEXT.
-  constants GC_SERVICE_BLOB type ZAZURE_DEST value 'BLOB' ##NO_TEXT.
-  constants GC_SERVICE_SERVICEBUS type ZAZURE_DEST value 'SERVICEBUS' ##NO_TEXT.
-  constants GC_SERVICE_AAD type ZAZURE_DEST value 'AAD' ##NO_TEXT.
-  constants GC_SERVICE_KEYVAULT type ZAZURE_DEST value 'KV' ##NO_TEXT.
-  constants GC_SERVICE_OMS_LA type ZAZURE_DEST value 'OMS_LA' ##NO_TEXT.
-  constants GC_SERVICE_COSMOSDB type ZAZURE_DEST value 'COSMOSDB' ##NO_TEXT.
 
-  class-methods CREATE
-    importing
-      value(IV_INTERFACE_ID) type ZINTERFACE_ID
-      value(IV_BUSINESS_IDENTIFIER) type ZBUSINESSID optional
-    returning
-      value(RO_SERVICE) type ref to ZCL_ADF_SERVICE
-    raising
-      ZCX_ADF_SERVICE
-      ZCX_INTERACE_CONFIG_MISSING
-      ZCX_HTTP_CLIENT_FAILED .
-protected section.
-private section.
+  PUBLIC SECTION.
+
+
+
+    CLASS-METHODS class_constructor.
+
+
+
+    CLASS-METHODS inject_configuration
+      IMPORTING i_ext_config TYPE REF TO zif_adf_azure_defconfig.
+
+
+
+    CLASS-METHODS create
+      IMPORTING
+        VALUE(iv_interface_id)        TYPE zinterface_id
+        VALUE(iv_business_identifier) TYPE zbusinessid OPTIONAL
+      RETURNING
+        VALUE(ro_service)             TYPE REF TO zcl_adf_service
+      RAISING
+        zcx_adf_service
+        zcx_interace_config_missing
+        zcx_http_client_failed .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+    CLASS-DATA m_service_config TYPE REF TO zif_adf_azure_defconfig.
 ENDCLASS.
 
 
 
-CLASS ZCL_ADF_SERVICE_FACTORY IMPLEMENTATION.
 
 
-METHOD create.
-  DATA : lv_interface_type TYPE zadf_config-interface_type.
-  SELECT SINGLE interface_type FROM zadf_config
-                               INTO lv_interface_type
-                               WHERE interface_id EQ iv_interface_id.
-  IF sy-subrc EQ 0.
-    CASE lv_interface_type.
-      WHEN gc_service_eventhub.
-        CREATE OBJECT ro_service TYPE zcl_adf_service_eventhub
-          EXPORTING
-            iv_interface_id        = iv_interface_id
-            iv_service_id          = lv_interface_type
-            iv_business_identifier = iv_business_identifier.
-      WHEN gc_service_blob.
-        CREATE OBJECT ro_service TYPE zcl_adf_service_blob
-          EXPORTING
-            iv_interface_id        = iv_interface_id
-            iv_service_id          = lv_interface_type
-            iv_business_identifier = iv_business_identifier.
-      WHEN gc_service_cosmosdb.
-        CREATE OBJECT ro_service TYPE zcl_adf_service_cosmosdb
-          EXPORTING
-            iv_interface_id        = iv_interface_id
-            iv_service_id          = lv_interface_type
-            iv_business_identifier = iv_business_identifier.
-      WHEN gc_service_servicebus.
-        CREATE OBJECT ro_service TYPE zcl_adf_service_servicebus
-          EXPORTING
-            iv_interface_id        = iv_interface_id
-            iv_service_id          = lv_interface_type
-            iv_business_identifier = iv_business_identifier.
-      WHEN gc_service_aad.
-        CREATE OBJECT ro_service TYPE zcl_adf_service_aad
-          EXPORTING
-            iv_interface_id        = iv_interface_id
-            iv_service_id          = lv_interface_type
-            iv_business_identifier = iv_business_identifier.
-      WHEN gc_service_keyvault.
-        CREATE OBJECT ro_service TYPE zcl_adf_service_keyvault
-          EXPORTING
-            iv_interface_id        = iv_interface_id
-            iv_service_id          = lv_interface_type
-            iv_business_identifier = iv_business_identifier.
-      WHEN gc_service_oms_la.
-        CREATE OBJECT ro_service TYPE zcl_adf_service_oms_la
-          EXPORTING
-            iv_interface_id        = iv_interface_id
-            iv_service_id          = lv_interface_type
-            iv_business_identifier = iv_business_identifier.
-      WHEN OTHERS.
-        RAISE EXCEPTION TYPE zcx_adf_service
-          EXPORTING
-            textid       = zcx_adf_service=>interface_type_not_maintained
-            interface_id = iv_interface_id.
-    ENDCASE.
-  ELSE.
-    RAISE EXCEPTION TYPE zcx_adf_service
+CLASS zcl_adf_service_factory IMPLEMENTATION.
+
+
+
+
+  METHOD class_constructor.
+    m_service_config = NEW zcl_adf_service_default_config( ).
+  ENDMETHOD.
+
+
+
+  METHOD create.
+    DATA : interface_type TYPE zadf_config-interface_type.
+
+
+
+    SELECT SINGLE interface_type FROM zadf_config
+                                 INTO interface_type
+                                 WHERE interface_id = iv_interface_id.
+    IF sy-subrc = 0.
+
+
+
+      DATA(classname) = m_service_config->get_classname( i_interface_type = interface_type ).
+
+
+
+      CREATE OBJECT ro_service TYPE (classname)
       EXPORTING
-        textid       = zcx_adf_service=>interface_not_available
-        interface_id = iv_interface_id.
-  ENDIF.
-ENDMETHOD.
+            iv_interface_id        = iv_interface_id
+            iv_service_id          = interface_type
+            iv_business_identifier = iv_business_identifier.
+
+
+
+
+    ELSE.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>interface_not_available
+          interface_id = iv_interface_id.
+    ENDIF.
+  ENDMETHOD.
+
+
+
+  METHOD inject_configuration.
+    m_service_config = i_ext_config.
+  ENDMETHOD.
+
+
+
 ENDCLASS.

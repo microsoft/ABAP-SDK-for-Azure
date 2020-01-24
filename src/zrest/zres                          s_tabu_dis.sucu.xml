@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<abapGit version="v1.0.0" serializer="ZCL_ABAPGIT_OBJECT_BY_SOBJ" serializer_version="1.0">
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SUCU" serializer_version="v1.0.0">
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <TBRG_AUTH>
@@ -8,59 +8,6 @@
      <OBJECT>S_TABU_DIS</OBJECT>
     </TBRG_AUTH>
    </TBRG_AUTH>
-   <TBRG_AUTH_field_catalog>
-    <item>
-     <POS>1</POS>
-     <NAME>BRGRU</NAME>
-     <TYPE_KIND>C</TYPE_KIND>
-     <LENGTH>30</LENGTH>
-     <IS_KEY>X</IS_KEY>
-    </item>
-    <item>
-     <POS>2</POS>
-     <NAME>OBJECT</NAME>
-     <TYPE_KIND>C</TYPE_KIND>
-     <LENGTH>10</LENGTH>
-     <IS_KEY>X</IS_KEY>
-    </item>
-   </TBRG_AUTH_field_catalog>
-   <TBRG_AUTHT>
-    <TBRG_AUTHT>
-     <SPRAS>E</SPRAS>
-     <BRGRU>ZRES</BRGRU>
-     <OBJECT>S_TABU_DIS</OBJECT>
-     <BEZEI>Auth Group for Rest framework tables</BEZEI>
-    </TBRG_AUTHT>
-   </TBRG_AUTHT>
-   <TBRG_AUTHT_field_catalog>
-    <item>
-     <POS>1</POS>
-     <NAME>SPRAS</NAME>
-     <TYPE_KIND>C</TYPE_KIND>
-     <LENGTH>1</LENGTH>
-     <IS_KEY>X</IS_KEY>
-    </item>
-    <item>
-     <POS>2</POS>
-     <NAME>BRGRU</NAME>
-     <TYPE_KIND>C</TYPE_KIND>
-     <LENGTH>30</LENGTH>
-     <IS_KEY>X</IS_KEY>
-    </item>
-    <item>
-     <POS>3</POS>
-     <NAME>OBJECT</NAME>
-     <TYPE_KIND>C</TYPE_KIND>
-     <LENGTH>10</LENGTH>
-     <IS_KEY>X</IS_KEY>
-    </item>
-    <item>
-     <POS>4</POS>
-     <NAME>BEZEI</NAME>
-     <TYPE_KIND>C</TYPE_KIND>
-     <LENGTH>40</LENGTH>
-    </item>
-   </TBRG_AUTHT_field_catalog>
   </asx:values>
  </asx:abap>
 </abapGit>
