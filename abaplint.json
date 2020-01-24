@@ -3,8 +3,7 @@
     "files": "/src/**/*.*",
     "skipGeneratedGatewayClasses": true,
     "skipGeneratedPersistentClasses": true,
-    "skipGeneratedFunctionGroups": true,
-    "applyUnspecifiedRules": false
+    "skipGeneratedFunctionGroups": true
   },
   "dependencies": [
     {
@@ -20,190 +19,93 @@
     "globalMacros": []
   },
   "rules": {
-    "7bit_ascii": {
-      "enabled": true,
-      "exclude": []
-    },
+    "abapdoc": false,
+    "allowed_object_naming": false,
+    "allowed_object_types": false,
+    "ambiguous_statement": true,
+    "begin_end_names": true,
+    "chain_mainly_declarations": false,
+    "check_abstract": false,
+    "check_comments": false,
+    "check_ddic": false,
+    "check_include": false,
+    "check_no_handler_pragma": false,
+    "check_syntax": false,
+    "check_text_elements": false,
+    "check_transformation_exists": false,
+    "constructor_visibility_public": false,
+    "empty_structure": false,
+    "form_no_dash": true,
+    "form_tables_obsolete": false,
+    "fully_type_constants": false,
+    "implement_methods": false,
+    "in_statement_indentation": false,
+    "keep_single_parameter_on_one_line": false,
+    "keyword_case": false,
+    "local_testclass_location": true,
+    "main_file_contents": true,
+    "newline_between_methods": false,
+    "prefer_returning_to_exporting": false,
+    "preferred_compare_operator": false,
+    "prefix_is_current_class": false,
+    "release_idoc": true,
+    "rfc_error_handling": false,
+    "selection_screen_naming": false,
+    "sicf_consistency": true,
+    "space_before_dot": false,
+    "sql_escape_host_variables": false,
+    "type_begin_single_include": true,
+    "type_form_parameters": false,
+    "types_naming": false,
+    "unused_variables": false,
+    "use_new": false,
+    "xml_consistency": true,
+    "7bit_ascii": true,
     "avoid_use": {
-      "enabled": true,
-      "exclude": [],
-      "define": true,
-      "endselect": true,
+      "define": false,
+      "communication": true,
+      "break": true,
+      "defaultKey": false,
+      "statics": true,
+      "systemCall": true,
+      "endselect": false,
       "execSQL": true,
       "kernelCall": true
     },
-    "breakpoint": {
-      "enabled": true,
-      "exclude": []
-    },
-    "check_variables": {
-      "enabled": true,
-      "exclude": []
-    },
-    "class_attribute_names": {
-      "enabled": true,
-      "exclude": [],
-      "ignoreExceptions": true,
-      "statics": "^G._.*$",
-      "instance": "^M._.*$"
-    },
-    "cloud_types": {
-      "enabled": true,
-      "exclude": []
-    },
-    "colon_missing_space": {
-      "enabled": true,
-      "exclude": []
-    },
-    "commented_code": {
-      "enabled": true,
-      "exclude": []
-    },
-    "contains_tab": {
-      "enabled": true,
-      "exclude": []
-    },
-    "definitions_top": {
-      "enabled": true,
-      "exclude": []
-    },
-    "description_empty": {
-      "enabled": true,
-      "exclude": []
-    },
-    "double_space": {
-      "enabled": true,
-      "exclude": []
-    },
-    "empty_line_in_statement": {
-      "enabled": true,
-      "exclude": [],
-      "allowChained": false
-    },
-    "empty_loop": {
-      "enabled": true,
-      "exclude": [],
-      "length": 120
-    },
-    "empty_statement": {
-      "enabled": true,
-      "exclude": []
-    },
-    "exit_or_check": {
-      "enabled": true,
-      "exclude": []
-    },
-    "exporting": {
-      "enabled": true,
-      "exclude": []
-    },
-    "functional_writing": {
-      "enabled": true,
-      "exclude": [],
-      "ignoreExceptions": true
-    },
-    "global_class": {
-      "enabled": true,
-      "exclude": []
-    },
-    "identical_form_names": {
-      "enabled": true,
-      "exclude": []
-    },
-    "if_in_if": {
-      "enabled": true,
-      "exclude": []
-    },
-    "indentation": {
-      "enabled": true,
-      "exclude": [],
-      "ignoreExceptions": true,
-      "alignTryCatch": false,
-      "globalClassSkipFirst": false,
-      "ignoreGlobalClassDefinition": false,
-      "ignoreGlobalInterface": false
-    },
-    "inline_data_old_versions": {
-      "enabled": true,
-      "exclude": []
-    },
-    "keywords_upper": {
-      "enabled": true,
-      "exclude": [],
-      "ignoreExceptions": true,
-      "ignoreLowerClassImplmentationStatement": true,
-      "ignoreGlobalClassDefinition": false,
-      "ignoreGlobalInterface": false
-    },
-    "line_length": {
-      "enabled": true,
-      "exclude": [],
-      "length": 120
-    },
-    "line_only_punc": {
-      "enabled": true,
-      "exclude": [],
-      "ignoreExceptions": true
-    },
-    "local_class_naming": {
-      "enabled": true,
-      "exclude": [],
-      "local": "^LCL_.*$",
-      "test": "^LTCL_.*$"
-    },
-    "local_variable_names": {
-      "enabled": true,
-      "exclude": [],
-      "expectedData": "^L._.*$",
-      "expectedConstant": "^LC_.*$",
-      "expectedFS": "^<L._.*>$"
-    },
-    "max_one_statement": {
-      "enabled": true,
-      "exclude": []
-    },
-    "message_exists": {
-      "enabled": true,
-      "exclude": []
-    },
-    "method_length": {
-      "enabled": true,
-      "exclude": [],
-      "statements": 100
-    },
-    "method_parameter_names": {
-      "enabled": true,
-      "exclude": [],
-      "ignoreExceptions": true,
-      "importing": "^I._.*$",
-      "returning": "^R._.*$",
-      "changing": "^C._.*$",
-      "exporting": "^E._.*$",
-      "ignoreNames": [
-        "P_TASK"
-      ]
-    },
-    "mix_returning": {
-      "enabled": true,
-      "exclude": []
-    },
-    "msag_consistency": {
-      "enabled": true,
-      "exclude": []
-    },
+    "class_attribute_names": false,
+    "cloud_types": true,
+    "colon_missing_space": false,
+    "commented_code": false,
+    "contains_tab": true,
+    "definitions_top": false,
+    "description_empty": true,
+    "double_space": false,
+    "empty_line_in_statement": false,
+    "empty_statement": false,
+    "exit_or_check": false,
+    "exporting": false,
+    "functional_writing": false,
+    "global_class": true,
+    "identical_form_names": true,
+    "if_in_if": false,
+    "indentation": false,
+    "inline_data_old_versions": true,
+    "line_length": false,
+    "line_only_punc": false,
+    "local_class_naming": false,
+    "local_variable_names": false,
+    "max_one_statement": false,
+    "message_exists": false,
+    "method_length": false,
+    "method_parameter_names": false,
+    "mix_returning": false,
+    "msag_consistency": true,
     "nesting": {
-      "enabled": true,
-      "exclude": [],
-      "depth": 5
+      "depth": 12
     },
-    "no_public_attributes": {
-      "enabled": true,
-      "exclude": []
-    },
+    "no_public_attributes": false,
     "object_naming": {
-      "enabled": true,
-      "exclude": [],
-      "clas": "^ZC(L|X)\\_",
+      "clas": "^Z",
       "intf": "^ZIF\\_",
       "prog": "^Z",
       "fugr": "^Z",
@@ -213,69 +115,36 @@
       "doma": "^Z",
       "msag": "^Z",
       "tran": "^Z",
-      "enqu": "^Z",
+      "enqu": "^EZ",
       "auth": "^Z",
+      "idoc": "^Z",
+      "xslt": "^Z",
       "pinf": "^Z"
     },
     "obsolete_statement": {
-      "enabled": true,
-      "exclude": [],
-      "refresh": true,
+      "refresh": false,
       "compute": true,
-      "add": true,
+      "add": false,
       "subtract": true,
       "multiply": true,
-      "move": true,
+      "move": false,
+      "occurs": true,
       "divide": true,
       "requested": true
     },
-    "parser_error": {
-      "enabled": true,
-      "exclude": []
-    },
-    "remove_descriptions": {
-      "enabled": true,
-      "exclude": [],
-      "ignoreExceptions": true
-    },
-    "sequential_blank": {
-      "enabled": true,
-      "exclude": [],
-      "lines": 4
-    },
+    "parser_error": true,
+    "remove_descriptions": false,
+    "sequential_blank": false,
     "short_case": {
-      "enabled": true,
-      "exclude": [],
       "length": 1,
       "allow": []
     },
-    "space_before_colon": {
-      "enabled": true,
-      "exclude": []
-    },
-    "start_at_tab": {
-      "enabled": true,
-      "exclude": []
-    },
-    "superclass_final": {
-      "enabled": true,
-      "exclude": []
-    },
-    "tabl_enhancement_category": {
-      "enabled": true,
-      "exclude": []
-    },
-    "unreachable_code": {
-      "enabled": true,
-      "exclude": []
-    },
-    "when_others_last": {
-      "enabled": true,
-      "exclude": []
-    },
-    "whitespace_end": {
-      "enabled": true,
-      "exclude": []
-    }
+    "space_before_colon": false,
+    "start_at_tab": false,
+    "superclass_final": false,
+    "tabl_enhancement_category": false,
+    "unreachable_code": true,
+    "when_others_last": true,
+    "whitespace_end": true
   }
 }
