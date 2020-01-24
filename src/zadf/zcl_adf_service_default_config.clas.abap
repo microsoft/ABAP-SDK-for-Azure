@@ -25,12 +25,12 @@ CLASS zcl_adf_service_default_config IMPLEMENTATION.
 
   METHOD constructor.
 
-    m_impl_cache = VALUE #( ( service_id = zif_adf_azure_defconfig~gc_service_aad         classname = 'ZCL_ADF_SERVICE_AAD')
-                            ( service_id = zif_adf_azure_defconfig~gc_service_blob       classname = 'ZCL_ADF_SERVICE_BLOB')
-                            ( service_id = zif_adf_azure_defconfig~gc_service_docdb      classname = 'ZCL_ADF_SERVICE_DOCUMENTDB')
-                            ( service_id = zif_adf_azure_defconfig~gc_service_eventhub   classname = 'ZCL_ADF_SERVICE_EVENTHUB')
-                            ( service_id = zif_adf_azure_defconfig~gc_service_keyvault   classname = 'ZCL_ADF_SERVICE_KEYVAULT')
-                            ( service_id = zif_adf_azure_defconfig~gc_service_servicebus classname = 'ZCL_ADF_SERVICE_SERVICEBUS')
+    m_impl_cache = VALUE #( ( service_id = zif_adf_azure_defconfig~gc_service_aad         classname = 'ZCL_ADF_SERVICE_AAD' )
+                            ( service_id = zif_adf_azure_defconfig~gc_service_blob       classname = 'ZCL_ADF_SERVICE_BLOB' )
+                            ( service_id = zif_adf_azure_defconfig~gc_service_docdb      classname = 'ZCL_ADF_SERVICE_DOCUMENTDB' )
+                            ( service_id = zif_adf_azure_defconfig~gc_service_eventhub   classname = 'ZCL_ADF_SERVICE_EVENTHUB' )
+                            ( service_id = zif_adf_azure_defconfig~gc_service_keyvault   classname = 'ZCL_ADF_SERVICE_KEYVAULT' )
+                            ( service_id = zif_adf_azure_defconfig~gc_service_servicebus classname = 'ZCL_ADF_SERVICE_SERVICEBUS' )
                            ).
 
   ENDMETHOD.
