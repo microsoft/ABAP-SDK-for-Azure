@@ -14,6 +14,7 @@
     <LANGUAGE>E</LANGUAGE>
     <OBJECTNAME>ZADF_CONFIG</OBJECTNAME>
     <OBJECTTYPE>S</OBJECTTYPE>
+    <DDTEXT>SAP-Azure Data Framework Configurations</DDTEXT>
    </OBJT>
    <OBJS>
     <OBJS>

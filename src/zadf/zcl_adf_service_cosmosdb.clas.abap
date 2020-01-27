@@ -226,9 +226,9 @@ METHOD send.
     IF NOT gv_partition_key_val IS INITIAL.
       add_request_header( iv_name = 'x-ms-documentdb-partitionkey' iv_value = gv_partition_key_val ).
     ENDIF.
-    add_request_header( iv_name = 'x-ms-version' iv_value = '2015-12-16' ).
-    add_request_header( iv_name = 'x-ms-documentdb-is-upsert' iv_value = 'true' ).
-    add_request_header( iv_name = 'Accept' iv_value = 'application/json' ).
+    add_request_header( iv_name = 'x-ms-version' iv_value = '2015-12-16').
+    add_request_header( iv_name = 'x-ms-documentdb-is-upsert' iv_value = 'true').
+    add_request_header( iv_name = 'Accept' iv_value = 'application/json').
     add_request_header( iv_name = 'x-ms-date' iv_value = gv_http_date ).
     add_request_header( iv_name = 'Authorization' iv_value = lv_auth_token ).
     IF NOT it_headers[] IS INITIAL.

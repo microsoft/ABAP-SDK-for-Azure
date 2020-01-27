@@ -13,6 +13,7 @@
     <LANGUAGE>E</LANGUAGE>
     <OBJECTNAME>ZADF_EHUB_POLICY</OBJECTNAME>
     <OBJECTTYPE>S</OBJECTTYPE>
+    <DDTEXT>SAP-Azure Data Framework Configurations</DDTEXT>
    </OBJT>
    <OBJS>
     <OBJS>
