@@ -2,7 +2,8 @@ class ZCL_ADF_SERVICE_EVENTHUB definition
   public
   inheriting from ZCL_ADF_SERVICE
   final
-  create public .
+  create private
+  GLOBAL FRIENDS zcl_adf_service_factory.
 
 public section.
 

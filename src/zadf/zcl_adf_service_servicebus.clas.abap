@@ -2,7 +2,8 @@ class ZCL_ADF_SERVICE_SERVICEBUS definition
   public
   inheriting from ZCL_ADF_SERVICE
   final
-  create public .
+  CREATE PRIVATE
+  GLOBAL FRIENDS zcl_adf_service_factory.
 
 public section.
 protected section.
