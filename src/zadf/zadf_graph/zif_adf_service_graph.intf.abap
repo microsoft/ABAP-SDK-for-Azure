@@ -77,7 +77,7 @@ INTERFACE zif_adf_service_graph
     RETURNING
       VALUE(rt_users)       TYPE  users
     RAISING
-      zcx_adf_service ..
+      zcx_adf_service .
 
 
 ENDINTERFACE.

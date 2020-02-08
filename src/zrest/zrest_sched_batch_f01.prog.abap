@@ -154,7 +154,7 @@ FORM f4_batch_server  CHANGING pv_bsname TYPE bpsrvgrp.
         ls_list       TYPE msxxlist,
         lt_tsrvgrp    TYPE STANDARD TABLE OF tsrvgrp,
         ls_tsrvgrp    TYPE tsrvgrp,
-        lv_sel_server LIKE tbtcjob-execserver..
+        lv_sel_server LIKE tbtcjob-execserver.
 
   DATA BEGIN OF lt_sys_list OCCURS 10.
           INCLUDE STRUCTURE btctgtsrvr.
