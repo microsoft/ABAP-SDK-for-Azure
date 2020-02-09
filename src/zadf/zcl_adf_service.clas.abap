@@ -683,7 +683,7 @@ CLASS zcl_adf_service IMPLEMENTATION.
                 ls_fields-name = ls_attribute->get_value( ).
                 " get value
                 l_node = reader->read_next_node( ).
-                IF l_node->type = if_sxml_node=>co_nt_value..
+                IF l_node->type = if_sxml_node=>co_nt_value.
                   lr_value_node ?= l_node .
                   ls_fields-value = lr_value_node->get_value( ).
                   " add field into the result table
