@@ -441,7 +441,7 @@
 **         v-javeda - MS2K948543
                 IF obj IS BOUND.
                   TRY.
-                      CALL METHOD obj->retry( EXPORTING message_id = sel_row-zmessageid method = 'None' ).
+                      CALL METHOD obj->retry( message_id = sel_row-zmessageid method = 'None' ).
 *                Authorization check VSTF # 2163894 | DGDK903413
                     CATCH zcx_http_client_failed INTO lv_clnt_failed.
                       lv_text2 = lv_clnt_failed->if_t100_message~t100key.
@@ -520,7 +520,7 @@
             CREATE OBJECT ob .
             IF ob IS BOUND.
               TRY.
-                  CALL METHOD ob->show_payload( EXPORTING message_id = sel_row-zmessageid response = abap_true ).
+                  CALL METHOD ob->show_payload( message_id = sel_row-zmessageid response = abap_true ).
 *              Authorization changes V-DEVEER
                 CATCH zcx_http_client_failed INTO lv_textid.
                   lv_text2 = lv_textid->if_t100_message~t100key.
@@ -555,7 +555,7 @@
             CREATE OBJECT ob .
             IF ob IS BOUND.
               TRY.
-                  CALL METHOD ob->retry_log( EXPORTING message_id = sel_row-zmessageid response = abap_true ).
+                  CALL METHOD ob->retry_log( message_id = sel_row-zmessageid response = abap_true ).
 *              Authorization changes V-DEVEER
                 CATCH zcx_http_client_failed INTO lv_textid.
                   lv_text2 = lv_textid->if_t100_message~t100key.

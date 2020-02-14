@@ -82,7 +82,6 @@ TRY.
         ls_user-password_policies = 'DisablePasswordExpiration'.
 
         DATA(lv_json) = /ui2/cl_json=>serialize(
-                          EXPORTING
                             data        = ls_user    " Data to serialize
                             pretty_name = abap_true    " Pretty Print property names
                         ).

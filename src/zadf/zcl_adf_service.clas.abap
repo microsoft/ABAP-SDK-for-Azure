@@ -167,7 +167,7 @@ CLASS zcl_adf_service IMPLEMENTATION.
     gv_interface_id = iv_interface_id.
     gv_service_id   = iv_service_id.
     get_interface_details( ).
-    get_rest_api_ref( EXPORTING iv_business_identifier = iv_business_identifier ).
+    get_rest_api_ref( iv_business_identifier = iv_business_identifier ).
   ENDMETHOD.
 
 
@@ -561,9 +561,9 @@ CLASS zcl_adf_service IMPLEMENTATION.
       ENDTRY.
       IF go_rest_api IS BOUND.
 *Optional - To help developer understand the origin of call
-        go_rest_api->set_callingmethod( EXPORTING zimethodname = 'SEND' ).
+        go_rest_api->set_callingmethod( zimethodname = 'SEND' ).
 *Optional - To help developer understand the origin of call
-        go_rest_api->set_callingprogram( EXPORTING ziclassname = 'ZCL_ADF_SERVICE' ).
+        go_rest_api->set_callingprogram( ziclassname = 'ZCL_ADF_SERVICE' ).
       ELSE.
         RAISE EXCEPTION TYPE zcx_adf_service
           EXPORTING

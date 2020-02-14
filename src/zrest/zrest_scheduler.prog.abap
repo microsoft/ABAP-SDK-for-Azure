@@ -52,7 +52,6 @@ CLASS lcl_process_data IMPLEMENTATION.
 *   Call the retry method and set async to false , retry to true.
         TRY .
             CALL METHOD rest_utility->retry(
-              EXPORTING
                 message_id     = wa_unprocessed_data-messageid
                 method         = wa_unprocessed_data-method
                 from_scheduler = 'X' ).
