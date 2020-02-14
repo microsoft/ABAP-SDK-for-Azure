@@ -371,7 +371,6 @@ CLASS zcl_rest_framework IMPLEMENTATION.
 
   METHOD  get_response_header.
     rv_value = rest_client->if_rest_client~get_response_header(
-      EXPORTING
         iv_name  = iv_name ).
   ENDMETHOD.
 
@@ -623,7 +622,7 @@ CLASS zcl_rest_framework IMPLEMENTATION.
     lv_tihttpnvp-value = iv_value.
     APPEND lv_tihttpnvp TO program_headers.
     CLEAR lv_tihttpnvp.
-    http_client->request->set_header_field( EXPORTING name = iv_name value = iv_value ).
+    http_client->request->set_header_field( name = iv_name value = iv_value ).
   ENDMETHOD.
 
 

@@ -362,7 +362,6 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 *   if yes , convert the xstring to string for the processing
     TRY.
         converted = cl_abap_conv_in_ce=>create(
-          EXPORTING
             input = input ).
       CATCH cx_parameter_invalid_range .
       CATCH cx_sy_codepage_converter_init .
@@ -559,9 +558,9 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
                lc_auth       TYPE ihttpnvp-name VALUE 'Authorization'.
     CREATE OBJECT lv_textid.
 *-----------------------check message id ------------------------------*
-    check_messageid( EXPORTING message_id = message_id ).
+    check_messageid( message_id = message_id ).
 *-----------------------get db data -----------------------------------*
-    get_db_data( EXPORTING message_id = message_id ).
+    get_db_data( message_id = message_id ).
 * ------------------------get the latest payloadv----------------------*
 *   Sort the retry num , so that latest one is picked for reprocessing
     SORT payload BY retry_num DESCENDING.
@@ -597,7 +596,6 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     DATA: wa_config TYPE zrest_srtuct_config.
 
     wa_config = zcl_rest_utility_class=>get_config_data(
-      EXPORTING
         interface_id = interface_name
         method       = http_method ).
 
@@ -1386,7 +1384,6 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 
 
     CALL METHOD cl_abap_browser=>show_html(
-      EXPORTING
         title       = 'Retry Log'
         html_string = lv_string ).
   ENDMETHOD.
@@ -1491,7 +1488,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
           lv_content = output.
         ENDIF.
       ENDIF.
-      CALL METHOD cl_abap_browser=>show_html( EXPORTING html_xstring = lv_content ).
+      CALL METHOD cl_abap_browser=>show_html( html_xstring = lv_content ).
     ELSE.
       CLEAR lv_content.
       LOOP AT it_payload INTO wa_payload.
@@ -1524,7 +1521,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
           lv_content = lv_content_cpy.
       ENDTRY.
 
-      CALL METHOD cl_abap_browser=>show_html( EXPORTING html_xstring = lv_content ).
+      CALL METHOD cl_abap_browser=>show_html( html_xstring = lv_content ).
     ENDIF.
   ENDMETHOD.
 
@@ -1596,7 +1593,6 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
                   INTO lv_string SEPARATED BY cl_abap_char_utilities=>cr_lf.
 
       CALL METHOD cl_abap_browser=>show_html(
-        EXPORTING
           html_string = lv_string ).
 
     ENDIF.
