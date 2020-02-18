@@ -905,7 +905,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
                    CONCATENATE 'SharedAccessSignature sig=' lv_encoded_base_address  '&sig=' lv_sign '&se=' lv_new_expiry_adf '&skn='
                    wa_policy-policy INTO lv_final_token.
                 ELSEIF lw_zadf_config-interface_type eq lc_eventhub. "Eventhub signature string
-                   CONCATENATE 'SharedAccessSignature sr=' encoded_base_address  '&sig=' sign '&se=' new_expiry '&skn=' 
+                   CONCATENATE 'SharedAccessSignature sr=' encoded_base_address  '&sig=' sign '&se=' new_expiry '&skn='
                    wa_policy-policy INTO lv_final_token.
                 ENDIF.
               ENDIF.
