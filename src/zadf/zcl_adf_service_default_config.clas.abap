@@ -50,6 +50,10 @@ CLASS zcl_adf_service_default_config IMPLEMENTATION.
     <fs>-service_id = zif_adf_azure_defconfig~gc_service_servicebus.
     <fs>-classname = 'ZCL_ADF_SERVICE_SERVICEBUS'.
 
+    APPEND INITIAL LINE TO m_impl_cache ASSIGNING <fs>.
+    <fs>-service_id = zif_adf_azure_defconfig~gc_service_cosmosdb.
+    <fs>-classname = 'ZCL_ADF_SERVICE_COSMOSDB'.
+
   ENDMETHOD.
 
 
