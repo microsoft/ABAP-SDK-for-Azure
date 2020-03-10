@@ -7,6 +7,7 @@ INTERFACE zif_adf_azure_defconfig
   CONSTANTS gc_service_servicebus TYPE zazure_dest VALUE 'SERVICEBUS'. "#EC NOTEXT
   CONSTANTS gc_service_aad        TYPE zazure_dest VALUE 'AAD'. "#EC NOTEXT
   CONSTANTS gc_service_keyvault   TYPE zazure_dest VALUE 'KV'. "#EC NOTEXT
+  CONSTANTS gc_service_cosmosdb   TYPE zazure_dest VALUE 'COSMOSDB'. "#EC NOTEXT
 
   METHODS get_classname
     IMPORTING i_interface_type   TYPE zazure_dest
