@@ -1,17 +1,3 @@
-************************************************************************
-* Program Title: ZREST_TABLES_ARCHIVE                                  *
-* Created by   : Krishan Ankam                     Date: 06/04/2019    *
-*                                                                      *
-* Description  : Archive ZREST* tables                                 *
-* Module name  : ZREST tables are deleted for theselection screen date *
-*&---------------------------------------------------------------------*
-*                       Modification History                           *
-*&---------------------------------------------------------------------*
-* Date      | USER ID  |  VSTF   | Transport  | Remarks                *
-*&---------------------------------------------------------------------*
-*06/04/2019 | KRANKAM  | 4653851 | MS2K985166 | Initial Version        *
-*                                  MS2K985296
-*&---------------------------------------------------------------------*
 
 SELECT-OPTIONS: s_mesgid FOR lw_monitor-zmessageid  .
 SELECT-OPTIONS: s_exedat FOR lw_monitor-zexedate   OBLIGATORY  MEMORY ID  zexedate     .
