@@ -19,6 +19,9 @@
     "globalMacros": []
   },
   "rules": {
+    "forbidden_identifier": false,
+    "try_without_catch": true,
+    "unknown_types": false,
     "abapdoc": false,
     "allowed_object_naming": true,
     "allowed_object_types": false,
@@ -34,11 +37,19 @@
     "check_text_elements": false,
     "check_transformation_exists": false,
     "constructor_visibility_public": true,
-    "empty_structure": false,
+    "empty_structure": {
+      "loop": true,
+      "if": false,
+      "while": true,
+      "case": true,
+      "select": false,
+      "do": true,
+      "at": true
+    },
     "form_no_dash": true,
     "form_tables_obsolete": true,
     "fully_type_constants": true,
-    "implement_methods": false,
+    "implement_methods": true,
     "in_statement_indentation": false,
     "keep_single_parameter_on_one_line": false,
     "keyword_case": false,
@@ -49,7 +60,7 @@
     "preferred_compare_operator": false,
     "prefix_is_current_class": false,
     "release_idoc": true,
-    "rfc_error_handling": false,
+    "rfc_error_handling": true,
     "selection_screen_naming": false,
     "sicf_consistency": true,
     "space_before_dot": false,
@@ -90,7 +101,9 @@
     "if_in_if": false,
     "indentation": false,
     "inline_data_old_versions": true,
-    "line_length": false,
+    "line_length": {
+      "length": 160
+    },
     "line_only_punc": false,
     "local_class_naming": false,
     "local_variable_names": false,
@@ -119,7 +132,9 @@
       "auth": "^Z",
       "idoc": "^Z",
       "xslt": "^Z",
-      "pinf": "^Z"
+      "pinf": "^Z",
+      "ssfo": "^Z",
+      "ssst": "^Z"
     },
     "obsolete_statement": {
       "refresh": false,

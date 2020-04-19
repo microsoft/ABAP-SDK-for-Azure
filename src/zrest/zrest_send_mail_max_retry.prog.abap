@@ -29,11 +29,10 @@ CREATE OBJECT lo_rest .
 
 START-OF-SELECTION.
 
-  TRY.
-    CALL METHOD lo_rest->retry_limit_exceeded
-      IMPORTING
-        et_retry_report = lt_retry_email.
-  ENDTRY.
+  CALL METHOD lo_rest->retry_limit_exceeded
+    IMPORTING
+      et_retry_report = lt_retry_email.
+
   IF lt_retry_email IS NOT INITIAL.
     COMMIT WORK.
     WRITE AT: /5'INTERFACE_ID', 20'METHOD', 30'MAX_RETRY', 40'ZMESSAGEID', 90'ZUSER',
