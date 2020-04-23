@@ -3,7 +3,7 @@ pool:
 
 steps:
 - script: |
-    npm install abaplint -g
+    npm install @abaplint/cli -g
   displayName: 'abaplint Install'
 - script: |
     abaplint --version
