@@ -16,7 +16,8 @@ CLASS zcl_adf_service_graph DEFINITION
 ENDCLASS.
 
 
-CLASS zcl_adf_service_graph IMPLEMENTATION.
+
+CLASS ZCL_ADF_SERVICE_GRAPH IMPLEMENTATION.
 
 
   METHOD zif_adf_service_graph~create_calendar_event.
@@ -92,10 +93,9 @@ CLASS zcl_adf_service_graph IMPLEMENTATION.
         READ TABLE lt_errors ASSIGNING FIELD-SYMBOL(<fs_error>) INDEX 1.
 
         RAISE EXCEPTION TYPE zcx_adf_service_graph
-          MESSAGE ID 'ZCL_ADF_SERVICE_GRAPH'
-          NUMBER '1'
-          WITH <fs_error>-value.
-
+          EXPORTING
+            textid         = zcx_adf_service_graph=>general_exception
+            error_response = <fs_error>-value.
 
       ENDIF.
 
@@ -196,15 +196,22 @@ CLASS zcl_adf_service_graph IMPLEMENTATION.
 
       IF lo_response IS BOUND.
         DATA(response) = lo_response->get_string_data( ).
-        /ui2/cl_json=>deserialize(
-                            EXPORTING
-                              json = response   " Data to serialize
+        IF ev_http_status = 400.
+          RAISE EXCEPTION TYPE zcx_adf_service_graph
+            EXPORTING
+              textid         = zcx_adf_service_graph=>general_exception
+              error_response = response.
+        ELSE.
+          /ui2/cl_json=>deserialize(
+                              EXPORTING
+                                json = response   " Data to serialize
 
-                            "  pretty_name = abap_true    " Pretty Print property names
-                            CHANGING
-                              data = ls_response
-                          ).
-        rt_users = ls_response-value.
+                              "  pretty_name = abap_true    " Pretty Print property names
+                              CHANGING
+                                data = ls_response
+                            ).
+          rt_users = ls_response-value.
+        ENDIF.
       ELSE.
 
         RAISE EXCEPTION TYPE zcx_adf_service
