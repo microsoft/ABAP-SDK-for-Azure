@@ -1,7 +1,6 @@
 class ZCX_ADF_SERVICE definition
   public
   inheriting from CX_STATIC_CHECK
-  final
   create public .
 
 public section.
