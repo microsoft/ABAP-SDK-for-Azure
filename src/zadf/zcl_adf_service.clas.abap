@@ -514,12 +514,10 @@ CLASS zcl_adf_service IMPLEMENTATION.
         EXPORTING
           textid       = zcx_adf_service=>call_type_not_maintained
           interface_id = gv_interface_id.
-    ELSE.
-      IF ls_config-service_type EQ gc_synchronous.
-        gv_asynchronous = abap_false.
-      ELSEIF ls_config-service_type EQ gc_asynchronous.
-        gv_asynchronous = abap_true.
-      ENDIF.
+    ELSEIF ls_config-service_type EQ gc_synchronous.
+      gv_asynchronous = abap_false.
+    ELSEIF ls_config-service_type EQ gc_asynchronous.
+      gv_asynchronous = abap_true.
     ENDIF.
     gv_is_try = ls_config-is_try.
     gv_sas_key = ls_config-sas_key. "Added by KRDASH
