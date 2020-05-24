@@ -180,11 +180,9 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 
     AUTHORITY-CHECK OBJECT 'ZREST_AUTH'
         ID 'ZBOOLEAN' FIELD 'X'.
-    IF sy-subrc NE 0.
-      IF check_obfuscation_needed( inetrface_in = wa_payload-interface_id ) EQ abap_true.
-        output = obfuscate( input = wa_payload-payload ).
-        wa_payload-payload = output.
-      ENDIF.
+    IF sy-subrc NE 0 AND check_obfuscation_needed( inetrface_in = wa_payload-interface_id ) EQ abap_true.
+      output = obfuscate( input = wa_payload-payload ).
+      wa_payload-payload = output.
     ENDIF.
 
     CALL FUNCTION 'ECATT_CONV_XSTRING_TO_STRING'
@@ -605,13 +603,9 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     IF wa_config-max_retry EQ 0.
       MESSAGE 'Retry not possible'(001) TYPE 'I'.   " Added the messsage for VSTF 2163894 / DGDK903444
       EXIT.
-    ELSE.
-      IF wa_paylod-retry_num EQ  wa_config-max_retry.
-        IF from_scheduler EQ 'X'. "v-javeda - MS2K948543
-          MESSAGE 'Maximum number of retry attempts reached'(002) TYPE 'I'. " Added the message for VSTF 2163894 / DGDK903444
-          EXIT.
-        ENDIF.
-      ENDIF.
+    ELSEIF wa_paylod-retry_num EQ wa_config-max_retry AND from_scheduler EQ 'X'. "v-javeda - MS2K948543
+      MESSAGE 'Maximum number of retry attempts reached'(002) TYPE 'I'. " Added the message for VSTF 2163894 / DGDK903444
+      EXIT.
     ENDIF.
 *----------------------------------------------------------------------*
 *    begin of change for the exponential retries.

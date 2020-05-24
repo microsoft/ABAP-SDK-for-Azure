@@ -98,7 +98,7 @@
     "functional_writing": false,
     "global_class": true,
     "identical_form_names": true,
-    "if_in_if": false,
+    "if_in_if": true,
     "indentation": false,
     "inline_data_old_versions": true,
     "line_length": {
