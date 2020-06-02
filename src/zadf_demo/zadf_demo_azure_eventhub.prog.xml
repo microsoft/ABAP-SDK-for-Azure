@@ -4,8 +4,6 @@
   <asx:values>
    <PROGDIR>
     <NAME>ZADF_DEMO_AZURE_EVENTHUB</NAME>
-    <STATE>A</STATE>
-    <VARCL>X</VARCL>
     <SUBC>1</SUBC>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
@@ -16,6 +14,12 @@
      <ID>R</ID>
      <ENTRY>Program ZADF_DEMO_AZURE_EVENTHUB</ENTRY>
      <LENGTH>32</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_EHIFID</KEY>
+     <ENTRY>Event Hub Interface ID</ENTRY>
+     <LENGTH>30</LENGTH>
     </item>
    </TPOOL>
   </asx:values>

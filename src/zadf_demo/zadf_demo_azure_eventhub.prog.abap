@@ -32,6 +32,12 @@ DATA: it_headers     TYPE tihttpnvp,
       lv_xstring     TYPE xstring,
       it_data        TYPE STANDARD TABLE OF lty_data.
 
+SELECTION-SCREEN begin of BLOCK bl1 with frame.
+PARAMETER: p_ehifid type zinterface_id DEFAULT gc_interface.
+SELECTION-SCREEN end of BLOCK bl1.
+
+START-OF-SELECTION.
+
 *Sample data population for sending it to Azure eventhub
 SELECT  carrid connid fldate planetype
         FROM sflight UP TO 10 ROWS
@@ -42,7 +48,7 @@ IF sy-subrc EQ 0.
   TRY.
 **Calling Factory method to instantiate eventhub client
 
-      oref = zcl_adf_service_factory=>create( iv_interface_id = gc_interface
+      oref = zcl_adf_service_factory=>create( iv_interface_id        = p_ehifid
                                               iv_business_identifier = filter ).
       oref_eventhub ?= oref.
 

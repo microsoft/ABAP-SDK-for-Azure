@@ -28,7 +28,8 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
           lv_applic              TYPE rfcdisplay-sslapplic,
           lv_psename             TYPE ssfpsename,
           lv_profilename         TYPE localfile,
-          lv_profile             TYPE ssfparms-pab.
+          lv_profile             TYPE ssfparms-pab,
+          ssl_active             TYPE rfcsnc.
   IF NOT p_sas_key IS INITIAL.
     CALL FUNCTION 'RFC_READ_HTTP_DESTINATION'
       EXPORTING
@@ -36,6 +37,7 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
         authority_check         = ' '
       IMPORTING
         sslapplic               = lv_applic
+        ssl                     = ssl_active
       EXCEPTIONS
         authority_not_available = 1
         destination_not_exist   = 2
@@ -45,6 +47,9 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
         OTHERS                  = 6.
     IF sy-subrc NE 0.
       MESSAGE text-005 TYPE lc_e.
+    ENDIF.
+    IF ssl_active <> abap_true.
+      MESSAGE e001(zadf) WITH pw_zrest-destination.
     ENDIF.
     IF NOT lv_applic IS INITIAL.
       CALL FUNCTION 'SSFPSE_FILENAME'
@@ -223,12 +228,12 @@ ENDFORM.                    "f_create_entry
 *----------------------------------------------------------------------*
 FORM f_before_save.
   TYPES: BEGIN OF lty_zadf,
-          interface_id TYPE zadf_config-interface_id,
-          sas_key      TYPE zadf_config-sas_key,
+           interface_id TYPE zadf_config-interface_id,
+           sas_key      TYPE zadf_config-sas_key,
          END OF lty_zadf.
   DATA : lw_extract(4096) TYPE c,
-         lt_zadf_config TYPE STANDARD TABLE OF lty_zadf,
-         lw_zadf_config TYPE lty_zadf.
+         lt_zadf_config   TYPE STANDARD TABLE OF lty_zadf,
+         lw_zadf_config   TYPE lty_zadf.
   IF status-action NE 'A'.
     SELECT interface_id sas_key FROM zadf_config
                                 INTO TABLE lt_zadf_config.

@@ -197,7 +197,8 @@ CLASS zcl_adf_service IMPLEMENTATION.
            lv_applic          TYPE rfcdisplay-sslapplic,
            lv_psename         TYPE ssfpsename,
            lv_profilename     TYPE localfile,
-           lv_profile         TYPE ssfparms-pab.
+           lv_profile         TYPE ssfparms-pab,
+           ssl_active         TYPE rfcsnc.
     lv_srtfd = gv_interface_id.
     DEFINE decode_key.
 *Import internal table as a cluster from INDX
@@ -217,6 +218,7 @@ CLASS zcl_adf_service IMPLEMENTATION.
               authority_check         = ' '
             IMPORTING
               sslapplic               = lv_applic
+              ssl                     = ssl_active
             EXCEPTIONS
               authority_not_available = 1
               destination_not_exist   = 2
@@ -230,6 +232,13 @@ CLASS zcl_adf_service IMPLEMENTATION.
                 textid       = zcx_adf_service=>read_error_rfc_destination
                 interface_id = gv_interface_id.
           ENDIF.
+          if ssl_active <> abap_true.
+            RAISE EXCEPTION TYPE zcx_adf_service
+              EXPORTING
+                textid          = zcx_adf_service=>RFC_DESTINATION_NO_SSL
+                rfc_destination = lv_rfc_destination
+                interface_id    = gv_interface_id.
+          endif.
           CALL FUNCTION 'SSFPSE_FILENAME'
             EXPORTING
               mandt         = sy-mandt
@@ -624,29 +633,39 @@ CLASS zcl_adf_service IMPLEMENTATION.
 
 
   METHOD get_target_host.
+    DATA: ssl_active TYPE rfcsnc.
+
     CALL FUNCTION 'RFC_READ_HTTP_DESTINATION'
-          EXPORTING
-            destination             = iv_destination
-            authority_check         = iv_authority_check
-            bypass_buf              = iv_bypass_buff
-          IMPORTING
-            server                  = ev_server
-            path_prefix             = ev_path_prefix
-          EXCEPTIONS
-            authority_not_available = 1
-            destination_not_exist   = 2
-            information_failure     = 3
-            internal_failure        = 4
-            no_http_destination     = 5
-            OTHERS                  = 6.
-        IF sy-subrc <> 0.
+      EXPORTING
+        destination             = iv_destination
+        authority_check         = iv_authority_check
+        bypass_buf              = iv_bypass_buff
+      IMPORTING
+        server                  = ev_server
+        path_prefix             = ev_path_prefix
+        ssl                     = ssl_active
+      EXCEPTIONS
+        authority_not_available = 1
+        destination_not_exist   = 2
+        information_failure     = 3
+        internal_failure        = 4
+        no_http_destination     = 5
+        OTHERS                  = 6.
+    IF sy-subrc <> 0.
 * Implement suitable error handling here
-          RAISE EXCEPTION TYPE zcx_adf_service
-            EXPORTING
-              textid       = zcx_adf_service=>read_error_rfc_destination
-              interface_id = gv_interface_id.
-        ENDIF.
-      ENDMETHOD.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>read_error_rfc_destination
+          interface_id = gv_interface_id.
+    ENDIF.
+    IF ssl_active <> abap_true.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid          = zcx_adf_service=>rfc_destination_no_ssl
+          rfc_destination = iv_destination
+          interface_id    = gv_interface_id.
+    ENDIF.
+  ENDMETHOD.
 
   METHOD json_to_http_fields.
     DATA: ls_fields       TYPE ihttpnvp,
