@@ -484,7 +484,7 @@ CLASS zcl_rest_framework IMPLEMENTATION.
 
     TRY.
         e_message_id = cl_system_uuid=>create_uuid_x16_static( ).
-      CATCH cx_uuid_error ##NO_HANDLER.
+      CATCH cx_uuid_error.
         e_message_id = sy-datum && sy-uzeit.
     ENDTRY.
 
