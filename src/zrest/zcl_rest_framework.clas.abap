@@ -62,9 +62,9 @@ CLASS zcl_rest_framework DEFINITION
     METHODS get_response_headers
       RETURNING
         VALUE(rt_header_fields) TYPE tihttpnvp .
-    METHODS set_guid
+    METHODS create_message_id
       RETURNING
-        VALUE(guid) TYPE guid_16 .
+        VALUE(e_message_id) TYPE guid_16 .
     METHODS get_user
       RETURNING
         VALUE(rv_user) TYPE sy-uname .
@@ -79,13 +79,13 @@ CLASS zcl_rest_framework DEFINITION
         VALUE(result) TYPE REF TO cl_rest_http_client .
     METHODS is_retry
       RETURNING
-        VALUE(result) TYPE abap_bool .
+        VALUE(e_is_retry) TYPE abap_bool .
     METHODS get_request
       RETURNING
         VALUE(result) TYPE REF TO if_rest_entity .
     METHODS get_guid
       RETURNING
-        VALUE(result) TYPE guid_16 .
+        VALUE(e_message_id) TYPE guid_16 .
     METHODS get_interface
       RETURNING
         VALUE(interface_name) TYPE zinterface_id .
@@ -333,7 +333,7 @@ CLASS zcl_rest_framework IMPLEMENTATION.
 
 
   METHOD get_guid.
-    result = message_id.
+    e_message_id = me->message_id.
   ENDMETHOD.
 
 
@@ -428,11 +428,7 @@ CLASS zcl_rest_framework IMPLEMENTATION.
 
 
   METHOD is_retry.
-    IF retry EQ abap_true.
-      result = abap_true.
-    ELSE.
-      result = abap_false.
-    ENDIF.
+    e_is_retry = me->retry.
   ENDMETHOD.
 
 
@@ -484,19 +480,13 @@ CLASS zcl_rest_framework IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD set_guid.
-    DATA: uuid_16  TYPE sysuuid_x16.
-    DATA: cx       TYPE REF TO cx_uuid_error.
+  METHOD create_message_id.
 
-    IF retry EQ abap_false.
-      TRY.
-          uuid_16 = cl_system_uuid=>create_uuid_x16_static( ).
-        CATCH cx_uuid_error INTO cx.
-          uuid_16 = '0'.
-      ENDTRY.
-
-      message_id = uuid_16.
-    ENDIF.
+    TRY.
+        e_message_id = cl_system_uuid=>create_uuid_x16_static( ).
+      CATCH cx_uuid_error.
+        e_message_id = sy-datum && sy-uzeit.
+    ENDTRY.
 
   ENDMETHOD.
 
@@ -537,16 +527,20 @@ CLASS zcl_rest_framework IMPLEMENTATION.
           rest_exception  TYPE REF TO cx_rest_client_exception.
     CREATE OBJECT rest_exception.
     GET TIME STAMP FIELD pre_timestamp.
+
+*   Is this a retry ?
+    me->retry = is_retry.
+
+*   Change only for the retry sceario.
+    IF is_retry( ) = abap_true.
+      me->message_id = messageid.
+      retry_cnt = retry_count + 1.
+    ELSE.
 *   Create the unique guid . This is used across all the tables for storing
 *   and retrieving the information related to REST calls
-    message_id = me->set_guid( ).
-*   Is this a retry ?
-    retry = is_retry.
-*   Chaneg only for the retry sceario.
-    IF is_retry( ) EQ abap_true.
-      message_id = messageid.
-      retry_cnt = retry_count + 1.
+      me->message_id = me->create_message_id( ).
     ENDIF.
+
 *   This method will execute GET,POST,PUT ...ased on the configuration set for the inteface. If Async is set , Request will
 *   in the wating status till the async program flushes this out. Apart from executing the calls , this method will hold
 *   the metrics of data
