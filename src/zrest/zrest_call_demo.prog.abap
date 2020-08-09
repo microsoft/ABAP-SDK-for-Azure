@@ -5,9 +5,6 @@ REPORT zrest_call_demo.
 DATA : rest_handler TYPE REF TO zcl_rest_framework,
        go_response  TYPE REF TO if_rest_entity,
        go_request   TYPE REF TO if_rest_entity,
-       gv_client    TYPE string,
-       gv_body      TYPE string,
-       gv_langu     TYPE langu,
        lv_requestid TYPE string.
 ************************************************************************
 CONSTANTS: c_interface   TYPE zinterface_id VALUE '1VT_OUTBND'.

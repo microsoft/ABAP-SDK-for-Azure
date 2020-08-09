@@ -438,11 +438,9 @@ CLASS zcl_adf_service IMPLEMENTATION.
 
 
   METHOD get_epoch_time.
-    DATA : lv_start_timestamp   TYPE timestampl,
-           lv_current_timestamp TYPE timestampl,
+    DATA : lv_current_timestamp TYPE timestampl,
            lv_seconds           TYPE p,
-           lv_input_seconds     TYPE p,
-           zcx_adf_service      TYPE REF TO zcx_adf_service.
+           lv_input_seconds     TYPE p.
     DATA: date TYPE datum,
           time TYPE uzeit.
 *Get the current timestamp
@@ -723,7 +721,6 @@ CLASS zcl_adf_service IMPLEMENTATION.
   METHOD send.
     DATA : lo_response     TYPE REF TO if_rest_entity,
            lo_request      TYPE REF TO if_rest_entity,
-           lv_expiry       TYPE string,
            lv_sas_token    TYPE string,
            lv_msg          TYPE string,
            lcx_adf_service TYPE REF TO zcx_adf_service.

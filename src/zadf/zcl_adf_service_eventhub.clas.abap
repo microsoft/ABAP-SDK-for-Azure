@@ -345,7 +345,6 @@ endmethod.
 method SEND.
   DATA : lo_response     TYPE REF TO if_rest_entity,
            lo_request      TYPE REF TO if_rest_entity,
-           lv_expiry       TYPE string,
            lv_sas_token    TYPE string,
            lv_msg          TYPE string,
            lcx_adf_service TYPE REF TO zcx_adf_service.

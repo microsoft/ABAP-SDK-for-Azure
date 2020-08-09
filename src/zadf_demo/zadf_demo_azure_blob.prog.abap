@@ -46,7 +46,6 @@ DATA : gt_data          TYPE STANDARD TABLE OF lty_data,
        gcx_interface    TYPE REF TO zcx_interace_config_missing,
        gcx_http         TYPE REF TO zcx_http_client_failed,
        r_obj1           TYPE REF TO zcl_adf_service_blob,
-       gv_response_blob TYPE string,
        gv_msg           TYPE string,
        gv_http_status   TYPE i.
 
