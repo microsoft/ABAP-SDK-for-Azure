@@ -223,11 +223,13 @@ Once installed successfully, you should see all the objects of ABAP SDK for Azur
         <a href="#TOC">Implementation Guides</a>
     </h3>
     <p>
- We have used Abstract factory pattern to build these libraries. So, implementation of these libraries is almost similar with few minor differences in configuration. Please find the detailed implementation guide for Azure Event hubs.We will be provide Implementation guides for other services in next few weeks.
+ We have used Abstract factory pattern to build these libraries. So, implementation of these libraries is almost similar with few minor differences in configuration. Please find the detailed implementation guide for Azure Event hubs.We will be provide Implementation guides for other services in next release.
     </p>
 </div>
 
-•	[ABAP SDK Implementation Guide for Event Hubs](https://github.com/Microsoft/ABAP-SDK-for-Azure/blob/master/ABAP%20SDK%20Implementation%20Guide%20for%20Azure%20Event%20hubs.pdf)
+•	[ABAP SDK Implementation Guide for Event Hubs](https://github.com/Microsoft/ABAP-SDK-for-Azure/blob/master/ABAP%20SDK%20Implementation%20Guide%20for%20Azure%20Event%20hubs.md)
+
+•	[ABAP SDK Implementation Guide for Azure Active Directory](https://github.com/Microsoft/ABAP-SDK-for-Azure/blob/master/ABAP%20SDK%20Implementation%20Guide%20for%20Azure%20Directory.md)
 
 <div id="heading--1-9">
     <h3>
