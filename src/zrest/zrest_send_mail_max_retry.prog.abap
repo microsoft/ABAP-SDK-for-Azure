@@ -16,7 +16,6 @@
 REPORT zrest_send_mail_max_retry.
 
 DATA: lo_rest        TYPE REF TO zcl_rest_utility_class,
-      lt_zrt_monitor TYPE zrt_monitor,
       lt_retry_email TYPE ztt_rest_retry_limi,
       lw_retry_email TYPE zrest_retry_limi.
 

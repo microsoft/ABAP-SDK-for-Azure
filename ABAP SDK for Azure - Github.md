@@ -223,7 +223,7 @@ Once installed successfully, you should see all the objects of ABAP SDK for Azur
         <a href="#TOC">Implementation Guides</a>
     </h3>
     <p>
- We have used Abstract factory pattern to build these libraries. So, implementation of these libraries is almost similar with few minor differences in configuration. Please find the detailed implementation guide for Azure Event hubs.We will be provide Implementation guides for other services in next release.
+ We have used Abstract factory pattern to build these libraries. So, implementation of these libraries is almost similar with few minor differences in configuration. Please find the detailed implementation guide for Azure Event hubs.We will be provide Implementation guides for other services in our next releases.
     </p>
 </div>
 
