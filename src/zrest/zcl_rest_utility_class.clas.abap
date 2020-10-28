@@ -1469,8 +1469,8 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     ENDIF.
 
 *   Based on the response indicator ..set the payload
+    CLEAR lv_content.
     IF response EQ abap_true.
-      CLEAR lv_content.
       LOOP AT it_payload INTO wa_payload.
         CONCATENATE wa_payload-response
                     lv_content
@@ -1485,9 +1485,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
           lv_content = output.
         ENDIF.
       ENDIF.
-      CALL METHOD cl_abap_browser=>show_html( html_xstring = lv_content ).
     ELSE.
-      CLEAR lv_content.
       LOOP AT it_payload INTO wa_payload.
         CONCATENATE wa_payload-payload
                     lv_content INTO
@@ -1518,8 +1516,10 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
           lv_content = lv_content_cpy.
       ENDTRY.
 
-      CALL METHOD cl_abap_browser=>show_html( html_xstring = lv_content ).
     ENDIF.
+
+    CALL METHOD cl_abap_browser=>show_html( html_xstring = lv_content ).
+
   ENDMETHOD.
 
 
