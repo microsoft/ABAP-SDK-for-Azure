@@ -200,16 +200,12 @@ Visit <https://github.com/Microsoft/ABAP-SDK-for-Azure>
     </p>
 </div>
 
- Target host: **login.microsoftonline.com**
-
- Path Prefix: **/InputTenantID/oauth2/token**
-
  
- ![](MD%20image/49.png)
+ ![](MD%20image/32.jpg)
  
  Click on the Lock symbol you find next to refresh button in Chrome browser and select Certificate to view the certificate used for communication
  
- ![](MD%20image/50.png)
+ ![](MD%20image/33.jpg)
  
  In the certificate, go to Details tab and Choose button **‘Copy to File’** to download the certificate to your local machine. Repeat the process and download all the certificate until root. In this case, you need to download three certificates.
  
