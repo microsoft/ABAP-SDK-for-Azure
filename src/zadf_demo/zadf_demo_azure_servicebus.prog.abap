@@ -57,7 +57,7 @@ DATA: it_headers      TYPE tihttpnvp,
       it_data         TYPE STANDARD TABLE OF lty_data.
 
 SELECTION-SCREEN BEGIN OF BLOCK bl1 WITH FRAME.
-PARAMETER: p_sbifid TYPE zinterface_id DEFAULT gc_interface.
+PARAMETERS: p_sbifid TYPE zinterface_id DEFAULT gc_interface.
 SELECTION-SCREEN END OF BLOCK bl1.
 
 *Sample data population for sending it to Azure Service Bus

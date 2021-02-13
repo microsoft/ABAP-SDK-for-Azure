@@ -7,5 +7,5 @@ SELECT-OPTIONS: s_busnid FOR lw_monitor-businessid   MEMORY ID  businessid .
 SELECT-OPTIONS: s_zuser  FOR lw_monitor-zuser        MEMORY ID  zuser        .
 
 
-PARAMETER: p_pack  TYPE i OBLIGATORY DEFAULT 10000,  "package
-           p_test AS CHECKBOX DEFAULT abap_true.
+PARAMETERS: p_pack  TYPE i OBLIGATORY DEFAULT 10000,  "package
+            p_test AS CHECKBOX DEFAULT abap_true.
