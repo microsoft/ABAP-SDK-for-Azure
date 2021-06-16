@@ -3,10 +3,13 @@
 *&
 *&---------------------------------------------------------------------*
 **---------------Prerequisite------------------------------------------*
-** *
-** *
+** Destination configuration in SM59
+** ZREST tables maintained via SM30
+** Azure VNet connectivity from SAP to Cosmos ( in case of FW verify 
+** private endpoint )
 **---------------------------------------------------------------------*
-** 1.Create your ...*
+** 1.Create your CosmosDB instance *
+** 2.Maintain CosmosDB primary key in ZADF_CONFIG table *
 *&---------------------------------------------------------------------*
 REPORT ZADF_DEMO_AZURE_COSMOS.
 CONSTANTS: gc_interface TYPE zinterface_id VALUE 'DEMOCOSMOS'.
@@ -63,10 +66,11 @@ IF sy-subrc EQ 0.
                                         iv_expiry_sec  = 0 ).
 
       lv1_string = /ui2/cl_json=>serialize( data = it_data compress = abap_false pretty_name = /ui2/cl_json=>pretty_mode-camel_case ).
+**Cut array [] from json string for expected format for cosmos api request
       W_LEN = STRLEN( lv1_string ) - 2.
       lv1_string = lv1_string+1(W_LEN).
 
-*Convert input string data to Xstring format
+**Convert input string data to Xstring format
       CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
         EXPORTING
           text   = lv1_string
@@ -77,14 +81,14 @@ IF sy-subrc EQ 0.
           OTHERS = 2.
       IF sy-subrc <> 0.
       ENDIF.
-*Send data to collection sflight in db saps4. Adjust to your needs
+**Send data to collection sflight in db saps4. Adjust to your needs
       oref_cosmos->set_parameters( iv_http_verb = 'POST'
                                    iv_resource_type = 'docs'
                                    iv_partition_key_val = '006'
                                    iv_resource_link = 'dbs/saps4/colls/sflight' ).
 
 
-**Sending Converted SAP data to Azure Servicebus
+**Sending Converted SAP data to Azure CosmosDB
       oref_cosmos->send( EXPORTING request        = lv_xstring        "Input XSTRING of SAP Business data
                                        it_headers     = it_headers        "Header attributes
                              IMPORTING response       = lv_response       "Response from Cosmos
