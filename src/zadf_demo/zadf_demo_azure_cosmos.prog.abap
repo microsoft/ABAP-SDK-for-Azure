@@ -5,7 +5,7 @@
 **---------------Prerequisite------------------------------------------*
 ** Destination configuration in SM59
 ** ZREST tables maintained via SM30
-** Azure VNet connectivity from SAP to Cosmos ( in case of FW verify 
+** Azure VNet connectivity from SAP to Cosmos ( in case of FW verify
 ** private endpoint )
 **---------------------------------------------------------------------*
 ** 1.Create your CosmosDB instance *
