@@ -33,7 +33,7 @@ DATA: it_headers     TYPE tihttpnvp,
       it_data        TYPE STANDARD TABLE OF lty_data.
 
 SELECTION-SCREEN begin of BLOCK bl1 with frame.
-PARAMETER: p_ehifid type zinterface_id DEFAULT gc_interface.
+PARAMETERS: p_ehifid type zinterface_id DEFAULT gc_interface.
 SELECTION-SCREEN end of BLOCK bl1.
 
 START-OF-SELECTION.

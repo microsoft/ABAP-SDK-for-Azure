@@ -6,5 +6,5 @@ select-options: s_interf for lw_monitor-interface_id memory id  interface_id .
 select-options: s_busnid for lw_monitor-businessid   memory id  businessid .
 select-options: s_zuser  for lw_monitor-zuser        memory id  zuser        .
 
-parameter: p_mark radiobutton group acti,
-           p_del  radiobutton group acti.
+parameters: p_mark radiobutton group acti,
+            p_del  radiobutton group acti.
