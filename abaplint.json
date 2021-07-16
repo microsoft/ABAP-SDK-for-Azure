@@ -175,7 +175,7 @@
       "fieldSymbolStructure": true,
       "move": false,
       "withHeaderLine": true,
-      "occurs": true,
+      "occurs": false,
       "divide": true,
       "requested": true,
       "setExtended": true
