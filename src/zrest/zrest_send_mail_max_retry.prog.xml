@@ -4,9 +4,8 @@
   <asx:values>
    <PROGDIR>
     <NAME>ZREST_SEND_MAIL_MAX_RETRY</NAME>
-    <STATE>A</STATE>
-    <VARCL>X</VARCL>
     <SUBC>1</SUBC>
+    <SECU>ZAPP_SUP</SECU>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
     <UCCHECK>X</UCCHECK>

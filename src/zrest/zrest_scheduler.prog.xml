@@ -4,9 +4,8 @@
   <asx:values>
    <PROGDIR>
     <NAME>ZREST_SCHEDULER</NAME>
-    <STATE>A</STATE>
-    <VARCL>X</VARCL>
     <SUBC>1</SUBC>
+    <SECU>ZAPP_SUP</SECU>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
     <UCCHECK>X</UCCHECK>
@@ -19,9 +18,21 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>P_DELETE</KEY>
+     <ENTRY>Delete Old Records</ENTRY>
+     <LENGTH>26</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>P_RETRY</KEY>
+     <ENTRY>Retry Failed Records</ENTRY>
+     <LENGTH>28</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>S_ID</KEY>
      <ENTRY>.</ENTRY>
-     <LENGTH>9</LENGTH>
+     <LENGTH>20</LENGTH>
      <SPLIT>D</SPLIT>
     </item>
    </TPOOL>

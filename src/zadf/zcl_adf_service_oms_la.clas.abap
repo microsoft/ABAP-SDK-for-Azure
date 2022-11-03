@@ -2,7 +2,9 @@ class ZCL_ADF_SERVICE_OMS_LA definition
   public
   inheriting from ZCL_ADF_SERVICE
   final
-  create public .
+  create public
+
+  global friends ZCL_ADF_SERVICE_REPROCESS .
 
 public section.
 
@@ -276,7 +278,9 @@ CLASS ZCL_ADF_SERVICE_OMS_LA IMPLEMENTATION.
       ev_http_status = go_rest_api->get_status( ).
       IF lo_response IS BOUND.
         response = lo_response->get_string_data( ).
+        go_rest_api->close( ).
       ELSE.
+        go_rest_api->close( ).
         RAISE EXCEPTION TYPE zcx_adf_service
           EXPORTING
             textid       = zcx_adf_service=>restapi_response_not_found

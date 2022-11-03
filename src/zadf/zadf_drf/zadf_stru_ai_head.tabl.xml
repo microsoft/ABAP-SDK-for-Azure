@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_TABL" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DD02V>
+    <TABNAME>ZADF_STRU_AI_HEAD</TABNAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
+    <TABCLASS>INTTAB</TABCLASS>
+    <DDTEXT>Header Information</DDTEXT>
+   </DD02V>
+   <DD03P_TABLE>
+    <DD03P>
+     <TABNAME>ZADF_STRU_AI_HEAD</TABNAME>
+     <FIELDNAME>SERVICE_LINE</FIELDNAME>
+     <POSITION>0001</POSITION>
+     <ROLLNAME>CHAR50</ROLLNAME>
+     <ADMINFIELD>0</ADMINFIELD>
+     <COMPTYPE>E</COMPTYPE>
+    </DD03P>
+    <DD03P>
+     <TABNAME>ZADF_STRU_AI_HEAD</TABNAME>
+     <FIELDNAME>BUSINESS_PROCESS</FIELDNAME>
+     <POSITION>0002</POSITION>
+     <ROLLNAME>CHAR50</ROLLNAME>
+     <ADMINFIELD>0</ADMINFIELD>
+     <COMPTYPE>E</COMPTYPE>
+    </DD03P>
+    <DD03P>
+     <TABNAME>ZADF_STRU_AI_HEAD</TABNAME>
+     <FIELDNAME>SUB_PROCESS</FIELDNAME>
+     <POSITION>0003</POSITION>
+     <ROLLNAME>CHAR50</ROLLNAME>
+     <ADMINFIELD>0</ADMINFIELD>
+     <COMPTYPE>E</COMPTYPE>
+    </DD03P>
+   </DD03P_TABLE>
+  </asx:values>
+ </asx:abap>
+</abapGit>

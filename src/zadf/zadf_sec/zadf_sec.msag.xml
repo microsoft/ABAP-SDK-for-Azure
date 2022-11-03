@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZADF_SEC</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Messages of ABAP SDK - Security</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>&amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>&amp;&amp;&amp;&amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>No Authorization to Manage Keys</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Starting Program is not Authorized to Manage Keys</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Cannot execute this program in Debug Mode</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>PSE not found for the application &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Certificate retrieval failed for PSE &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>Certficate Parsing Failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>String to XString conversion failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>Encryption Failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>XString to String conversion failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>Decryption Failed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>Cert Application for Encrypt/Decrypt not assigned</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZADF_SEC</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>Failed to Read Application from RFC destination &amp;</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

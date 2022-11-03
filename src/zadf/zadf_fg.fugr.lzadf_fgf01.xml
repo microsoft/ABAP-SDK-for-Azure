@@ -4,6 +4,7 @@
   <asx:values>
    <PROGDIR>
     <NAME>LZADF_FGF01</NAME>
+    <SQLX>X</SQLX>
     <SUBC>I</SUBC>
     <APPL>S</APPL>
     <RLOAD>E</RLOAD>

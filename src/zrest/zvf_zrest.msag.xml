@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>ZVF_ZREST</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Message Class For ZREST VF Changes</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZVF_ZREST</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT> &amp;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZVF_ZREST</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Save Not Allowed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZVF_ZREST</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Error Fetching Database Logs</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZVF_ZREST</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>XSTRING Conversion Error</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZVF_ZREST</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Error in adding the Application log messages</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZVF_ZREST</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Error in downloading the file</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZVF_ZREST</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>No Value Request Found</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZVF_ZREST</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>Error while calling Pup-up</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZVF_ZREST</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>Error while calling Field Catalog Merge</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>
