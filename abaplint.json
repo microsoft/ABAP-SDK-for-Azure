@@ -121,7 +121,7 @@
     "empty_line_in_statement": false,
     "empty_statement": true,
     "exit_or_check": false,
-    "exporting": true,
+    "exporting": false,
     "functional_writing": false,
     "global_class": true,
     "identical_form_names": true,
