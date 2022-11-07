@@ -97,7 +97,7 @@
     "unused_variables": false,
     "use_new": false,
     "xml_consistency": true,
-    "7bit_ascii": true,
+    "7bit_ascii": false,
     "avoid_use": {
       "define": false,
       "communication": true,
@@ -180,7 +180,7 @@
       "requested": true,
       "setExtended": true
     },
-    "parser_error": true,
+    "parser_error": false,
     "remove_descriptions": false,
     "sequential_blank": false,
     "short_case": {
