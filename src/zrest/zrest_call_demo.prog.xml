@@ -4,10 +4,9 @@
   <asx:values>
    <PROGDIR>
     <NAME>ZREST_CALL_DEMO</NAME>
-    <STATE>A</STATE>
-    <VARCL>X</VARCL>
     <SUBC>1</SUBC>
     <APPL>S</APPL>
+    <SECU>ZAPP_SUP</SECU>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
     <UCCHECK>X</UCCHECK>

@@ -4,7 +4,6 @@
   <asx:values>
    <VSEOCLASS>
     <CLSNAME>ZCL_REST_UTILITY_CLASS</CLSNAME>
-    <VERSION>1</VERSION>
     <LANGU>E</LANGU>
     <DESCRIPT>Rest utility Class</DESCRIPT>
     <STATE>1</STATE>
@@ -55,7 +54,27 @@
      <ENTRY>Error in getting certificate Instance</ENTRY>
      <LENGTH>74</LENGTH>
     </item>
+    <item>
+     <ID>I</ID>
+     <KEY>008</KEY>
+     <ENTRY>Retry not possible</ENTRY>
+     <LENGTH>28</LENGTH>
+    </item>
+    <item>
+     <ID>I</ID>
+     <KEY>009</KEY>
+     <ENTRY>Maximum number of retry attempts reached</ENTRY>
+     <LENGTH>40</LENGTH>
+    </item>
    </TPOOL>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_REST_UTILITY_CLASS</CLSNAME>
+     <CMPNAME>GC_I</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Single-Character Flag</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
   </asx:values>
  </asx:abap>
 </abapGit>

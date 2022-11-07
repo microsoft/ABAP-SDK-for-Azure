@@ -368,11 +368,10 @@ METHOD send.
          lt_headers1     TYPE tihttpnvp.
 
   IF go_rest_api IS BOUND.
-    lt_headers1[] = it_headers[].
-* Read token from headers for Managed Identity
-    IF line_exists( lt_headers1[ name = gc_mi_auth ] ).
+* Read token from headers for Managed Identity/AAD
+    IF line_exists( it_headers[ name = gc_mi_auth ] ).
       DATA(lv_processing_method) = gc_mi_auth.
-      DATA(lv_aad_token) = lt_headers1[ 1 ]-value.
+      DATA(lv_aad_token) = it_headers[ name = gc_mi_auth ]-value.
     ENDIF.
 
     TRY.
@@ -403,7 +402,7 @@ METHOD send.
     IF lv_processing_method EQ gc_mi_auth.
       add_request_header( iv_name = 'Authorization' iv_value = lv_aad_token ).
     ELSE.
-* Add SAS token to the headers
+* Add provided SAS token/generated token via Account Key to the headers
       add_request_header( iv_name = 'Authorization' iv_value = lv_sas_token ).
     ENDIF.
     go_rest_api->zif_rest_framework~set_binary_body( request ).

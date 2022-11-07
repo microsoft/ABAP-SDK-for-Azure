@@ -8,36 +8,38 @@
 *----------------------------------------------------------------------*
 FORM f_encrypt_data USING pw_zrest LIKE zrest_config
                           p_sas_key .
-  CONSTANTS: lc_e TYPE c VALUE 'E'.
-  DATA :  lv_rfc_dest            TYPE zrest_config-destination,
-          lv_srtfd               TYPE zadf_con_indx-srtfd,
-          lw_indx                TYPE zadf_con_indx,
-          lt_enveloped_data      TYPE TABLE OF ssfbin,
-          lv_cert_string         TYPE xstring,
-          lt_recipients          TYPE TABLE OF ssfinfo,
-          lw_recipient           TYPE ssfinfo,
-          lt_input_data          TYPE TABLE OF ssfbin,
-          lw_input_data          TYPE ssfbin,
-          lv_env_data_len        TYPE i,
-          lv_env_len_out         TYPE i,
-          lv_subject             TYPE string,
-          lw_enveloped_data      TYPE ssfbin,
-          lv_text                TYPE string,
-          l_env_str_pab_password TYPE ssfparms-pabpw,
-          lv_xstring             TYPE xstring,
-          lv_applic              TYPE rfcdisplay-sslapplic,
-          lv_psename             TYPE ssfpsename,
-          lv_profilename         TYPE localfile,
-          lv_profile             TYPE ssfparms-pab,
-          ssl_active             TYPE rfcsnc.
+  CONSTANTS: lc_e     TYPE c VALUE 'E',
+             lc_zadfp TYPE ssfapplssl VALUE 'ZADFP'.
+  DATA : lv_rfc_dest            TYPE zrest_config-destination,
+         lv_srtfd               TYPE zadf_con_indx-srtfd,
+         lw_indx                TYPE zadf_con_indx,
+         lt_enveloped_data      TYPE TABLE OF ssfbin,
+         lv_cert_string         TYPE xstring,
+         lt_recipients          TYPE TABLE OF ssfinfo,
+         lw_recipient           TYPE ssfinfo,
+         lt_input_data          TYPE TABLE OF ssfbin,
+         lw_input_data          TYPE ssfbin,
+         lv_env_data_len        TYPE i,
+         lv_env_len_out         TYPE i,
+         lv_subject             TYPE string,
+         lw_enveloped_data      TYPE ssfbin,
+         lv_text                TYPE string,
+         l_env_str_pab_password TYPE ssfparms-pabpw,
+         lv_xstring             TYPE xstring,
+         lv_applic              TYPE rfcdisplay-sslapplic,
+         lv_psename             TYPE ssfpsename,
+**Start of changes by KRDASH MS2K960975
+         lv_profilename         TYPE localfile,
+**End of chnages by KRDASH MS2K960975
+         lv_profile             TYPE ssfparms-pab.
   IF NOT p_sas_key IS INITIAL.
+    lv_applic = lc_zadfp. "Encrypting using primary certificate
     CALL FUNCTION 'RFC_READ_HTTP_DESTINATION'
       EXPORTING
         destination             = pw_zrest-destination
         authority_check         = ' '
       IMPORTING
         sslapplic               = lv_applic
-        ssl                     = ssl_active
       EXCEPTIONS
         authority_not_available = 1
         destination_not_exist   = 2
@@ -47,9 +49,6 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
         OTHERS                  = 6.
     IF sy-subrc NE 0.
       MESSAGE text-005 TYPE lc_e.
-    ENDIF.
-    IF ssl_active <> abap_true.
-      MESSAGE e001(zadf) WITH pw_zrest-destination.
     ENDIF.
     IF NOT lv_applic IS INITIAL.
       CALL FUNCTION 'SSFPSE_FILENAME'
@@ -81,6 +80,7 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
             ssf_krn_nocertificate = 5
             OTHERS                = 6.
         IF sy-subrc NE 0.
+**Start of changes by KRDASH MS2K960975
 **Addinng complete profile path for reading certificate instance
           lv_profile = lv_profilename.
           CALL FUNCTION 'SSFC_GET_CERTIFICATE'
@@ -96,9 +96,10 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
               ssf_krn_nocertificate = 5
               OTHERS                = 6.
           IF sy-subrc NE 0.
+**End of changes by KRDASH MS2K960975
             MESSAGE text-007 TYPE lc_e.
           ENDIF.
-        ENDIF.
+        ENDIF. "Added by KRDASH MS2K960975
         CALL FUNCTION 'SSFC_PARSE_CERTIFICATE'
           EXPORTING
             certificate         = lv_cert_string
@@ -133,6 +134,7 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
           lw_input_data-bindata = lv_xstring.
           APPEND lw_input_data TO lt_input_data.
           CLEAR lw_input_data.
+          l_env_str_pab_password = space.
           CALL FUNCTION 'SSF_KRN_ENVELOPE'
             EXPORTING
               ssftoolkit                   = 'SAPSECULIB'
@@ -183,7 +185,7 @@ FORM f_encrypt_data USING pw_zrest LIKE zrest_config
       ENDIF.
     ENDIF.
   ELSE.
-    MESSAGE  text-003 TYPE lc_e.
+*    MESSAGE  text-003 TYPE lc_e. "Commented by KRDASH
   ENDIF.
 ENDFORM.                    " F_ENCRYPT_DATA
 *&---------------------------------------------------------------------*
@@ -192,34 +194,34 @@ ENDFORM.                    " F_ENCRYPT_DATA
 *  Export encrypted data to INDX table
 *----------------------------------------------------------------------*
 FORM f_create_entry.
-  CONSTANTS : lc_e TYPE c VALUE 'E'.
-  STATICS : lt_zrest TYPE STANDARD TABLE OF zrest_config.
-  DATA : lw_zrest TYPE zrest_config.
-  IF lt_zrest IS INITIAL.
-    SELECT * FROM zrest_config
-             INTO TABLE lt_zrest.
-  ENDIF.
-  IF NOT lt_zrest IS INITIAL.
-    CLEAR lw_zrest.
-    READ  TABLE lt_zrest INTO lw_zrest
-                         WITH KEY interface_id = zadf_config-interface_id.
-    IF sy-subrc EQ 0.
-      IF  lw_zrest-destination IS NOT INITIAL.
-        IF NOT zadf_config-interface_type IS INITIAL. "Added by KRDASH
-          PERFORM f_encrypt_data USING lw_zrest
-                                       zadf_config-sas_key.
-        ELSE.
-          MESSAGE text-012 TYPE lc_e.
-        ENDIF.
-      ELSE.
-        MESSAGE text-002 TYPE lc_e.
+
+  DATA : lo_interface_key TYPE REF TO zcl_adf_manage_interface_key,
+         lx_interface_key TYPE REF TO zcx_adf_manage_interface_key,
+         lx_access_key    TYPE REF TO zcx_adf_manage_access_keys,
+         lv_key           TYPE string,
+         lv_message       TYPE string.
+
+  TRY.
+      CREATE OBJECT lo_interface_key
+        EXPORTING
+          iv_interface_id = zadf_config-interface_id.
+
+      lv_key = zadf_config-sas_key.
+      IF lv_key IS NOT INITIAL.
+        lo_interface_key->insert_key( lv_key ).
+        CLEAR zadf_config-sas_key.
+        zadf_config-sas_key = '*****'.
       ENDIF.
-    ELSE.
-      MESSAGE text-001 TYPE lc_e.
-    ENDIF.
-  ELSE.
-    MESSAGE text-001 TYPE lc_e.
-  ENDIF.
+
+    CATCH zcx_adf_manage_interface_key INTO lx_interface_key.
+      lv_message = lx_interface_key->get_text( ).
+      MESSAGE lv_message TYPE 'E'.
+    CATCH zcx_adf_manage_access_keys INTO lx_access_key.
+      lv_message = lx_access_key->get_text( ).
+      MESSAGE lv_message TYPE 'E'.
+
+  ENDTRY.
+
 ENDFORM.                    "f_create_entry
 *&---------------------------------------------------------------------*
 *&      Form  f_before_save

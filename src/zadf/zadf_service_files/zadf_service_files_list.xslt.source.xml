@@ -1,0 +1,22 @@
+<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sap="http://www.sap.com/sapxsl" version="1.0">
+  <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
+  <xsl:template match="EnumerationResults">
+    <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+      <asx:values>
+
+          <xsl:for-each select="Entries/File">
+              <File>
+                <xsl:value-of select="Name"/>
+              </File>
+          </xsl:for-each>
+
+                    <xsl:for-each select="Entries/Directory">
+              <Directory>
+                <xsl:value-of select="Name"/>
+              </Directory>
+          </xsl:for-each>
+
+      </asx:values>
+    </asx:abap>
+  </xsl:template>
+</xsl:transform>

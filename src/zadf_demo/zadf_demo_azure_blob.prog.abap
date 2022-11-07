@@ -46,6 +46,7 @@ DATA : gt_data          TYPE STANDARD TABLE OF lty_data,
        gcx_interface    TYPE REF TO zcx_interace_config_missing,
        gcx_http         TYPE REF TO zcx_http_client_failed,
        r_obj1           TYPE REF TO zcl_adf_service_blob,
+       gv_response_blob TYPE string,
        gv_msg           TYPE string,
        gv_http_status   TYPE i.
 
@@ -62,14 +63,17 @@ START-OF-SELECTION.
           iv_expiry_min  = 15
           iv_expiry_sec  = 0.
       r_obj1 ?=  r_obj.
-**Forming String-to-sign for SAS token generation
-      CALL METHOD r_obj1->string_to_sign
+      CALL METHOD r_obj1->set_storage_account_container
         EXPORTING
-          iv_storage_account = 'Storage account name'  "Storage account namespace should already exist in Azure as prerequisite
-          iv_container       = 'Blob Container name'   "Blob container name should already exist in your storage account as prerequisite
-          iv_blob_name       = 'xxxxxx'                "Input blob name e.g newblob1 ( provide a new name)
-                                                       "which would be created successfully after executing this sample program
-          iv_blob_type       = 'B' .                   "Type of Blob e.g 'B' for BlockBlob
+          iv_storage_account = 'Storage account name' "Storage account namespace should already exist in Azure as prerequisite
+          iv_container_name  = 'Blob Container name'. "Blob container name should already exist in your storage account as prerequisite
+      CALL METHOD r_obj1->set_blob_name_type
+        EXPORTING
+          iv_blob_name = 'Input Blob name'   "Input blob name e.g newblob1 ( provide a new name)
+                                             "which would be created successfully after executing this sample program
+          iv_blob_type = 'B'.                "Type of Blob e.g 'B' for BlockBlob
+**Setting additional attributes
+      CALL METHOD r_obj1->set_blob_additional_attributes.
 **Sending Converted SAP business data to BLOB Storage in Azure
       CALL METHOD r_obj->send
         EXPORTING

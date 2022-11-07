@@ -38,8 +38,8 @@ FORM set_requests .
     INTO request_header_string SEPARATED BY '|'.
   ENDLOOP.
 
-  DATA: lv_string TYPE string,
-        gv_string TYPE string,
+  DATA: lv_string          TYPE string,
+        gv_string          TYPE string,
         lt_program_headers TYPE tihttpnvp,
         wa_program_headers TYPE ihttpnvp.
 
@@ -68,8 +68,8 @@ ENDFORM.                    "set_requests
 *----------------------------------------------------------------------*
 FORM set_responses .
   DATA: lo_rest_http_client TYPE REF TO cl_rest_http_client,
-        lt_header_fields TYPE tihttpnvp,
-        wa_header_fields TYPE ihttpnvp.
+        lt_header_fields    TYPE tihttpnvp,
+        wa_header_fields    TYPE ihttpnvp.
 
   CALL METHOD object->get_rest_client
     RECEIVING
@@ -218,13 +218,17 @@ FORM convert_to_xstring  USING    input TYPE string
 
   CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
     EXPORTING
-      text     = input
+      text   = input
 *     MIMETYPE = ' '
 *     ENCODING =
     IMPORTING
-      buffer   = result
+      buffer = result
     EXCEPTIONS
-      failed   = 1
-      OTHERS   = 2.
-
+      failed = 1
+      OTHERS = 2.
+**- Begin of changes by V-ASHOKM1 SMTK907859
+  IF sy-subrc <> 0.
+    MESSAGE e003(zvf_zrest).  "XSTRING Conversion Error
+  ENDIF.
+**--End of changes by V-ASHOKM1 SMTK907859
 ENDFORM.                    "convert_to_xstring

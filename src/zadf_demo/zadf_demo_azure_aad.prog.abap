@@ -10,36 +10,31 @@
 *&---------------------------------------------------------------------*
 REPORT zadf_demo_azure_aad.
 
-DATA: gv_interface_aad TYPE zinterface_id VALUE 'DEMO_AAD',
-      gv_message_bid   TYPE zbusinessid   VALUE  'TEST_AAD',
-      gv_string        TYPE string,
-      oref             TYPE REF TO zcl_adf_service,
-      oref_aad         TYPE REF TO zcl_adf_service_aad,
-      cx_adf_service   TYPE REF TO zcx_adf_service,
-      cx_interface     TYPE REF TO zcx_interace_config_missing,
-      cx_http          TYPE REF TO zcx_http_client_failed,
-      gv_aad_token     TYPE string,
-      gv_response      TYPE string.
+DATA:  gv_interface_aad TYPE zinterface_id VALUE 'DEMO_AAD',
+       gv_message_bid   TYPE zbusinessid   VALUE  'TEST_AAD',
+       gv_string        TYPE string,
+       oref             TYPE REF TO zcl_adf_service,
+       oref_aad         TYPE REF TO zcl_adf_service_aad,
+       cx_adf_service   TYPE REF TO zcx_adf_service,
+       cx_interface     TYPE REF TO zcx_interace_config_missing,
+       cx_http          TYPE REF TO zcx_http_client_failed,
+       gv_aad_token     TYPE string,
+       gv_response      TYPE string.
 
-PARAMETERS: p_client TYPE string LOWER CASE. " Input client id as per implementation guide for AAD
-
+**Calling Factory method to instantiate AAD client
+oref = zcl_adf_service_factory=>create(
+                                     iv_interface_id =  gv_interface_aad
+                                     iv_business_identifier = gv_message_bid ).
+oref_aad ?=  oref.
 
 TRY.
-    " Calling Factory method to instantiate AAD client
-    oref = zcl_adf_service_factory=>create(
-                                         iv_interface_id =  gv_interface_aad
-                                         iv_business_identifier = gv_message_bid ).
-    oref_aad ?=  oref.
-
-    oref_aad->get_aad_token(
+    CALL METHOD oref_aad->get_aad_token
       EXPORTING
-        iv_client_id                =  p_client
-        iv_resource                 = 'https://vault.azure.net'  "Resource for Azure Key vault application
+        iv_client_id = '************' " Input client id as per implementation guide for AAD
+        iv_resource  = 'https://vault.azure.net'  "Resource for Azure Key vault application
       IMPORTING
-            ev_aad_token = gv_aad_token
-            ev_response  = gv_response
-    ).
-
+        ev_aad_token = gv_aad_token
+        ev_response  = gv_response.
   CATCH zcx_interace_config_missing INTO cx_interface.
     gv_string = cx_interface->get_text( ).
     MESSAGE gv_string TYPE 'E'.

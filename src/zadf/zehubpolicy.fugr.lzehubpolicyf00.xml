@@ -4,11 +4,9 @@
   <asx:values>
    <PROGDIR>
     <NAME>LZEHUBPOLICYF00</NAME>
-    <STATE>A</STATE>
-    <VARCL>X</VARCL>
+    <SQLX>X</SQLX>
     <SUBC>I</SUBC>
     <RLOAD>E</RLOAD>
-    <UCCHECK>X</UCCHECK>
    </PROGDIR>
   </asx:values>
  </asx:abap>

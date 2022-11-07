@@ -4,9 +4,8 @@
   <asx:values>
    <PROGDIR>
     <NAME>ZADF_DEMO_AZURE_BLOB</NAME>
-    <STATE>A</STATE>
-    <VARCL>X</VARCL>
     <SUBC>1</SUBC>
+    <SECU>ZADFDEMO</SECU>
     <RSTAT>T</RSTAT>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>

@@ -4,7 +4,6 @@
   <asx:values>
    <VSEOCLASS>
     <CLSNAME>ZCL_ADF_SERVICE_SERVICEBUS</CLSNAME>
-    <VERSION>1</VERSION>
     <LANGU>E</LANGU>
     <DESCRIPT>SAP-Azure Data Framework Service Bus</DESCRIPT>
     <STATE>1</STATE>

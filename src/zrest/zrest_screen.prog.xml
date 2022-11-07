@@ -4,9 +4,8 @@
   <asx:values>
    <PROGDIR>
     <NAME>ZREST_SCREEN</NAME>
-    <STATE>A</STATE>
-    <VARCL>X</VARCL>
     <SUBC>1</SUBC>
+    <SECU>ZAPP_SUP</SECU>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
     <UCCHECK>X</UCCHECK>
@@ -21,7 +20,7 @@
       <TYPE>N</TYPE>
       <NEXTSCREEN>0100</NEXTSCREEN>
       <LINES>027</LINES>
-      <COLUMNS>120</COLUMNS>
+      <COLUMNS>171</COLUMNS>
      </HEADER>
      <CONTAINERS>
       <RPY_DYCATT>
@@ -32,9 +31,9 @@
        <TYPE>CUST_CTRL</TYPE>
        <NAME>BCALVC_TOOLBAR_D100_C1</NAME>
        <ELEMENT_OF>SCREEN</ELEMENT_OF>
-       <LINE>003</LINE>
+       <LINE>002</LINE>
        <COLUMN>001</COLUMN>
-       <LENGTH>120</LENGTH>
+       <LENGTH>164</LENGTH>
        <HEIGHT>024</HEIGHT>
       </RPY_DYCATT>
      </CONTAINERS>
@@ -42,15 +41,17 @@
       <RPY_DYFATC>
        <CONT_TYPE>SCREEN</CONT_TYPE>
        <CONT_NAME>SCREEN</CONT_NAME>
-       <TYPE>TEXT</TYPE>
-       <NAME>%#AUTOTEXT001</NAME>
-       <TEXT>Select_One_or_More_Rows_And_Click_the_Rightmost_Button_of_the_Toolbar_</TEXT>
-       <LINE>002</LINE>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>COUNT</NAME>
+       <TEXT>______________________________________________________</TEXT>
+       <LINE>001</LINE>
        <COLUMN>001</COLUMN>
-       <LENGTH>070</LENGTH>
-       <VISLENGTH>070</VISLENGTH>
+       <LENGTH>054</LENGTH>
+       <VISLENGTH>054</VISLENGTH>
        <HEIGHT>001</HEIGHT>
        <FORMAT>CHAR</FORMAT>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <OUTPUTONLY>X</OUTPUTONLY>
        <REQU_ENTRY>N</REQU_ENTRY>
       </RPY_DYFATC>
       <RPY_DYFATC>
@@ -330,6 +331,20 @@
      <KEY>S_STIME</KEY>
      <ENTRY>.</ENTRY>
      <LENGTH>29</LENGTH>
+     <SPLIT>D</SPLIT>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>S_SUBDT</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>22</LENGTH>
+     <SPLIT>D</SPLIT>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>S_SUBT</KEY>
+     <ENTRY>.</ENTRY>
+     <LENGTH>22</LENGTH>
      <SPLIT>D</SPLIT>
     </item>
    </TPOOL>

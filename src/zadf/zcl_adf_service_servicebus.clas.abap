@@ -2,8 +2,9 @@ class ZCL_ADF_SERVICE_SERVICEBUS definition
   public
   inheriting from ZCL_ADF_SERVICE
   final
-  CREATE PRIVATE
-  GLOBAL FRIENDS zcl_adf_service_factory.
+  create public
+
+  global friends ZCL_ADF_SERVICE_REPROCESS .
 
 public section.
 protected section.
@@ -39,7 +40,12 @@ METHOD get_sas_token.
   conv = cl_abap_conv_out_ce=>create( encoding = 'UTF-8' ).
   conv->convert( EXPORTING data = lv_string_to_sign IMPORTING buffer = body_xstring ).
   DEFINE encrypt_key.
-    decode_sign( receiving rv_secret = lv_sas_key ).
+*    decode_sign( receiving rv_secret = lv_sas_key ).
+    IF gv_sas_key IS INITIAL.
+      lv_sas_key = read_ssf_key( ).
+    ELSE.
+        lv_sas_key = read_key( ).
+    ENDIF.
     conv = cl_abap_conv_out_ce=>create( encoding = 'UTF-8' ).
     conv->convert( exporting data = lv_sas_key importing buffer = decoded ).
 
@@ -56,19 +62,34 @@ METHOD get_sas_token.
   encrypt_key.
   new_expiry = lv_expiry_time.
   CONDENSE new_expiry.
-  IF NOT sign IS INITIAL.
-    DATA wa_policy TYPE zadf_ehub_policy.
+*Soc Get policy detials - CR 67877 TR DG2K904448
+* getting policy from ZADF_EHUB_POLICY table
+  DATA: wa_policy TYPE zadf_ehub_policy,
+        lv_policy TYPE zadf_policy.
+  IF gv_interface_id IS NOT INITIAL.
     SELECT SINGLE * FROM zadf_ehub_policy INTO wa_policy WHERE interface_id EQ  gv_interface_id.
     IF sy-subrc EQ 0.
-      sign = escape( val = sign format = format  ).
-      CONCATENATE 'SharedAccessSignature sig=' sign '&se=' new_expiry '&skn=' wa_policy-policy '&sr=' encoded_base_address INTO final_token.
-      rv_sas_token = final_token.
+      lv_policy = wa_policy-policy.
+    ELSE.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>policy_not_maintained
+          interface_id = gv_interface_id.
     ENDIF.
+  ENDIF.
+*Eoc CR 67877 TR DG2K904448
+  IF NOT sign IS INITIAL.
+    sign = escape( val = sign format = format  ).
+* Commented below line to retrieve the policy from ZADF_EHUB_POLICY table.
+*    CONCATENATE 'SharedAccessSignature sig=' sign '&se=' new_expiry '&skn=' 'RootManageSharedAccessKey' '&sr=' encoded_base_address INTO final_token.
+    CONCATENATE 'SharedAccessSignature sig=' sign '&se=' new_expiry '&skn=' lv_policy '&sr=' encoded_base_address INTO final_token."CR 67877 TR DG2K904448
+    rv_sas_token = final_token.
   ELSE.
     RAISE EXCEPTION TYPE zcx_adf_service
       EXPORTING
         textid       = zcx_adf_service=>sas_key_not_generated
         interface_id = gv_interface_id.
   ENDIF.
+  CLEAR: lv_policy, wa_policy. "CR 67877 TR DG2K904448
 ENDMETHOD.
 ENDCLASS.

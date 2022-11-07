@@ -9,6 +9,10 @@
 *-----------|----------|--------|------------|-------------------------*
 *03/08/2019 | WIBRADFO | 1673104| SMTK905163 | Initial Version         *
 *----------------------------------------------------------------------*
+*-----------|----------|--------|------------|-------------------------*
+*09/28/2022 | V-ASHOKM1 |       | SMTK907899 | Fixing Virtual Forge    *
+*                                              Errors                  *
+*----------------------------------------------------------------------*
 
 FORM extract_data.
 
@@ -91,6 +95,18 @@ FORM archive_data.
   ELSE.
 
     MESSAGE s000(55) WITH 'Deleting records'(021).
+    " Begin of changes by V-ASHOKM1 SMTK907899
+
+    IF lt_monitor IS NOT INITIAL.
+      SELECT * FROM zrest_mon_trace INTO TABLE @DATA(lt_mon_trace)
+         FOR ALL ENTRIES IN @lt_monitor
+         WHERE zmessageid = @lt_monitor-zmessageid.
+      IF sy-subrc = 0.
+        SORT  lt_mon_trace BY zmessageid.
+      ENDIF.
+    ENDIF.
+    " End of changes by V-ASHOKM1 SMTK907899
+
 
     LOOP AT lt_monitor INTO lw_monitor WHERE zdelete IS NOT INITIAL.
 
@@ -130,16 +146,30 @@ FORM archive_data.
       IF sy-subrc = 0.
         WRITE:    / 'ZREST_MON_HEADER deleted'(003).
       ENDIF.
+      " Begin of changes by V-ASHOKM1 -- SMTK907899
 
-      SELECT SINGLE * FROM zrest_mon_trace INTO lw_mon_trace WHERE zmessageid = lw_monitor-zmessageid.
+*      SELECT SINGLE * FROM zrest_mon_trace INTO lw_mon_trace WHERE zmessageid = lw_monitor-zmessageid.
+*
+*      IF sy-subrc = 0.
+*        DELETE zrest_mon_trace FROM lw_mon_trace.
+*      ENDIF.
+*
+*      IF sy-subrc = 0.
+*        WRITE:    / 'ZREST_MON_TRACE deleted'(004).
+*      ENDIF.
+      " End of changes by V-ASHOKM1 -- SMTK907899
 
-      IF sy-subrc = 0.
-        DELETE zrest_mon_trace FROM lw_mon_trace.
+     "Begin of changes by V-ASHOKM1 ++ SMTK907899
+      lw_mon_trace = VALUE #( lt_mon_trace[ zmessageid = lw_monitor-zmessageid ] OPTIONAL ).
+      IF lw_mon_trace IS NOT INITIAL.
+        DELETE zrest_mon_trace FROM  lw_mon_trace.
+        IF sy-subrc = 0.
+          WRITE:    / 'ZREST_MON_TRACE deleted'(004).
+        ENDIF.
       ENDIF.
 
-      IF sy-subrc = 0.
-        WRITE:    / 'ZREST_MON_TRACE deleted'(004).
-      ENDIF.
+    "End of changes by V-ASHOKM1 ++ SMTK907899
+
 
       SELECT * FROM zrest_monitorlog INTO lw_monitorlog WHERE zmessageid = lw_monitor-zmessageid.
         DELETE zrest_monitorlog FROM lw_monitorlog.

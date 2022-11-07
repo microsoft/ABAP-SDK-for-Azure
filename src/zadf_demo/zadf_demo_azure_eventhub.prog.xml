@@ -5,21 +5,58 @@
    <PROGDIR>
     <NAME>ZADF_DEMO_AZURE_EVENTHUB</NAME>
     <SUBC>1</SUBC>
+    <SECU>ZADFDEMO</SECU>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
     <UCCHECK>X</UCCHECK>
    </PROGDIR>
    <TPOOL>
     <item>
+     <ID>I</ID>
+     <KEY>001</KEY>
+     <ENTRY>Functionality of EventHub</ENTRY>
+     <LENGTH>50</LENGTH>
+    </item>
+    <item>
      <ID>R</ID>
-     <ENTRY>Program ZADF_DEMO_AZURE_EVENTHUB</ENTRY>
+     <ENTRY>Demo Program for Azure Eventhub</ENTRY>
      <LENGTH>32</LENGTH>
     </item>
     <item>
      <ID>S</ID>
-     <KEY>P_EHIFID</KEY>
-     <ENTRY>Event Hub Interface ID</ENTRY>
+     <KEY>RB_CD</KEY>
+     <ENTRY>Consumer Group Details</ENTRY>
      <LENGTH>30</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_CG</KEY>
+     <ENTRY>Create Consumer Group</ENTRY>
+     <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_CL</KEY>
+     <ENTRY>Consumer list details</ENTRY>
+     <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_DC</KEY>
+     <ENTRY>Delete Consumer Group</ENTRY>
+     <LENGTH>29</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_SB</KEY>
+     <ENTRY>Send batch data</ENTRY>
+     <LENGTH>23</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
+     <KEY>RB_SE</KEY>
+     <ENTRY>Send data to Eventhub</ENTRY>
+     <LENGTH>29</LENGTH>
     </item>
    </TPOOL>
   </asx:values>

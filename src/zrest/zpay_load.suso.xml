@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SUSO" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <TOBJ>
+    <OBJCT>ZPAY_LOAD</OBJCT>
+    <FIEL1>ACTVT</FIEL1>
+    <FIEL2>ZGROUP</FIEL2>
+    <OCLSS>ZRUT</OCLSS>
+   </TOBJ>
+   <TOBJT>
+    <LANGU>E</LANGU>
+    <OBJECT>ZPAY_LOAD</OBJECT>
+    <TTEXT>Auth. object for payload download/display in ZREST_UTIL</TTEXT>
+   </TOBJT>
+   <TOBJVORFLG>
+    <OBJCT>ZPAY_LOAD</OBJCT>
+   </TOBJVORFLG>
+   <TACTZ>
+    <TACTZ>
+     <BROBJ>ZPAY_LOAD</BROBJ>
+     <ACTVT>03</ACTVT>
+    </TACTZ>
+    <TACTZ>
+     <BROBJ>ZPAY_LOAD</BROBJ>
+     <ACTVT>DL</ACTVT>
+    </TACTZ>
+   </TACTZ>
+  </asx:values>
+ </asx:abap>
+</abapGit>

@@ -30,8 +30,8 @@
 ** 5.5 Maintain your Policy name for interface id in table             *
 ** 'ZADF_EHUB_POLICY'                                                  *
 *&---------------------------------------------------------------------*
-REPORT zadf_demo_azure_servicebus.
-CONSTANTS: gc_interface TYPE zinterface_id VALUE 'DEMO_SB'.
+REPORT ZADF_DEMO_AZURE_SERVICEBUS.
+CONSTANTS: gc_interface TYPE zinterface_id VALUE 'DEMO_SB1'.
 
 TYPES: BEGIN OF lty_data,
          carrid    TYPE    s_carr_id,
@@ -40,25 +40,21 @@ TYPES: BEGIN OF lty_data,
          planetype TYPE    s_planetye,
        END OF lty_data.
 
-DATA: it_headers      TYPE tihttpnvp,
-      wa_headers      TYPE LINE OF tihttpnvp,
-      lv_string       TYPE string,
-      lv_response     TYPE string,
-      cx_interface    TYPE REF TO zcx_interace_config_missing,
-      cx_http         TYPE REF TO zcx_http_client_failed,
-      cx_adf_service  TYPE REF TO zcx_adf_service,
-      oref_servicebus TYPE REF TO zcl_adf_service_servicebus,
-      oref            TYPE REF TO zcl_adf_service,
-      filter          TYPE zbusinessid,
-      lv_http_status  TYPE i,
-      lo_json         TYPE REF TO cl_trex_json_serializer,
-      lv1_string      TYPE string,
-      lv_xstring      TYPE xstring,
-      it_data         TYPE STANDARD TABLE OF lty_data.
-
-SELECTION-SCREEN BEGIN OF BLOCK bl1 WITH FRAME.
-PARAMETERS: p_sbifid TYPE zinterface_id DEFAULT gc_interface.
-SELECTION-SCREEN END OF BLOCK bl1.
+DATA:       it_headers       TYPE tihttpnvp,
+            wa_headers       TYPE LINE OF tihttpnvp,
+            lv_string        TYPE string,
+            lv_response      TYPE string,
+            cx_interface     TYPE REF TO zcx_interace_config_missing,
+            cx_http          TYPE REF TO zcx_http_client_failed,
+            cx_adf_service   TYPE REF TO zcx_adf_service,
+            oref_servicebus  TYPE REF TO zcl_adf_service_servicebus,
+            oref             TYPE REF TO zcl_adf_service,
+            filter           TYPE zbusinessid,
+            lv_http_status   TYPE i,
+            lo_json          TYPE REF TO cl_trex_json_serializer,
+            lv1_string       TYPE string,
+            lv_xstring       TYPE xstring,
+            it_data          TYPE STANDARD TABLE OF lty_data.
 
 *Sample data population for sending it to Azure Service Bus
 SELECT  carrid connid fldate planetype
@@ -70,18 +66,23 @@ IF sy-subrc EQ 0.
   TRY.
 **Calling Factory method to instantiate Service Bus client
 
-      oref = zcl_adf_service_factory=>create( iv_interface_id        = p_sbifid
+      oref = zcl_adf_service_factory=>create( iv_interface_id = gc_interface
                                               iv_business_identifier = filter ).
       oref_servicebus ?= oref.
 
 **Setting Expiry time
-      oref_servicebus->add_expiry_time( iv_expiry_hour = 0
-                                        iv_expiry_min  = 15
-                                        iv_expiry_sec  = 0 ).
+      CALL METHOD oref_servicebus->add_expiry_time
+        EXPORTING
+          iv_expiry_hour = 0
+          iv_expiry_min  = 15
+          iv_expiry_sec  = 0.
 
-      CREATE OBJECT lo_json EXPORTING data = it_data.
+      CREATE OBJECT lo_json
+        EXPORTING
+          data = it_data.
       lo_json->serialize( ).
       lv1_string  = lo_json->get_data( ).
+
 
 *Convert input string data to Xstring format
       CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
@@ -94,17 +95,19 @@ IF sy-subrc EQ 0.
           OTHERS = 2.
       IF sy-subrc <> 0.
       ENDIF.
-      CLEAR it_headers.
-      wa_headers-name = 'BrokerProperties'.
-      wa_headers-value = '{"Label":"SFLIGHTData"}'.
-      APPEND wa_headers TO it_headers.
-      CLEAR  wa_headers.
-
+    CLEAR it_headers.
+    wa_headers-name = 'BrokerProperties'.
+    wa_headers-value = '{"Label":"SFLIGHTData"}'.
+    APPEND wa_headers TO it_headers.
+    CLEAR  wa_headers.
 **Sending Converted SAP data to Azure Servicebus
-      oref_servicebus->send( EXPORTING request        = lv_xstring        "Input XSTRING of SAP Business data
-                                       it_headers     = it_headers        "Header attributes
-                             IMPORTING response       = lv_response       "Response from Service Bus
-                                       ev_http_status = lv_http_status ). "Status
+      CALL METHOD oref_servicebus->send
+        EXPORTING
+          request        = lv_xstring  "Input XSTRING of SAP Business data
+          it_headers     = it_headers  "Header attributes
+        IMPORTING
+          response       = lv_response       "Response from Service Bus
+          ev_http_status = lv_http_status.   "Status
 
     CATCH zcx_interace_config_missing INTO cx_interface.
       lv_string = cx_interface->get_text( ).

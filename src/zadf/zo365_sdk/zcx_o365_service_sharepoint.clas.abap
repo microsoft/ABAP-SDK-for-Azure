@@ -1,0 +1,34 @@
+class ZCX_O365_SERVICE_SHAREPOINT definition
+  public
+  inheriting from CX_STATIC_CHECK
+  final
+  create public .
+
+public section.
+
+  constants INTERFACE_TYPE_NOT_MAINTAINED type SOTR_CONC value '000D3A0418C91EE9ADD6C12BE3342966'. "#EC NOTEXT
+  data INTERFACE_ID type ZINTERFACE_ID .
+
+  methods CONSTRUCTOR
+    importing
+      !TEXTID like TEXTID optional
+      !PREVIOUS like PREVIOUS optional
+      !INTERFACE_ID type ZINTERFACE_ID optional .
+protected section.
+private section.
+ENDCLASS.
+
+
+
+CLASS ZCX_O365_SERVICE_SHAREPOINT IMPLEMENTATION.
+
+
+method CONSTRUCTOR.
+CALL METHOD SUPER->CONSTRUCTOR
+EXPORTING
+TEXTID = TEXTID
+PREVIOUS = PREVIOUS
+.
+me->INTERFACE_ID = INTERFACE_ID .
+endmethod.
+ENDCLASS.

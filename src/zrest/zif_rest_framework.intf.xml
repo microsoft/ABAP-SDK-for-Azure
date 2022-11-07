@@ -4,7 +4,6 @@
   <asx:values>
    <VSEOINTERF>
     <CLSNAME>ZIF_REST_FRAMEWORK</CLSNAME>
-    <VERSION>1</VERSION>
     <LANGU>E</LANGU>
     <DESCRIPT>Interface for REST framework</DESCRIPT>
     <EXPOSURE>2</EXPOSURE>

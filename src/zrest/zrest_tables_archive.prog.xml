@@ -134,6 +134,12 @@
     </item>
     <item>
      <ID>S</ID>
+     <KEY>S_STATUS</KEY>
+     <ENTRY>HTTP Satus</ENTRY>
+     <LENGTH>18</LENGTH>
+    </item>
+    <item>
+     <ID>S</ID>
      <KEY>S_ZUSER</KEY>
      <ENTRY>User Name (created/proc. by)</ENTRY>
      <LENGTH>36</LENGTH>

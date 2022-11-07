@@ -4,8 +4,7 @@
   <asx:values>
    <PROGDIR>
     <NAME>LZRESTF01</NAME>
-    <STATE>A</STATE>
-    <VARCL>X</VARCL>
+    <SQLX>X</SQLX>
     <SUBC>I</SUBC>
     <APPL>S</APPL>
     <RLOAD>E</RLOAD>

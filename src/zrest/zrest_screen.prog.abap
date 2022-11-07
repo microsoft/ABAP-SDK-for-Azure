@@ -17,6 +17,24 @@
 *----------------------------------------------------------------------*
 * 12|08|2016|V-JAVEDA  |2163894 | MS2K948543 | Enhance delete function
 *----------------------------------------------------------------------*
+* 06|25|2016|V-MOSN    |4668161 | SMTK905370 | Fix Correlation ID Filter
+*                                              in REST Framework
+*----------------------------------------------------------------------*
+* 07|02|2019|V-ANYALL  |4668157 | SMTK905411 | Selection screen enhan. *
+*----------------------------------------------------------------------*
+* 08|15|2019|V-MOSN    |4668152 | SMTK905463 | Disply Tot Records Count*
+*----------------------------------------------------------------------*
+* 09|24|2019|V-SUTAD   |4909031 | SMTK905577 | Selection Screen Issue  *
+*                                            | Business ID length to 40*
+*----------------------------------------------------------------------*
+* 04|28|2020|KRDASH    |5566653 | SMTK906003 | Reverting changes due to*
+*                                              bug in screen           *
+*----------------------------------------------------------------------*
+*----------------------------------------------------------------------*
+* 09|29|2022|V-MPRAGALLAP |     | SMTK907859 | Fixing the Virtual Forge*
+*                                              errors                  *
+*----------------------------------------------------------------------*
+
 *&---------------------------------------------------------------------*
 *& Report  ZREST_SCREEN
 *&
@@ -35,20 +53,21 @@
 * with the lights columnn added to show if the request was a
 *success or error.*****************************************
   TYPES: BEGIN OF ty.
-          INCLUDE TYPE zrest_monitor.
-  TYPES   : lights(1) TYPE c.
+           INCLUDE TYPE zrest_monitor.
+           TYPES   : lights(1) TYPE c.
   TYPES:  END OF ty.
 
-***********************************************************
+*********************************,**************************
 
   DATA: itab      TYPE STANDARD TABLE OF ty, "Output Internal table
         fieldcat  TYPE lvc_t_fcat, "Field catalog
         wa        TYPE ty,
         w_variant TYPE disvariant, "Variant
         w_layout  TYPE lvc_s_layo. "Layout structure
-  DATA : lv_textid TYPE REF TO zcx_http_client_failed,
+  DATA : lv_textid      TYPE REF TO zcx_http_client_failed,
          lv_clnt_failed TYPE REF TO zcx_http_client_failed,
-         lv_text2  TYPE scx_t100key.
+         lv_text2       TYPE scx_t100key,
+         gv_lines       TYPE i.                             "Added: SMTK905525
 
   TABLES zrest_config. "Include table zrest_config
   DATA: ok_code           LIKE sy-ucomm, "capture the user action
@@ -60,7 +79,7 @@
         event_receiver    TYPE REF TO lcl_event_receiver. "event receiver
   TABLES: icon.
 * Screen 100 to display the alv report
-  SET SCREEN 100.
+  SET SCREEN 100.                           "(-)SMTK905577 +SMTK906003
 
 ****** class definition******************************************
   CLASS lcl_event_receiver DEFINITION.
@@ -74,11 +93,11 @@
       METHODS:
         "Append own buttons on toolbar
         handle_toolbar
-                      FOR EVENT toolbar OF cl_gui_alv_grid
+                    FOR EVENT toolbar OF cl_gui_alv_grid
           IMPORTING e_object e_interactive,
         "Handle user events
         handle_user_command
-                      FOR EVENT user_command OF cl_gui_alv_grid
+                    FOR EVENT user_command OF cl_gui_alv_grid
           IMPORTING e_ucomm,
         get_data.
 
@@ -95,7 +114,9 @@
         w_compdate TYPE ty-zcompdate,
         w_comptime TYPE ty-zcomptime,
         w_id       TYPE zrest_monitor-businessid,
-        w_httpst   TYPE ty-httpstatus.   "v-javeda - MS2K948543
+        w_httpst   TYPE ty-httpstatus,   "v-javeda - MS2K948543
+        w_subdt    TYPE ty-submit_date,  "+SMTK905411/#VSO 4668157
+        w_subt     TYPE ty-submit_time.  "+SMTK905411/#VSO 4668157
   DATA: lt_tab TYPE TABLE OF zrest_config."v-javeda - MS2K948543 "for F4 values
   "Start of Selection Screen
   SELECTION-SCREEN: BEGIN OF BLOCK blk0 WITH FRAME TITLE text-000.
@@ -107,7 +128,9 @@
   SELECT-OPTIONS: s_startd FOR w_startd DEFAULT sy-datum TO sy-datum," v-javeda - MS2K948543 - default today
                   s_stime FOR w_start,
                   s_compdt FOR w_compdate,
-                  s_comptm FOR w_comptime.
+                  s_comptm FOR w_comptime,
+                  s_subdt  FOR w_subdt,  "+SMTK905411/#VSO 4668157
+                  s_subt   FOR w_subt.   "+SMTK905411/#VSO 4668157
   SELECTION-SCREEN: END   OF BLOCK blk1.
 
   SELECTION-SCREEN: BEGIN OF BLOCK blk2 WITH FRAME TITLE text-002.
@@ -129,15 +152,29 @@
     IF sy-subrc = 0.ENDIF.
     CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
       EXPORTING
-        retfield    = 'INTERFACE_ID'
-        dynpprog    = sy-repid
-        dynpnr      = sy-dynnr
-        dynprofield = 'S_ID-LOW'
-        value_org   = 'S'
+        retfield        = 'INTERFACE_ID'
+        dynpprog        = sy-repid
+        dynpnr          = sy-dynnr
+        dynprofield     = 'S_ID-LOW'
+        value_org       = 'S'
       TABLES
-        value_tab   = lt_tab[].
+        value_tab       = lt_tab[]
+      EXCEPTIONS
+        parameter_error = 1
+        no_values_found = 2
+        OTHERS          = 3.
     IF sy-subrc <> 0.
 * Implement suitable error handling here
+      "Begin Of Change v-mpragallap ++  SMTK907859
+      CASE sy-subrc.
+        WHEN 1.
+          MESSAGE e000(zvf_zrest) RAISING parameter_error.
+        WHEN 2.
+          MESSAGE e000(zvf_zrest) RAISING no_values_found.
+        WHEN OTHERS.
+          MESSAGE e006(zvf_zrest).
+      ENDCASE.
+      "End of Change v-mpragallap ++ SMTK907859
     ENDIF.
 
   AT SELECTION-SCREEN ON VALUE-REQUEST FOR s_id-high.
@@ -146,15 +183,29 @@
     IF sy-subrc = 0.ENDIF.
     CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
       EXPORTING
-        retfield    = 'INTERFACE_ID'
-        dynpprog    = sy-repid
-        dynpnr      = sy-dynnr
-        dynprofield = 'S_ID-HIGH'
-        value_org   = 'S'
+        retfield        = 'INTERFACE_ID'
+        dynpprog        = sy-repid
+        dynpnr          = sy-dynnr
+        dynprofield     = 'S_ID-HIGH'
+        value_org       = 'S'
       TABLES
-        value_tab   = lt_tab[].
+        value_tab       = lt_tab[]
+      EXCEPTIONS
+        parameter_error = 1
+        no_values_found = 2
+        OTHERS          = 3.
     IF sy-subrc <> 0.
 * Implement suitable error handling here
+      "Begin Of Change v-mpragallap ++ SMTK907859
+      CASE sy-subrc.
+        WHEN 1.
+          MESSAGE e000(zvf_zrest) RAISING parameter_error.
+        WHEN 2.
+          MESSAGE e000(zvf_zrest) RAISING no_values_found.
+        WHEN OTHERS.
+          MESSAGE e006(zvf_zrest).
+      ENDCASE.
+      "End of Change v-mpragallap ++ SMTK907859
     ENDIF.
 
 * Start of Selection
@@ -180,10 +231,21 @@
                     AND httpstatus IN s_httpst   "v-javeda - MS2K948543 -  status in selscreen
                     AND businessid IN s_busid
                     AND interface_id IN s_id
-                  ORDER BY zcompdate DESCENDING zcomptime DESCENDING.
+                    AND submit_date  IN s_subdt  "+SMTK905411/#VSO 4668157
+                    AND submit_time  IN s_subt.   "+SMTK905411/#VSO 4668157
+*                  ORDER BY zcompdate DESCENDING zcomptime DESCENDING.  "V-SRDASGUPTA --
+
       IF sy-dbcnt IS INITIAL.
         MESSAGE s398(00) WITH 'No data selected'.
+*      Begin of Changes SMTK905463
+      ELSE.
+        SORT itab BY zcompdate DESCENDING zcomptime DESCENDING.  "V-SRDASGUPTA ++
+        CLEAR gv_lines.
+        DESCRIBE TABLE itab LINES gv_lines.
+*        CALL SCREEN 100.                    "(+)SMTK905577 (-)SMTK906003
+*      End of Changes SMTK905463
       ENDIF.
+
     ENDMETHOD.                    "get_data
     "Add buttons to the toolbar
     METHOD handle_toolbar.
@@ -346,6 +408,7 @@
                 FROM icon
                 INTO lv_id
                 WHERE name = 'ICON_MESSAGE_WARNING'.
+              IF sy-subrc EQ 0. ENDIF.
               CALL FUNCTION 'POPUP_TO_INFORM'
                 EXPORTING
                   titel  = 'Warning'
@@ -353,6 +416,12 @@
                   txt2   = 'Select only one row.'
                 EXCEPTIONS
                   OTHERS = 1.
+              "Begin of Change V-MPRAGALLAP ++ SMTK907859
+              IF sy-subrc EQ 1.
+                MESSAGE e007(zvf_zrest).
+              ENDIF.
+              "End of Change V-MPRAGALLAP ++ SMTK907859
+
             ELSE.
               FREE MEMORY ID 'ABCD'.
               READ TABLE lt_rows INDEX 1 INTO l_row.
@@ -424,24 +493,41 @@
           ELSE.
             FREE MEMORY ID 'ABCD'.
             DATA obj TYPE REF TO zcl_rest_utility_class.
-            CREATE OBJECT obj .
+            CREATE OBJECT obj.
+            " Start of Change V-MPRAGALLAP ++  SMTK907859
+            DATA  lt_monitor  TYPE STANDARD TABLE OF zrest_monitor.
+            CONSTANTS lv_delete TYPE c VALUE 'X'.
+
+            SELECT  *  FROM zrest_monitor INTO TABLE lt_monitor
+                               WHERE zmessageid = sel_row-zmessageid
+                               AND zdelete = lv_delete.
+            "End of Change V-MPRAGALLAP ++ SMTK907859
             LOOP AT lt_rows INTO l_row.
               READ TABLE itab INDEX l_row-index INTO sel_row.
 **   v-javeda - MS2K948543 - validation for not retrying deleted payload
-              SELECT SINGLE *  FROM zrest_monitor INTO lw_monitor
-                               WHERE zmessageid = sel_row-zmessageid
-                               AND zdelete EQ 'X'.
-              IF sy-subrc = 0.
-                CALL FUNCTION 'POPUP_TO_INFORM'
-                  EXPORTING
-                    titel = g_repid
-                    txt2  = sel_row-zmessageid
-                    txt1  = 'Cannot process for Deleted message id : '(500).
+              "Start of Change V-MPRAGALLAP -- SMTK907859
+*              SELECT SINGLE *  FROM zrest_monitor INTO lw_monitor
+*                               WHERE zmessageid = sel_row-zmessageid
+*                               AND zdelete EQ 'X'.
+              "End of Change V-MPRAGALLAP -- SMTK907859
+** Start of Change V-MPRAGALLAP +++ SMTK907859
+              IF sel_row IS NOT INITIAL.
+                READ TABLE lt_monitor INTO lw_monitor WITH KEY zmessageid = sel_row-zmessageid.
+** End of Change V-MPRAGALLAP +++  SMTK907859
+
+                IF sy-subrc = 0.
+                  CALL FUNCTION 'POPUP_TO_INFORM'
+                    EXPORTING
+                      titel = g_repid
+                      txt2  = sel_row-zmessageid
+                      txt1  = 'Cannot process for Deleted message id : '(500).
+                ENDIF.
+
               ELSE.
 **         v-javeda - MS2K948543
                 IF obj IS BOUND.
                   TRY.
-                      CALL METHOD obj->retry( message_id = sel_row-zmessageid method = 'None' ).
+                      CALL METHOD obj->retry( EXPORTING message_id = sel_row-zmessageid method = 'None' ).
 *                Authorization check VSTF # 2163894 | DGDK903413
                     CATCH zcx_http_client_failed INTO lv_clnt_failed.
                       lv_text2 = lv_clnt_failed->if_t100_message~t100key.
@@ -520,7 +606,7 @@
             CREATE OBJECT ob .
             IF ob IS BOUND.
               TRY.
-                  CALL METHOD ob->show_payload( message_id = sel_row-zmessageid response = abap_true ).
+                  CALL METHOD ob->show_payload( EXPORTING message_id = sel_row-zmessageid response = abap_true ).
 *              Authorization changes V-DEVEER
                 CATCH zcx_http_client_failed INTO lv_textid.
                   lv_text2 = lv_textid->if_t100_message~t100key.
@@ -555,7 +641,7 @@
             CREATE OBJECT ob .
             IF ob IS BOUND.
               TRY.
-                  CALL METHOD ob->retry_log( message_id = sel_row-zmessageid response = abap_true ).
+                  CALL METHOD ob->retry_log( EXPORTING message_id = sel_row-zmessageid response = abap_true ).
 *              Authorization changes V-DEVEER
                 CATCH zcx_http_client_failed INTO lv_textid.
                   lv_text2 = lv_textid->if_t100_message~t100key.
@@ -592,7 +678,8 @@
     IF ok_code = 'EXIT'.
       LEAVE PROGRAM.
     ELSEIF ok_code = 'BACK'.
-      LEAVE TO TRANSACTION 'ZREST_UTIL'.
+      LEAVE TO TRANSACTION 'ZREST_UTIL'.   "(-)SMTK905577 (+)SMTK906003
+*      LEAVE TO SCREEN 0.                    "(+)SMTK905577 (-)SMTK906003
 *      CALL METHOD grid1->refresh_table_display.
 *      CALL METHOD grid1->free.
 *      CALL SELECTION-SCREEN 1000.
@@ -604,9 +691,16 @@
 *
 *----------------------------------------------------------------------*
   MODULE pbo_100 OUTPUT.
+*    Begin of Changes SMTK905463
+    DATA: count    TYPE string,
+          lv_lines TYPE string.
+    lv_lines = gv_lines.
+    CONCATENATE 'No.of Records:' lv_lines INTO count SEPARATED BY space.
+*    End of Changes SMTK905463
     SET PF-STATUS 'MAIN100'.
     SET TITLEBAR 'MAIN100'.
     g_repid = sy-repid.
+
     IF custom_container1 IS INITIAL OR grid1 IS INITIAL.
 * Creating Docking Container and grid
       PERFORM create_object.
@@ -619,7 +713,6 @@
 *  Displaying the output
     PERFORM display_output.
 
-
     CREATE OBJECT event_receiver.
     SET HANDLER event_receiver->handle_user_command FOR grid1.
     SET HANDLER event_receiver->handle_toolbar FOR grid1.
@@ -628,7 +721,6 @@
     CALL METHOD cl_gui_control=>set_focus
       EXPORTING
         control = grid1.
-
 
   ENDMODULE.                 " PBO_100  OUTPUT
 
@@ -693,10 +785,16 @@
       ENDIF.
     ENDIF.
     IF grid1 IS INITIAL.
+*    Begin of Changes SMTK905463
 * create an instance of alv control
+*      CREATE OBJECT grid1
+*        EXPORTING
+*          i_parent = cl_gui_custom_container=>screen0.
+
       CREATE OBJECT grid1
         EXPORTING
-          i_parent = cl_gui_custom_container=>screen0.
+          i_parent = custom_container1.
+*    End of Changes SMTK905463
     ENDIF.
   ENDFORM.                    "create_object
 
@@ -716,6 +814,18 @@
         inconsistent_interface = 1
         program_error          = 2
         OTHERS                 = 3.
+    "Begin Of Change v-mpragallap ++ SMTK907859
+    IF sy-subrc <> 0.
+      CASE sy-subrc.
+        WHEN 1.
+          MESSAGE e000(zvf_zrest) RAISING inconsistent_interface.
+        WHEN 2.
+          MESSAGE e000(zvf_zrest) RAISING program_error.
+        WHEN OTHERS.
+          MESSAGE e008(zvf_zrest).
+      ENDCASE.
+    ENDIF.
+    "End of Change v-mpragallap ++ SMTK907859
   ENDFORM. " create_fieldcat
 
 *&---------------------------------------------------------------------*
@@ -746,7 +856,6 @@
       WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
     ENDIF.
 
-
   ENDFORM. " display_output
 
 *&---------------------------------------------------------------------*
@@ -762,6 +871,7 @@
     ls_fcat-reptext    = 'Corelation Id'.
     ls_fcat-fieldname  = 'ZMESSAGEID'.
     ls_fcat-ref_table  = 'WT_CUST'.
+    ls_fcat-outputlen  = '32'. "Added: TR# SMTK905370/VSO# 4668161
     APPEND ls_fcat TO fieldcat.
     CLEAR: ls_fcat.
 

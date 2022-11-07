@@ -2,8 +2,9 @@ class ZCL_ADF_SERVICE_COSMOSDB definition
   public
   inheriting from ZCL_ADF_SERVICE
   final
-  create private
-  GLOBAL FRIENDS zcl_adf_service_factory.
+  create public
+
+  global friends ZCL_ADF_SERVICE_REPROCESS .
 
 public section.
 
@@ -131,8 +132,8 @@ METHOD get_rfc7231_time.
   CONDENSE lv_day_name.
 ** make timestamp in RFC7231 format
   CONCATENATE lv_day_name
-              lv_date(2)
-              lv_date+3(3)
+              lv_date+4(2)
+              lv_date(3)
               lv_date+7(4)
               lv_time
               lc_gmt
@@ -147,45 +148,51 @@ ENDMETHOD.
           lv_authstring     TYPE string,
           lv_key            TYPE string,
           lv_key_xstr       TYPE xstring,
-          lo_conv           TYPE REF TO cl_abap_conv_out_ce.
+          lo_conv           TYPE REF TO cl_abap_conv_out_ce,
+          lv_sas_key        TYPE string.
 ** generate String To Sign
     me->generate_string_to_sign( RECEIVING rv_string_to_sign = lv_string_to_sign ).
 ** Convert string to UTF-8 format
     lo_conv = cl_abap_conv_out_ce=>create( encoding = 'UTF-8' ).
     lo_conv->convert( EXPORTING data = lv_string_to_sign IMPORTING buffer = lv_sign_utf ).
     DEFINE encrypt_signature.
-      decode_sign( receiving rv_secret = lv_key ).
+*      decode_sign( receiving rv_secret = lv_key ).
+      IF gv_sas_key IS INITIAL.
+       lv_sas_key = read_ssf_key( ).
+      ELSE.
+         lv_key = read_key( ).
+      ENDIF.
 ** Decode Key from base64
-      call function 'SSFC_BASE64_DECODE'
-        exporting
-          b64data                  = lv_key
-        importing
-          bindata                  = lv_key_xstr
-        exceptions
-          ssf_krn_error            = 1
-          ssf_krn_noop             = 2
-          ssf_krn_nomemory         = 3
-          ssf_krn_opinv            = 4
-          ssf_krn_input_data_error = 5
-          ssf_krn_invalid_par      = 6
-          ssf_krn_invalid_parlen   = 7
-          others                   = 8.
-      if sy-subrc <> 0.
-        raise exception type zcx_adf_service
+       call function 'SSFC_BASE64_DECODE'
          exporting
-          textid       = zcx_adf_service=>key_decoding_failed
-          interface_id = gv_interface_id.
-      endif.
+           b64data                  = lv_key
+         importing
+           bindata                  = lv_key_xstr
+         exceptions
+           ssf_krn_error            = 1
+           ssf_krn_noop             = 2
+           ssf_krn_nomemory         = 3
+           ssf_krn_opinv            = 4
+           ssf_krn_input_data_error = 5
+           ssf_krn_invalid_par      = 6
+           ssf_krn_invalid_parlen   = 7
+           others                   = 8.
+       if sy-subrc <> 0.
+         raise exception type zcx_adf_service
+          exporting
+           textid       = zcx_adf_service=>key_decoding_failed
+           interface_id = gv_interface_id.
+       endif.
 ** Encode the signature with the Key in SHA 256 format
-      call method cl_abap_hmac=>calculate_hmac_for_raw
-        exporting
-          if_algorithm     = 'SHA-256'
-          if_key           = lv_key_xstr
-          if_data          = lv_sign_utf
-          if_length        = 0
-        importing
-          ef_hmacb64string = lv_hash_sig.
-      clear: lv_key_xstr, lv_key.
+       call method cl_abap_hmac=>calculate_hmac_for_raw
+         exporting
+           if_algorithm     = 'SHA-256'
+           if_key           = lv_key_xstr
+           if_data          = lv_sign_utf
+           if_length        = 0
+         importing
+           ef_hmacb64string = lv_hash_sig.
+       clear: lv_key_xstr, lv_key.
     END-OF-DEFINITION.
 ** call macro
     encrypt_signature.
@@ -227,9 +234,9 @@ METHOD send.
     IF NOT gv_partition_key_val IS INITIAL.
       add_request_header( iv_name = 'x-ms-documentdb-partitionkey' iv_value = gv_partition_key_val ).
     ENDIF.
-    add_request_header( iv_name = 'x-ms-version' iv_value = '2018-12-31' ).
-    add_request_header( iv_name = 'x-ms-documentdb-is-upsert' iv_value = 'true' ).
-    add_request_header( iv_name = 'Accept' iv_value = 'application/json' ).
+    add_request_header( iv_name = 'x-ms-version' iv_value = '2015-12-16').
+    add_request_header( iv_name = 'x-ms-documentdb-is-upsert' iv_value = 'true').
+    add_request_header( iv_name = 'Accept' iv_value = 'application/json').
     add_request_header( iv_name = 'x-ms-date' iv_value = gv_http_date ).
     add_request_header( iv_name = 'Authorization' iv_value = lv_auth_token ).
     IF NOT it_headers[] IS INITIAL.
@@ -241,7 +248,9 @@ METHOD send.
     ev_http_status = go_rest_api->get_status( ).
     IF lo_response IS BOUND.
       response = lo_response->get_string_data( ).
+      go_rest_api->close( ).
     ELSE.
+      go_rest_api->close( ).
       RAISE EXCEPTION TYPE zcx_adf_service
         EXPORTING
           textid       = zcx_adf_service=>restapi_response_not_found

@@ -5,6 +5,7 @@
    <PROGDIR>
     <NAME>ZADF_DEMO_AZURE_SERVICEBUS</NAME>
     <SUBC>1</SUBC>
+    <SECU>ZADFDEMO</SECU>
     <RSTAT>T</RSTAT>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
@@ -15,12 +16,6 @@
      <ID>R</ID>
      <ENTRY>Demo Program for Integrating Azure Service Bus</ENTRY>
      <LENGTH>46</LENGTH>
-    </item>
-    <item>
-     <ID>S</ID>
-     <KEY>P_SBIFID</KEY>
-     <ENTRY>Service Bus Interface ID</ENTRY>
-     <LENGTH>32</LENGTH>
     </item>
    </TPOOL>
   </asx:values>

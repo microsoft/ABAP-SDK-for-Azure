@@ -1,146 +1,165 @@
-CLASS zcl_rest_utility_class DEFINITION
-  PUBLIC
-  FINAL
-  CREATE PUBLIC .
+class ZCL_REST_UTILITY_CLASS definition
+  public
+  final
+  create public .
 
-  PUBLIC SECTION.
+public section.
 
-    METHODS constructor .
-    CLASS-METHODS download_payload_file
-      IMPORTING
-        !xstring    TYPE xstring
-        !message_id TYPE zmid
-      RAISING
-        zcx_http_client_failed .
-    METHODS retry
-      IMPORTING
-        !message_id     TYPE zmid
-        !method         TYPE zinterface_method
-        !from_scheduler TYPE char1 OPTIONAL
-      RAISING
-        zcx_interace_config_missing
-        zcx_http_client_failed .
-    CLASS-METHODS get_http_description
-      IMPORTING
-        !code              TYPE int4
-      RETURNING
-        VALUE(description) TYPE string .
-    CLASS-METHODS show_payload
-      IMPORTING
-        !message_id TYPE zmid
-        !response   TYPE c OPTIONAL
-      RAISING
-        zcx_http_client_failed .
-    CLASS-METHODS get_config_data
-      IMPORTING
-        !interface_id      TYPE zinterface_id
-        !method            TYPE zinterface_method
-      RETURNING
-        VALUE(config_data) TYPE zrest_srtuct_config .
-    CLASS-METHODS get_static_headers
-      IMPORTING
-        !interface_id         TYPE zinterface_id
-      RETURNING
-        VALUE(static_headers) TYPE tihttpnvp .
-    CLASS-METHODS show_submitted_headers
-      IMPORTING
-        !message_id TYPE zmid
-      RAISING
-        zcx_http_client_failed .
-    CLASS-METHODS unprocessed_data
-      RETURNING
-        VALUE(result) TYPE zrt_payload .
-    CLASS-METHODS reset_all_data
-      RAISING
-        zcx_http_client_failed .
-    CLASS-METHODS check_obfuscation_needed
-      IMPORTING
-        !inetrface_in TYPE zinterface_id
-      RETURNING
-        VALUE(result) TYPE abap_bool .
-    METHODS retry_limit_exceeded
-      EXPORTING
-        !et_retry_report TYPE ztt_rest_retry_limi .
-    METHODS send_email
-      IMPORTING
-        !iv_recepient TYPE ad_smtpadr
-        !iv_subject   TYPE so_obj_des
-        !it_body      TYPE soli_tab
-      EXPORTING
-        !ew_return    TYPE bapiret2
-        !ev_result    TYPE os_boolean .
-    CLASS-METHODS check_authority
-      RAISING
-        zcx_http_client_failed .
-    CLASS-METHODS get_global_params
-      RETURNING
-        VALUE(global_params) TYPE zrest_global .
-    CLASS-METHODS retry_log
-      IMPORTING
-        !message_id TYPE zmid
-        !response   TYPE c OPTIONAL
-      RAISING
-        zcx_http_client_failed .
-    CLASS-METHODS write_application_log
-      IMPORTING
-        !iv_object    TYPE balobj_d
-        !iv_subobject TYPE balsubobj
-        !iv_extnumber TYPE balnrext
-        !it_message   TYPE zrt_applog_message .
-  PROTECTED SECTION.
-  PRIVATE SECTION.
+  constants GC_I type CHAR1 value 'I' ##NO_TEXT.
 
-    DATA rest_handler TYPE REF TO zcl_rest_framework .
-    DATA response TYPE REF TO if_rest_entity .
-    DATA request TYPE REF TO if_rest_entity .
-    CLASS-DATA payload TYPE zrt_payload .
-    CLASS-DATA monitor TYPE zrest_monitor .
-    CLASS-DATA interface_name TYPE zinterface_id .
-    CLASS-DATA it_zobfuscate TYPE ztobfuscate .
+  methods CONSTRUCTOR .
+  class-methods DOWNLOAD_PAYLOAD_FILE
+    importing
+      !XSTRING type XSTRING
+      !MESSAGE_ID type ZMID
+    raising
+      ZCX_HTTP_CLIENT_FAILED .
+  methods RETRY
+    importing
+      !MESSAGE_ID type ZMID
+      !METHOD type CHAR20
+      !FROM_SCHEDULER type CHAR1 optional
+    raising
+      ZCX_INTERACE_CONFIG_MISSING
+      ZCX_HTTP_CLIENT_FAILED .
+  class-methods GET_HTTP_DESCRIPTION
+    importing
+      !CODE type INT4
+    returning
+      value(DESCRIPTION) type STRING .
+  class-methods SHOW_PAYLOAD
+    importing
+      !MESSAGE_ID type ZMID
+      !RESPONSE type C optional
+    raising
+      ZCX_HTTP_CLIENT_FAILED .
+  class-methods GET_CONFIG_DATA
+    importing
+      !INTERFACE_ID type ZINTERFACE_ID
+      !METHOD type CHAR20
+    returning
+      value(CONFIG_DATA) type ZREST_SRTUCT_CONFIG .
+  class-methods GET_STATIC_HEADERS
+    importing
+      !INTERFACE_ID type ZINTERFACE_ID
+    returning
+      value(STATIC_HEADERS) type TIHTTPNVP .
+  class-methods SHOW_SUBMITTED_HEADERS
+    importing
+      !MESSAGE_ID type ZMID
+    raising
+      ZCX_HTTP_CLIENT_FAILED .
+  class-methods UNPROCESSED_DATA
+    importing
+      !INTERFACE_ID type ZTT_INTERFACE_ID optional
+    returning
+      value(RESULT) type ZRT_PAYLOAD .
+  class-methods RESET_ALL_DATA
+    importing
+      !INTERFACE_ID type ZTT_INTERFACE_ID optional
+    raising
+      ZCX_HTTP_CLIENT_FAILED .
+  class-methods CHECK_OBFUSCATION_NEEDED
+    importing
+      !INETRFACE_IN type ZINTERFACE_ID
+    returning
+      value(RESULT) type ABAP_BOOL .
+  methods RETRY_LIMIT_EXCEEDED
+    exporting
+      !ET_RETRY_REPORT type ZTT_REST_RETRY_LIMI .
+  methods SEND_EMAIL
+    importing
+      !IV_RECEPIENT type AD_SMTPADR
+      !IV_SUBJECT type SO_OBJ_DES
+      !IT_BODY type SOLI_TAB
+    exporting
+      !EW_RETURN type BAPIRET2
+      !EV_RESULT type OS_BOOLEAN .
+  class-methods CHECK_AUTHORITY
+    raising
+      ZCX_HTTP_CLIENT_FAILED .
+  class-methods GET_GLOBAL_PARAMS
+    returning
+      value(GLOBAL_PARAMS) type ZREST_GLOBAL .
+  class-methods RETRY_LOG
+    importing
+      !MESSAGE_ID type ZMID
+      !RESPONSE type C optional
+    raising
+      ZCX_HTTP_CLIENT_FAILED .
+  class-methods WRITE_APPLICATION_LOG
+    importing
+      !IV_OBJECT type BALOBJ_D
+      !IV_SUBOBJECT type BALSUBOBJ
+      !IV_EXTNUMBER type BALNREXT
+      !IT_MESSAGE type ZRT_APPLOG_MESSAGE .
+protected section.
+private section.
 
-    CLASS-METHODS get_db_data
-      IMPORTING
-        !message_id TYPE zmid .
-    CLASS-METHODS check_messageid
-      IMPORTING
-        !message_id TYPE zmid .
-    CLASS-METHODS obfuscate
-      IMPORTING
-        !input        TYPE xstring
-      RETURNING
-        VALUE(result) TYPE xstring .
+  data REST_HANDLER type ref to ZCL_REST_FRAMEWORK .
+  data HTTP_CLIENT type ref to IF_HTTP_CLIENT .
+  data RESPONSE type ref to IF_REST_ENTITY .
+  data REQUEST type ref to IF_REST_ENTITY .
+  data GV_CLIENT type STRING .
+  data GV_BODY type STRING .
+  class-data PAYLOAD type ZRT_PAYLOAD .
+  class-data MONITOR type ZREST_MONITOR .
+  class-data METHODNAME type CHAR5 .
+  class-data INTERFACE_NAME type ZINTERFACE_ID .
+  class-data IT_ZOBFUSCATE type ZTOBFUSCATE .
+
+  class-methods GET_DB_DATA
+    importing
+      !MESSAGE_ID type ZMID .
+  class-methods CHECK_MESSAGEID
+    importing
+      !MESSAGE_ID type ZMID .
+  class-methods OBFUSCATE
+    importing
+      !INPUT type XSTRING
+    returning
+      value(RESULT) type XSTRING .
 ENDCLASS.
 
 
 
-CLASS zcl_rest_utility_class IMPLEMENTATION.
+CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
 
 
   METHOD check_authority.
+*----------------------------------------------------------------------*
+*                       Modification History                           *
+*----------------------------------------------------------------------*
+* Date      | USER ID  |  VSTF  | Transport  | Remarks                 *
+*-----------|----------|--------|------------|-------------------------*
+* 04|28|2016|V-DEVEER  |2163894 | DGDK903413 | Authorization Check
+*----------------------------------------------------------------------*
 
+
+* Added for VSTF# 2163894 | DGDK903413
     DATA:lv_textid TYPE scx_t100key.
-
+*    Uncomment when needed
     AUTHORITY-CHECK OBJECT 'ZREST_AUTH'
-
     ID 'ZBOOLEAN' FIELD 'X'.
     IF sy-subrc NE 0.
       lv_textid-msgid = 'Z_FI_MDG'.
       lv_textid-msgno = '057'.
       RAISE EXCEPTION TYPE zcx_http_client_failed EXPORTING textid = lv_textid.
     ENDIF.
+* End of changes for 2163894 | DGDK903413
 
   ENDMETHOD.
 
 
-  METHOD check_messageid.
+  method CHECK_MESSAGEID.
     IF message_id IS INITIAL .
       EXIT.
     ENDIF.
-  ENDMETHOD.
+  endmethod.
 
 
   METHOD check_obfuscation_needed.
-    SELECT  * FROM zobfuscate INTO TABLE it_zobfuscate
+    SELECT  * FROM zobfuscate INTO table it_zobfuscate
                                     WHERE inetrface EQ inetrface_in.
     IF sy-subrc EQ 0.
       result = abap_true.
@@ -150,13 +169,20 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD constructor.
+  method CONSTRUCTOR.
 
-  ENDMETHOD.
+  endmethod.
 
 
   METHOD download_payload_file.
-
+*----------------------------------------------------------------------*
+*                       Modification History                           *
+*----------------------------------------------------------------------*
+* Date      | USER ID  |  VSTF  | Transport  | Remarks                 *
+*-----------|----------|--------|------------|-------------------------*
+* 04|28|2016|V-DEVEER  |2163894 | DGDK903413 | Authorization Check     *
+* 09|29|2022|V-ASHOKM1 |        | SMTK907895 | Fixing VF Errors        *
+*----------------------------------------------------------------------*
     TYPES : BEGIN OF ty_string,
               line TYPE string,
             END OF ty_string.
@@ -177,12 +203,17 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 *   End of changes for VSTF 2163894 | DGDK903413
 
     SELECT SINGLE * FROM zrest_mo_payload INTO wa_payload WHERE messageid EQ message_id.
+    IF sy-subrc EQ 0.
+    ENDIF.
 
     AUTHORITY-CHECK OBJECT 'ZREST_AUTH'
         ID 'ZBOOLEAN' FIELD 'X'.
-    IF sy-subrc NE 0 AND check_obfuscation_needed( inetrface_in = wa_payload-interface_id ) EQ abap_true.
-      output = obfuscate( input = wa_payload-payload ).
-      wa_payload-payload = output.
+    IF sy-subrc NE 0.
+      IF check_obfuscation_needed( inetrface_in = wa_payload-interface_id ) EQ abap_true.
+*        DATA(output) = obfuscate( input = wa_payload-payload ).  v-jobpau
+        output = obfuscate( input = wa_payload-payload ).
+        wa_payload-payload = output.
+      ENDIF.
     ENDIF.
 
     CALL FUNCTION 'ECATT_CONV_XSTRING_TO_STRING'
@@ -203,15 +234,54 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     ENDIF.
 
     CALL FUNCTION 'GUI_FILE_SAVE_DIALOG'
+*     EXPORTING
+*       WINDOW_TITLE            =
+*       DEFAULT_EXTENSION       =
+*       DEFAULT_FILE_NAME       =
+*       WITH_ENCODING           =
+*       FILE_FILTER             =
+*       INITIAL_DIRECTORY       =
+*       DEFAULT_ENCODING        =
       IMPORTING
-        fullpath = gv_filename.
+*       FILENAME =
+*       PATH     =
+        fullpath = gv_filename
+*       USER_ACTION             =
+*       FILE_ENCODING           =
+      .
 
     CALL FUNCTION 'GUI_DOWNLOAD'
       EXPORTING
+*       BIN_FILESIZE            =
         filename                = gv_filename
         filetype                = 'ASC'
+*       APPEND                  = ' '
+*       WRITE_FIELD_SEPARATOR   = ' '
+*       HEADER                  = '00'
+*       TRUNC_TRAILING_BLANKS   = ' '
+*       WRITE_LF                = 'X'
+*       COL_SELECT              = ' '
+*       COL_SELECT_MASK         = ' '
+*       DAT_MODE                = ' '
+*       CONFIRM_OVERWRITE       = ' '
+*       NO_AUTH_CHECK           = ' '
+*       CODEPAGE                = ' '
+*       IGNORE_CERR             = ABAP_TRUE
+*       REPLACEMENT             = '#'
+*       WRITE_BOM               = ' '
+*       TRUNC_TRAILING_BLANKS_EOL       = 'X'
+*       WK1_N_FORMAT            = ' '
+*       WK1_N_SIZE              = ' '
+*       WK1_T_FORMAT            = ' '
+*       WK1_T_SIZE              = ' '
+*       WRITE_LF_AFTER_LAST_LINE        = ABAP_TRUE
+*       SHOW_TRANSFER_STATUS    = ABAP_TRUE
+*       VIRUS_SCAN_PROFILE      = '/SCET/GUI_DOWNLOAD'
+* IMPORTING
+*       FILELENGTH              =
       TABLES
         data_tab                = it_string
+*       FIELDNAMES              =
       EXCEPTIONS
         file_write_error        = 1
         no_batch                = 2
@@ -236,7 +306,9 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
         control_flush_error     = 21
         OTHERS                  = 22.
     IF sy-subrc <> 0.
-* Implement suitable error handling here
+
+      MESSAGE e005(zvf_zrest). " Error while downloading the file " Added by V-ASHOKM1 for Fixing VF Errors  SMTK907895
+
     ENDIF.
 
   ENDMETHOD.
@@ -252,12 +324,12 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 
 
   METHOD get_db_data.
-    z_restcall_from_db=>get_calldata_fromdb(
+    CALL METHOD z_restcall_from_db=>get_calldata_fromdb
       EXPORTING
         message_id = message_id
       IMPORTING
         payload    = payload
-        monitor    = monitor ).
+        monitor    = monitor.
   ENDMETHOD.
 
 
@@ -286,30 +358,32 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
       WHEN '304'. description = 'Not Modified'.
       WHEN '305'. description = 'Use Proxy'.
       WHEN '307'. description = 'Temporary Redirect'.
-      WHEN '400'. description = 'Bad Request'.
-      WHEN '401'. description = 'Unauthorized'.
-      WHEN '402'. description = 'Payment Required'.
-      WHEN '403'. description = 'Forbidden'.
-      WHEN '404'. description = 'Not Found'.
-      WHEN '405'. description = 'Method Not Allowed'.
-      WHEN '406'. description = 'Not Acceptable'.
-      WHEN '407'. description = 'Proxy Authentication Required'.
-      WHEN '408'. description = 'Request Timeout'.
-      WHEN '409'. description = 'Conflict'.
-      WHEN '410'. description = 'Gone'.
-      WHEN '411'. description = 'Length Required'.
-      WHEN '412'. description = 'Precondition Failed'.
-      WHEN '413'. description = 'Request Entity Too Large'.
-      WHEN '414'. description = 'Request-URI Too Long'.
-      WHEN '415'. description = 'Unsupported Media Type'.
-      WHEN '416'. description = 'Requested Range Not Satisfiable'.
-      WHEN '417'. description = 'Expectation Failed'.
-      WHEN '500'. description = 'Internal Server Error'.
-      WHEN '501'. description = 'Not Implemented'.
-      WHEN '502'. description = 'Bad Gateway'.
-      WHEN '503'. description = 'Service Unavailable'.
-      WHEN '504'. description = 'Gateway Timeout'.
-      WHEN '505'. description = 'HTTP Version Not Supported'.
+      WHEN'400'.description = ' Bad Request'.
+      WHEN'401'.description = ' Unauthorized'.
+      WHEN'402'.description = ' Payment Required'.
+      WHEN'403'.description = ' Forbidden'.
+      WHEN'404'.description = ' Not Found'.
+      WHEN'405'.description = ' Method Not Allowed'.
+      WHEN'406'.description = ' Not Acceptable'.
+      WHEN'407'.description = ' Proxy Authentication Required'.
+      WHEN'408'.description = ' Request Timeout'.
+      WHEN'409'.description = ' Conflict'.
+      WHEN'410'.description = ' Gone'.
+      WHEN'411'.description = ' Length Required'.
+      WHEN'412'.description = ' Precondition Failed'.
+      WHEN'413'.description = ' Request Entity Too Large'.
+      WHEN'414'.description = ' Request-URI Too Long'.
+      WHEN'415'.description = ' Unsupported Media Type'.
+      WHEN'416'.description = ' Requested Range Not Satisfiable'.
+      WHEN'417'.description = ' Expectation Failed'.
+      WHEN'500'.description = ' Internal Server Error'.
+      WHEN'501'.description = ' Not Implemented'.
+      WHEN'502'.description = ' Bad Gateway'.
+      WHEN'503'.description = ' Service Unavailable'.
+      WHEN'504'.description = ' Gateway Timeout'.
+      WHEN'505'.description = ' HTTP Version Not Supported'.
+
+      WHEN'505'.
       WHEN OTHERS.
         description = ''.
     ENDCASE.
@@ -319,24 +393,33 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 
   METHOD get_static_headers.
     DATA: wa_ihttpnvp TYPE ihttpnvp,
-          lt_headers  TYPE TABLE OF  zrest_conf_head,
-          wa_headers  TYPE zrest_conf_head.
-
+          lt_headers type TABLE OF  zrest_conf_head,
+          wa_headers type zrest_conf_head
+    .
+*    SELECT * FROM zrest_conf_head INTO TABLE @DATA(lt_headers) WHERE interface_id EQ @interface_id. v-jobpau
     SELECT * FROM zrest_conf_head INTO TABLE lt_headers WHERE interface_id EQ interface_id.
-
     IF sy-subrc EQ 0.
+*      LOOP AT lt_headers INTO DATA(wa_headers). v-jobpau
       LOOP AT lt_headers INTO wa_headers.
         wa_ihttpnvp-name = wa_headers-name.
         wa_ihttpnvp-value = wa_headers-value.
-        APPEND wa_ihttpnvp TO static_headers.
-        CLEAR  wa_ihttpnvp.
+        append wa_ihttpnvp to static_headers.
+        clear  wa_ihttpnvp.
       ENDLOOP.
     ENDIF.
   ENDMETHOD.
 
 
   METHOD obfuscate.
+*----------------------------------------------------------------------*
+*                       Modification History                           *
+*----------------------------------------------------------------------*
+* Date      | USER ID  |  VSTF  | Transport  | Remarks                 *
+*-----------|----------|--------|------------|-------------------------*
+* 09|29|2022|V-ASHOKM1 |        | SMTK907895 | Fixing VF Errors        *
+*----------------------------------------------------------------------*
 ************************************************************************************
+    CONSTANTS : c_obfuscating_symbol TYPE c VALUE '*'.
     FIELD-SYMBOLS : <fs>           TYPE any,
                     <fchar_string> TYPE any.
     DATA : converted        TYPE REF TO cl_abap_conv_in_ce,
@@ -348,6 +431,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
            regex_result     TYPE        match_result,
            st_obfuscate     LIKE LINE OF it_zobfuscate,
            lv_string        TYPE string,
+           fieldtag(50)     TYPE c,
            length_of_word   TYPE i.
 ************************************************************************************
 *   Convert to string                                                              *
@@ -357,19 +441,63 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
             input IS NOT INITIAL.
 *   if yes , convert the xstring to string for the processing
     TRY.
-        converted = cl_abap_conv_in_ce=>create(
-            input = input ).
-      CATCH cx_parameter_invalid_range .
-      CATCH cx_sy_codepage_converter_init .
+        CALL METHOD cl_abap_conv_in_ce=>create
+          EXPORTING
+*           encoding    = 'DEFAULT'
+*           endian      =
+*           replacement = '#'
+*           ignore_cerr = ABAP_FALSE
+            input = input
+          RECEIVING
+            conv  = converted.
+*--Begin of changes by V-ASHOKM1 ++  SMTK907895
+*     CATCH cx_parameter_invalid_range .       Commented by V-ASHOKM1 SMTK907895
+      CATCH cx_parameter_invalid_range INTO DATA(lr_invrange).
+        DATA(lv_text) = lr_invrange->get_text( ).
+        IF lv_text IS NOT INITIAL.
+          MESSAGE lv_text TYPE 'E'.
+        ENDIF.
+*      CATCH cx_sy_codepage_converter_init .   Commented by V-ASHOKM1 SMTK907895
+      CATCH cx_sy_codepage_converter_init INTO DATA(lr_converter).
+        DATA(lv_text1) = lr_converter->get_text( ).
+        IF lv_text1 IS NOT INITIAL.
+          MESSAGE lv_text1 TYPE 'E'.
+        ENDIF.
+*  End of changes by V-ASHOKM1 ++ SMTK907895
     ENDTRY.
     TRY.
-        converted->read(
+        CALL METHOD converted->read
           IMPORTING
-            data = lv_string ).
-      CATCH cx_sy_conversion_codepage .
-      CATCH cx_sy_codepage_converter_init .
-      CATCH cx_parameter_invalid_type .
-      CATCH cx_parameter_invalid_range .
+            data = lv_string.
+
+*--Begin of changes by V-ASHOKM1 ++ SMTK907895
+      CATCH cx_sy_conversion_codepage INTO DATA(lr_codepage) .
+        DATA(lv_text2) = lr_codepage->get_text( ).
+        IF lv_text2 IS NOT INITIAL.
+          MESSAGE lv_text2 TYPE 'E'.
+        ENDIF.
+
+*      CATCH cx_sy_codepage_converter_init .     Commented by V-ASHOKM1 SMTK907895
+      CATCH cx_sy_codepage_converter_init INTO lr_converter.
+        lv_text1 = lr_converter->get_text( ).
+        IF lv_text1 IS NOT INITIAL.
+          MESSAGE lv_text1 TYPE 'E'.
+        ENDIF.
+
+*      CATCH cx_parameter_invalid_type.          Commented by V-ASHOKM1 SMTK907895
+      CATCH cx_parameter_invalid_type  INTO DATA(lr_invtype) .
+        DATA(lv_text3) = lr_invtype->get_text( ).
+        IF lv_text3 IS NOT INITIAL.
+          MESSAGE lv_text3 TYPE 'E'.
+        ENDIF..
+
+*      CATCH cx_parameter_invalid_range . Commented by V-ASHOKM1 SMTK907895
+      CATCH cx_parameter_invalid_range INTO lr_invrange.
+        lv_text = lr_invrange->get_text( ).
+        IF lv_text IS NOT INITIAL.
+          MESSAGE lv_text TYPE 'E'.
+        ENDIF.
+*  End of changes by V-ASHOKM1 ++ SMTK907895
     ENDTRY.
 ************************************************************************************
 *   Loop at the fields which needed to be obfuscated                               *
@@ -406,13 +534,17 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
       EXPORTING
         text   = lv_string
+*       MIMETYPE       = ' '
+*       ENCODING       =
       IMPORTING
         buffer = result
       EXCEPTIONS
         failed = 1
         OTHERS = 2.
     IF sy-subrc <> 0.
-* Implement suitable error handling here
+* Begin of Changes by V-ASHOKM1 ++ SMTK907859
+      MESSAGE e003(zvf_zrest). " XSTRING Conversion error
+* End of Changes by V-ASHOKM1 ++ SMTK907859
     ENDIF.
 
 
@@ -425,66 +557,91 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 *----------------------------------------------------------------------*
 * Date      | USER ID  |  VSTF  | Transport  | Remarks                 *
 *-----------|----------|--------|------------|-------------------------*
-* 04|28|2016|V-DEVEER  |2163894 | DGDK903413 | Authorization Check
+* 04|28|2016|V-DEVEER  |2163894 | DGDK903413 | Authorization Check     *
+* 03|13|2019|V-SRKURA  |4364787 | DGDK910813 | REST Framework Changes  *
+* 09|28|2022|V-ASHOKM1 |        | SMTK907895 | Fixing VF Errors        *
 *----------------------------------------------------------------------*
 **************************************************************************************
     DATA  : it_monitor TYPE STANDARD TABLE OF zrest_monitor,
             it_payload TYPE STANDARD TABLE OF zrest_mo_payload,
             it_headers TYPE STANDARD TABLE OF zrest_mon_header,
+            it_global  TYPE STANDARD TABLE OF zrest_global,
             del_date   TYPE sy-datum,
-            seconds    TYPE i,
-            lv_textid  TYPE REF TO zcx_http_client_failed,
-            lv_text2   TYPE scx_t100key.
-
-    CREATE OBJECT lv_textid.
+            seconds    TYPE i.
+    DATA: lr_interface_id TYPE RANGE OF zinterface_id,   "Added by V-SRKURA 4364787/DGDK910813
+          ls_interface_id TYPE zts_interface_id,         "Added by V-SRKURA 4364787/DGDK910813
+          l_interface_id  LIKE LINE OF lr_interface_id.  "Added by V-SRKURA 4364787/DGDK910813
 **************************************************************************************
 * Go back 30 days in time . All the message before this date would need to           *
 * be cleanesed.By default 30 days...                                                 *
 **************************************************************************************
-    DATA: wa_global TYPE zrest_global.
-    wa_global = zcl_rest_utility_class=>get_global_params( ).
-    seconds = -1 * wa_global-message_retention  * 24  * 60.
+    DATA(wa_global) = zcl_rest_utility_class=>get_global_params( ).
+*    seconds = -1 * 2592000.
+*   seconds = -1 * wa_global-message_retention  * 24  * 60.          "Commented by V-SRKURA 4364787/DGDK910813
+    seconds = -1 * wa_global-message_retention  * 24  * 60 * 60.     "Added by V-SRKURA 4364787/DGDK910813
     TRY.
-        cl_abap_tstmp=>td_add(
+        CALL METHOD cl_abap_tstmp=>td_add
           EXPORTING
             date     = sy-datum
             time     = sy-uzeit
             secs     = seconds
           IMPORTING
-            res_date = del_date ).
-      CATCH cx_parameter_invalid_type .
-      CATCH cx_parameter_invalid_range .
+            res_date = del_date.
+*  Begin of changes by V-ASHOKM1 ++ SMTK907895
+*      CATCH cx_parameter_invalid_type .  Commented by V-ASHOKM1 SMTK907895
+      CATCH cx_parameter_invalid_type INTO DATA(lr_invtype).
+        DATA(lv_text) = lr_invtype->get_text( ).
+        IF lv_text IS NOT INITIAL.
+          MESSAGE lv_text TYPE 'E'.
+        ENDIF.
+
+*      CATCH cx_parameter_invalid_range . Commented by V-ASHOKM1 SMTK907895
+      CATCH cx_parameter_invalid_range INTO DATA(lr_invrange).
+        DATA(lv_text1) = lr_invrange->get_text( ).
+        IF lv_text1 IS NOT INITIAL.
+          MESSAGE lv_text1 TYPE 'E'.
+        ENDIF.
+*  End of changes by V-ASHOKM1 ++ SMTK907895
     ENDTRY.
 **************************************************************************************
 *   Begin of changes VSTF # 2163894 | DGDK903413
     TRY.
         check_authority( ).
-
-      CATCH zcx_http_client_failed INTO lv_textid.
-        lv_text2 = lv_textid->if_t100_message~t100key.
-        RAISE EXCEPTION TYPE zcx_http_client_failed
-          EXPORTING
-            textid = lv_text2.
+      CATCH zcx_http_client_failed INTO DATA(lv_textid).
+        DATA(lv_text2) = lv_textid->if_t100_message~t100key.
+        RAISE EXCEPTION TYPE zcx_http_client_failed EXPORTING textid = lv_text2.
     ENDTRY.
 *  End of changes VSTF # 2163894 | DGDK903413
 **************************************************************************************
-    SELECT * FROM zrest_monitor INTO TABLE it_monitor
+*--Begin of Changes by V-SRKURA 03/13/2019 4364787/DGDK910813
+    LOOP AT interface_id INTO ls_interface_id.
+      l_interface_id-sign = 'I'.
+      l_interface_id-option = 'EQ'.
+      l_interface_id-low = ls_interface_id-interface_id.
+      APPEND l_interface_id TO lr_interface_id.
+    ENDLOOP.
+*--End of Changes by V-SRKURA 03/13/2019 4364787/DGDK910813
+*   SELECT * FROM zrest_monitor INTO TABLE it_monitor                   "Commented by V-SRKURA 4364787/DGDK910813
+    SELECT * FROM zrest_monitor PACKAGE SIZE 5000 INTO TABLE it_monitor  "Added by V-SRKURA 4364787/DGDK910813
                                      WHERE zcompdate < del_date
-                                     AND   httpstatus BETWEEN 200 AND 300 .
-    IF sy-subrc EQ 0.
-      SELECT * FROM zrest_mo_payload INTO TABLE it_payload
-                            FOR ALL ENTRIES IN it_monitor WHERE messageid EQ it_monitor-zmessageid.
-      SELECT * FROM     zrest_mon_header  INTO TABLE it_headers
-                            FOR ALL ENTRIES IN it_monitor WHERE messageid EQ it_monitor-zmessageid.
-    ENDIF.
+                                     AND   httpstatus BETWEEN 200 AND 300
+                                     AND   interface_id IN lr_interface_id. "Added by V-SRKURA 4364787/DGDK910813
+      IF ( NOT it_monitor IS INITIAL ) AND ( sy-subrc EQ 0 ). "VF remediations by KRDASH
+        SELECT * FROM zrest_mo_payload INTO TABLE it_payload
+                              FOR ALL ENTRIES IN it_monitor WHERE messageid EQ it_monitor-zmessageid.
+        SELECT * FROM     zrest_mon_header  INTO TABLE it_headers
+                              FOR ALL ENTRIES IN it_monitor WHERE messageid EQ it_monitor-zmessageid.
+      ENDIF.
 **************************************************************************************
 *    Delete the data from the table                                                  *
 **************************************************************************************
-    IF it_monitor IS NOT INITIAL.
-      DELETE : zrest_monitor    FROM TABLE it_monitor,
-               zrest_mo_payload FROM TABLE it_payload,
-               zrest_mon_header FROM TABLE  it_headers.
-    ENDIF.
+      IF it_monitor IS NOT INITIAL.
+        DELETE : zrest_monitor    FROM TABLE it_monitor,
+                 zrest_mo_payload FROM TABLE it_payload,
+                 zrest_mon_header FROM TABLE  it_headers.
+      ENDIF.
+      CLEAR: it_monitor,it_payload,it_headers.                           "Added by V-SRKURA 4364787/DGDK910813
+    ENDSELECT.                                                         "Added by V-SRKURA 4364787/DGDK910813
   ENDMETHOD.
 
 
@@ -498,75 +655,71 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 *----------------------------------------------------------------------*
 * 05|05|2016|V-DEVEER  |2163894 | DGDK903444 | SIT Testing issues
 *----------------------------------------------------------------------*
-* 12|08|2016|V-JAVEDA  |2163894 | MS2K948543 | Enhance delete function
+* 10|18|2017|V-LAUPPA  |2636456 | DG2K902770 | Performace improvement
 *----------------------------------------------------------------------*
-* 12|16|2016|V-JAVEDA  |2163894 | MS2K948920 | Performance improve
+* 11|14|2017|V-SANMOH  |3960458 | DG2K904406 | ZREST Retry bug fix
 *----------------------------------------------------------------------*
-*12/20/2016| V-JAVEDA  |2278065  | MS2K948978 |Clearing prog header *
+* 03|14|2019|V-SRKURA  |4364787 | DGDK910813 | REST Framework changes
+*----------------------------------------------------------------------*
+* 04|09|2019| V-ASPATT |4360996 | MS2K981536 |Submit Date and time     *
+*                                             calling program          *
+*----------------------------------------------------------------------*
+* 07|19|2019|KRDASH    |4812204 | DGDK911539 | Reprocessing logic for
+*                                              Azure Services
+*----------------------------------------------------------------------*
+* 04|28|2020|KRDASH    |5566653 | SMTK906003 | Reprocessing logic for
+*                                              AAD and Blob service
+*----------------------------------------------------------------------*
+* 03|01|2022|SANJUKUM  |8222481 | SMTK907382  | Reprocessing logic for
+*                                               Managed Identity
 *----------------------------------------------------------------------*
 
-    DATA : lv_string               TYPE string,
-           wa_paylod               TYPE zrest_mo_payload,
-           lv_text2                TYPE scx_t100key,
-           lv_textid               TYPE REF TO zcx_http_client_failed,
-           lv_rfc_destination      TYPE zrest_config-destination,
-           lv_srtfd                TYPE zadf_con_indx-srtfd,
-           lw_indx                 TYPE zadf_con_indx,
-           lt_enveloped_data       TYPE TABLE OF ssfbin,
-           lv_cert_string          TYPE xstring,
-           lt_recipients           TYPE TABLE OF ssfinfo,
-           lw_recipient            TYPE ssfinfo,
-           lt_input_data           TYPE TABLE OF ssfbin,
-           lv_env_data_len         TYPE i,
-           lv_env_len_total        TYPE i,
-           lv_subject              TYPE string,
-           lw_enveloped_data       TYPE ssfbin,
-           lv_len_output           TYPE i,
-           lv_len_input            TYPE i,
-           lv_decoded_str          TYPE string,
-           lv_applic               TYPE rfcdisplay-sslapplic,
-           lv_psename              TYPE ssfpsename,
-           lv_profilename          TYPE localfile,
-           lv_profile              TYPE ssfparms-pab,
-           lv_current_timestamp    TYPE timestampl,
-           lv_date_adf             TYPE datum,
-           lv_time_adf             TYPE uzeit,
-           lv_seconds_adf          TYPE p,
-           lv_input_seconds_adf    TYPE p,
-           lv_expiry_time_adf      TYPE string,
-           lv_new_expiry_adf       TYPE string,
-           lv_format               TYPE i,
-           lv_string_to_sign       TYPE string,
-           lv_encoded_base_address TYPE string,
-           lv_body_xstring         TYPE xstring,
-           lv_sign                 TYPE string,
-           lv_final_token          TYPE string,
-           lv_decoded              TYPE xstring,
-           lo_conv                 TYPE REF TO cl_abap_conv_out_ce,
-           lv_sas_key              TYPE string,
-           lw_zadf_config          TYPE zadf_config,
-           lv_zone                 TYPE sy-zonlo,
-           lv_baseaddress          TYPE string,
-           http_method             TYPE zinterface_method.
-    CONSTANTS: lc_i          TYPE c VALUE 'I',
-               lc_servicebus TYPE zadf_config-interface_type VALUE 'SERVICEBUS',
-               lc_eventhub   TYPE zadf_config-interface_type VALUE 'EVENTHUB',
-               lc_auth       TYPE ihttpnvp-name VALUE 'Authorization'.
-    CREATE OBJECT lv_textid.
+    DATA : lv_string        TYPE string,
+* Start of changes by KRDASH DGDK911539 4812204
+           lw_zadf_config   TYPE zadf_config,
+           lv_interfacetype TYPE zazure_dest,
+           lv_interfaceid   TYPE zinterface_id,
+           lo_adf_reprocess TYPE REF TO zcl_adf_service_reprocess,
+           lv_sas_token     TYPE string,
+           lv_sas_date      TYPE string,
+* End of changes by KRDASH DGDK911539 4812204
+           lv_method        TYPE char20.
+*--Begin of Changes by V-SRKURA 03/13/2019 4364787/DGDK910813
+    DATA: lv_app_id       TYPE string,
+          lv_interface_id TYPE string,
+          lv_response     TYPE string.
+* Begin of changes by KRDASH SMTK906003
+    DATA: lv_low           TYPE c LENGTH 80,
+          lv_interface_aad TYPE zinterface_id.
+* End of changes by KRDASH SMTK906003
+
+    CONSTANTS:lc_app_id                      TYPE rvari_vnam    VALUE 'ZCUST_CR_EIS_APP_ID',
+              lc_interface_id                TYPE rvari_vnam    VALUE 'ZRETRY_INTERFACE_WITH_AAD',
+              lc_interface_aad               TYPE zinterface_id VALUE 'CUSTCR_AAD',
+* Begin of changes by KRDASH DGDK911539 4812204
+              lc_zadf_reprocess_interface_id TYPE ztvarvc-varname VALUE 'ZADF_REPROCESS_INTERFACE_ID',
+              lc_servicebus                  TYPE zadf_config-interface_type VALUE 'SERVICEBUS',
+              lc_service_cosmosdb            TYPE zazure_dest VALUE 'COSMOSDB',
+              lc_aad                         TYPE zazure_dest VALUE 'AAD',
+              lc_msi                         TYPE zazure_dest VALUE 'MI',
+              lc_blob                        TYPE zadf_config-interface_type VALUE 'BLOB', "Added by KRDASH SMTK906003
+              lc_auth1                       TYPE ihttpnvp-name VALUE 'Authorization',
+              lc_date                        TYPE ihttpnvp-name VALUE 'x-ms-date',
+* End of changes by KRDASH DGDK911539 4812204
+              lc_auth                        TYPE string        VALUE 'authorization'.
+*--End of Changes by V-SRKURA 03/13/2019 4364787/DGDK910813
+
+    DATA:lv_textid2 TYPE scx_t100key.
 *-----------------------check message id ------------------------------*
-    check_messageid( message_id = message_id ).
+    check_messageid( EXPORTING message_id = message_id ).
 *-----------------------get db data -----------------------------------*
-    get_db_data( message_id = message_id ).
+    get_db_data( EXPORTING message_id = message_id ).
 * ------------------------get the latest payloadv----------------------*
 *   Sort the retry num , so that latest one is picked for reprocessing
     SORT payload BY retry_num DESCENDING.
-
-*    READ TABLE payload INTO DATA(wa_paylod) INDEX 1. v-jobpau
-    CLEAR wa_paylod.  "v-javeda | MS2K948978
-    READ TABLE payload INTO wa_paylod INDEX 1.
+    READ TABLE payload INTO DATA(wa_paylod) INDEX 1.
 * ---------------------------------------------------------------------*
     interface_name = wa_paylod-interface_id.
-    http_method = wa_paylod-method.
 * ---------------------------------------------------------------------*
 *   Begin of changes for 2163894 | DGDK903413
     TRY.
@@ -580,36 +733,38 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 *          RAISE EXCEPTION TYPE zcx_http_client_failed EXPORTING textid = lv_textid2.
 *        ENDIF.
 * End of changes for 2163894 | DGDK903413
-
-      CATCH zcx_http_client_failed INTO lv_textid.
-        lv_text2 = lv_textid->if_t100_message~t100key.
-        RAISE EXCEPTION TYPE zcx_http_client_failed
-          EXPORTING
-            textid = lv_text2.
+      CATCH zcx_http_client_failed INTO DATA(lv_textid).
+        DATA(lv_text2) = lv_textid->if_t100_message~t100key.
+        RAISE EXCEPTION TYPE zcx_http_client_failed EXPORTING textid = lv_text2.
     ENDTRY.
 *   End of changes for 2163894 | DGDK903413
 *-----------------------Get the config ------------------------------*
+* Begin of changes V-LAUPPA
     DATA: wa_config TYPE zrest_srtuct_config.
-
-    wa_config = zcl_rest_utility_class=>get_config_data(
+    CALL METHOD zcl_rest_utility_class=>get_config_data
+      EXPORTING
         interface_id = interface_name
-        method       = http_method ).
-
-
-
+        method       = wa_paylod-method
+      RECEIVING
+        config_data  = wa_config.
+* End of changes V-LAUPPA
 *-----------------------Retry possible ? ------------------------------*
     IF wa_config-max_retry EQ 0.
-      MESSAGE 'Retry not possible'(001) TYPE 'I'.   " Added the messsage for VSTF 2163894 / DGDK903444
+      MESSAGE 'Retry not possible'(008) TYPE 'I'.   " Added the messsage for VSTF 2163894 / DGDK903444
       EXIT.
-    ELSEIF wa_paylod-retry_num EQ wa_config-max_retry AND from_scheduler EQ 'X'. "v-javeda - MS2K948543
-      MESSAGE 'Maximum number of retry attempts reached'(002) TYPE 'I'. " Added the message for VSTF 2163894 / DGDK903444
-      EXIT.
+    ELSE.
+*      IF wa_paylod-retry_num EQ  wa_config-max_retry."(-) VSO# 3960458 / DG2K904406
+      IF wa_paylod-retry_num GE  wa_config-max_retry. "(+) VSO# 3960458 / DG2K904406
+        IF from_scheduler EQ 'X'. "v-lauppa
+          MESSAGE 'Maximum number of retry attempts reached'(009) TYPE 'I'. " Added the message for VSTF 2163894 / DGDK903444
+          EXIT.
+        ENDIF."v-lauppa
+      ENDIF.
     ENDIF.
 *----------------------------------------------------------------------*
-*    begin of change for the exponential retries.
+* Begin of change for the exponential retries.
     IF from_scheduler EQ 'X'.
-      DATA: wa_global TYPE zrest_global.
-      wa_global = zcl_rest_utility_class=>get_global_params( ).
+      DATA(wa_global) = zcl_rest_utility_class=>get_global_params( ).
 
 *     3 9 27 81 243 243 243 ...........
       DATA : base       TYPE i VALUE 3,
@@ -623,16 +778,18 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
       next_retry = base ** wa_paylod-retry_num .
 *     Check the date and time difference between the first trail and now
       TRY.
-          cl_abap_tstmp=>td_subtract(
+          CALL METHOD cl_abap_tstmp=>td_subtract
             EXPORTING
               date1    = sy-datum
               time1    = sy-uzeit
               date2    = monitor-zexedate
               time2    = monitor-zexetime
             IMPORTING
-              res_secs = seconds ).
-        CATCH cx_parameter_invalid_type .
-        CATCH cx_parameter_invalid_range .
+              res_secs = seconds.
+        CATCH cx_parameter_invalid_type INTO DATA(lx_invalid_type).
+          DATA(lv_param_type_ex) = lx_invalid_type->get_text( ).
+        CATCH cx_parameter_invalid_range INTO DATA(lx_invalid_range).
+          DATA(lv_param_range_ex) = lx_invalid_range->get_text( ).
       ENDTRY.
 *       Check if enough time has elapsed
       next_retry = 60 * next_retry.
@@ -643,32 +800,125 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
       IF ( seconds < next_retry ).
         EXIT.
       ENDIF.
-
     ENDIF.
 *    end of change.
 *------------------------------------- --------------------------------*
-    DATA: cx_http_failed    TYPE REF TO zcx_http_client_failed,
-          cx_config_missing TYPE REF TO zcx_interace_config_missing.
-    CREATE OBJECT: cx_http_failed,
-                   cx_config_missing.
+*--Begin of Changes by V-SRKURA 03/13/2019 4364787/DGDK910813
+    CLEAR: lv_interface_id, lv_interface_aad.
+    SELECT SINGLE low                                     " Given current reprocessing App Interface
+           high                                           " Fetch corresponding AAD Interface for a given app Interface
+           FROM ztvarvc
+           INTO ( lv_interface_id, lv_interface_aad )
+           WHERE varname = lc_interface_id
+             AND low     = wa_paylod-interface_id.
+    IF sy-subrc EQ 0.
+* Begin OF changes by KRDASH SMTK906003
+      CLEAR : lv_low.
+      SELECT SINGLE low,                                  " Client ID
+             high                                         " Resource
+             FROM ztvarvc
+             INTO ( @lv_low, @DATA(lv_resource) )
+             WHERE varname = @lv_interface_id.
+      IF sy-subrc EQ 0 AND lv_resource IS NOT INITIAL AND lv_interface_aad IS NOT INITIAL.
+        lv_app_id = lv_low.
+* Begin of Change SANJUKUM_SMTK907382
+        CALL METHOD lo_adf_reprocess->get_aad_token
+          EXPORTING
+            iv_interface_id = lv_interface_aad
+            iv_client_id    = lv_app_id
+            iv_resource     = lv_resource
+          IMPORTING
+            ev_aad_token    = DATA(lv_aad_auth).
+* End of Change SANJUKUM_SMTK907382
+      ENDIF.
+    ENDIF.
+* End of changes by KRDASH SMTK906003
+*--End of Changes by V-SRKURA 03/13/2019 4364787/DGDK910813
+
+* Start of changes by KRDASH DGDK911539 4812204
+* Reprocessing logic for Azure services excluding AAD as Reprocessing for AAD has already been taken care above
+    CLEAR lv_interfacetype.
+    SELECT SINGLE interface_type,
+           uri
+           FROM zadf_config
+           INTO ( @lv_interfacetype , @DATA(lv_uri) )
+           WHERE interface_id EQ @interface_name.
+    IF sy-subrc EQ 0.
+      CLEAR: lv_sas_token, lv_sas_date.
+* Begin of Change SANJUKUM_SMTK907382
+* Check if Reprocessing allowed
+      SELECT SINGLE high                      " Fetch the corresponding Interface, if any,required for fetching token
+             FROM ztvarvc
+             INTO lv_interfaceid
+             WHERE varname = lc_zadf_reprocess_interface_id
+             AND low       = interface_name.
+      IF sy-subrc EQ 0.
+* If no corresponding authentication Interface maintained, then assign the current interface
+        IF lv_interfaceid IS INITIAL.
+          lv_interfaceid = interface_name.
+        ENDIF.
+        IF lv_interfacetype EQ lc_servicebus.
+          wa_paylod-uri = lv_uri.
+        ENDIF.
+        TRY.
+            CREATE OBJECT lo_adf_reprocess.
+* Fetch the Auth Token/Signature
+            CALL METHOD lo_adf_reprocess->generate_auth_token
+              EXPORTING
+                iv_interface_id   = lv_interfaceid
+                iv_uri            = wa_paylod-uri
+                iv_interface_type = lv_interfacetype
+              IMPORTING
+                rv_token          = lv_sas_token
+                rv_date           = lv_sas_date
+                rv_mi_token       = DATA(lv_mi_token)
+                rv_sbus_token     = DATA(lv_final_token).
+          CATCH zcx_adf_service INTO DATA(lcx_adf_service).
+            DATA(lv_msg) =  lcx_adf_service->get_text( ).
+            MESSAGE lv_msg TYPE gc_i.
+            RETURN.
+          CATCH zcx_interace_config_missing INTO DATA(lcx_interface).
+            lv_msg =  lcx_interface->get_text( ).
+            MESSAGE lv_msg TYPE gc_i.
+            RETURN.
+          CATCH zcx_http_client_failed INTO DATA(lcx_http).
+            lv_msg =  lcx_http->get_text( ).
+            MESSAGE lv_msg TYPE gc_i.
+            RETURN.
+        ENDTRY.
+        IF lv_mi_token IS NOT INITIAL.
+          lv_mi_token =  |Bearer { lv_mi_token }|.
+        ENDIF.
+* End of Change SANJUKUM_SMTK907382
+      ENDIF.
+    ENDIF.
+**End of changes by KRDASH DGDK911539 4812204
     TRY .
+        lv_method = wa_config-method.
         CREATE OBJECT rest_handler
           EXPORTING
             interface_name      = interface_name
             business_identifier = wa_paylod-businessid
-            method              = wa_config-method.
-
-      CATCH zcx_http_client_failed INTO cx_http_failed.
-
+            method              = lv_method.
+      CATCH zcx_http_client_failed INTO DATA(cx_http_failed).
         RAISE EXCEPTION cx_http_failed.
-      CATCH zcx_interace_config_missing INTO cx_config_missing.
+      CATCH zcx_interace_config_missing INTO DATA(cx_config_missing).
         RAISE EXCEPTION cx_config_missing.
     ENDTRY.
 *   Set the format in binary as it's already converted.
     IF wa_paylod-payload IS NOT INITIAL.
       rest_handler->zif_rest_framework~set_binary_body( wa_paylod-payload ).
     ENDIF.
-    rest_handler->set_callingmethod( 'RETRY' ).
+
+*   //Begin of code by Ashutosh - to retain the calling method VSO#4360996 TR#MS2K981536
+*    rest_handler->set_callingmethod('RETRY').
+    IF monitor-calling_method IS NOT INITIAL.
+      rest_handler->set_callingmethod( monitor-calling_method ).
+    ELSE.
+      rest_handler->set_callingmethod('RETRY').
+    ENDIF.
+*   //up to here VSO#4360996 TR#MS2K981536
+
 *   Append the headers to the message
     CLEAR lv_string.
     CALL FUNCTION 'ECATT_CONV_XSTRING_TO_STRING'
@@ -678,255 +928,70 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
       IMPORTING
         ex_string   = lv_string.
 
-    DATA:wa_header     TYPE ihttpnvp,
-         result_tab    TYPE TABLE OF string,
-         wa_result_tab TYPE string.
-    SPLIT lv_string AT '|' INTO TABLE result_tab IN CHARACTER MODE.
-*****
-**Regenerating SAS key token with new expiry time
-    CLEAR lw_zadf_config.
-    SELECT SINGLE * FROM zadf_config
-             INTO lw_zadf_config
-             WHERE interface_id EQ interface_name.
-    IF sy-subrc EQ 0.
-      CASE lw_zadf_config-interface_type.
-        WHEN lc_servicebus OR lc_eventhub. "Azure ServiceBus or eventhub
-          lv_srtfd = interface_name.
-*Import internal table as a cluster from INDX for decoding SAS Primary key
-          IMPORT tab  = lt_enveloped_data[]
-                 FROM DATABASE zadf_con_indx(zd)
-                 TO lw_indx
-                 ID lv_srtfd.
-          IF NOT lt_enveloped_data[] IS INITIAL.
-            CLEAR lv_rfc_destination.
-            SELECT SINGLE destination FROM zrest_config
-                                      INTO lv_rfc_destination
-                                      WHERE interface_id EQ interface_name.
-            IF NOT lv_rfc_destination IS INITIAL .
-              CALL FUNCTION 'RFC_READ_HTTP_DESTINATION'
-                EXPORTING
-                  destination             = lv_rfc_destination
-                  authority_check         = ' '
-                IMPORTING
-                  sslapplic               = lv_applic
-                EXCEPTIONS
-                  authority_not_available = 1
-                  destination_not_exist   = 2
-                  information_failure     = 3
-                  internal_failure        = 4
-                  no_http_destination     = 5
-                  OTHERS                  = 6.
-              IF sy-subrc NE 0.
-                MESSAGE TEXT-008 TYPE lc_i.
-              ELSE.
-                CALL FUNCTION 'SSFPSE_FILENAME'
-                  EXPORTING
-                    mandt         = sy-mandt
-                    context       = 'SSLC'
-                    applic        = lv_applic
-                  IMPORTING
-                    psename       = lv_psename
-                  EXCEPTIONS
-                    pse_not_found = 1
-                    OTHERS        = 2.
-                IF NOT lv_psename IS INITIAL.
-                  lv_profile = lv_psename.
-                  CALL FUNCTION 'SSFC_GET_CERTIFICATE'
-                    EXPORTING
-                      profile               = lv_profile
-                    IMPORTING
-                      certificate           = lv_cert_string
-                    EXCEPTIONS
-                      ssf_krn_error         = 1
-                      ssf_krn_nomemory      = 2
-                      ssf_krn_nossflib      = 3
-                      ssf_krn_invalid_par   = 4
-                      ssf_krn_nocertificate = 5
-                      OTHERS                = 6.
-                  IF sy-subrc NE 0.
-**Adding complete profile path for reading certificate instance
-                    lv_profile = lv_profilename.
-                    CALL FUNCTION 'SSFC_GET_CERTIFICATE'
-                      EXPORTING
-                        profile               = lv_profile
-                      IMPORTING
-                        certificate           = lv_cert_string
-                      EXCEPTIONS
-                        ssf_krn_error         = 1
-                        ssf_krn_nomemory      = 2
-                        ssf_krn_nossflib      = 3
-                        ssf_krn_invalid_par   = 4
-                        ssf_krn_nocertificate = 5
-                        OTHERS                = 6.
-                    IF sy-subrc NE 0.
-                      MESSAGE TEXT-007 TYPE lc_i.
-                    ENDIF.
-                  ELSE.
-                    CALL FUNCTION 'SSFC_PARSE_CERTIFICATE'
-                      EXPORTING
-                        certificate         = lv_cert_string
-                      IMPORTING
-                        subject             = lv_subject
-                      EXCEPTIONS
-                        ssf_krn_error       = 1
-                        ssf_krn_nomemory    = 2
-                        ssf_krn_nossflib    = 3
-                        ssf_krn_invalid_par = 4
-                        OTHERS              = 5.
-                    IF sy-subrc NE 0.
-                      MESSAGE TEXT-006 TYPE lc_i.
-                    ELSE.
-                      lw_recipient-id      = lv_subject.
-                      lw_recipient-profile = lv_profile.
-                      APPEND lw_recipient TO lt_recipients.
-                      LOOP AT lt_enveloped_data INTO lw_enveloped_data.
-                        lv_env_data_len = xstrlen( lw_enveloped_data-bindata ).
-                        lv_env_len_total = lv_env_len_total + lv_env_data_len.
-                        CLEAR lw_enveloped_data.
-                      ENDLOOP.
-                      CALL FUNCTION 'SSF_KRN_DEVELOPE'
-                        EXPORTING
-                          ssftoolkit                   = 'SAPSECULIB'
-                          str_format                   = 'PKCS7'
-                          ostr_enveloped_data_l        = lv_env_len_total
-                        IMPORTING
-                          ostr_output_data_l           = lv_len_input
-                        TABLES
-                          ostr_enveloped_data          = lt_enveloped_data
-                          recipient                    = lt_recipients
-                          ostr_output_data             = lt_input_data
-                        EXCEPTIONS
-                          ssf_krn_error                = 1
-                          ssf_krn_noop                 = 2
-                          ssf_krn_nomemory             = 3
-                          ssf_krn_opinv                = 4
-                          ssf_krn_nossflib             = 5
-                          ssf_krn_recipient_error      = 6
-                          ssf_krn_input_data_error     = 7
-                          ssf_krn_invalid_par          = 8
-                          ssf_krn_invalid_parlen       = 9
-                          ssf_fb_input_parameter_error = 10
-                          OTHERS                       = 11.
-                      IF sy-subrc NE 0.
-                        MESSAGE TEXT-005 TYPE lc_i.
-                      ELSE.
-                        IF NOT lt_input_data[] IS INITIAL.
-                          CALL FUNCTION 'SCMS_BINARY_TO_STRING'
-                            EXPORTING
-                              input_length  = lv_len_input
-                            IMPORTING
-                              text_buffer   = lv_decoded_str
-                              output_length = lv_len_output
-                            TABLES
-                              binary_tab    = lt_input_data
-                            EXCEPTIONS
-                              failed        = 1
-                              OTHERS        = 2.
-                          IF lv_decoded_str IS INITIAL.
-                            MESSAGE TEXT-004 TYPE lc_i.
-                          ELSE.
-                            lv_sas_key = lv_decoded_str.
-                          ENDIF.
-                        ELSE.
-                          MESSAGE TEXT-003 TYPE lc_i.
-                        ENDIF.
-                      ENDIF.
-                    ENDIF.
-                  ENDIF.
-                ENDIF.
-              ENDIF.
-            ELSE.
-              MESSAGE TEXT-002 TYPE lc_i.
-            ENDIF.
-          ELSE.
-            MESSAGE TEXT-001 TYPE lc_i.
-          ENDIF.
-**Calculating Epoch time for SAS Token
-          IF NOT lv_sas_key IS INITIAL.
-*Get the current timestamp
-            GET TIME STAMP FIELD  lv_current_timestamp .
-*Get the time difference
-            CONVERT TIME STAMP lv_current_timestamp TIME ZONE lv_zone INTO DATE lv_date_adf TIME lv_time_adf.
-            TRY.
-                CALL METHOD cl_abap_tstmp=>td_subtract
-                  EXPORTING
-                    date1    = lv_date_adf
-                    time1    = lv_time_adf
-                    date2    = '19700101'
-                    time2    = '000000'
-                  IMPORTING
-                    res_secs = lv_seconds_adf.
-* Add expiry time in seconds
-                lv_input_seconds_adf =  900 . "Setting expiry time as 15 mins
-                lv_seconds_adf = lv_seconds_adf + lv_input_seconds_adf.
-                lv_expiry_time_adf = lv_seconds_adf.
-                CONDENSE lv_expiry_time_adf.
-              CATCH cx_parameter_invalid_type.
-              CATCH cx_parameter_invalid_range .
-            ENDTRY.
-**Generating SAS token with new expiry time
-            IF NOT lv_expiry_time_adf IS INITIAL.
-              lv_baseaddress = lw_zadf_config-uri.
-              lv_format = 18.
-              lv_encoded_base_address = escape( val = lv_baseaddress format = lv_format  ).
-              CONCATENATE lv_encoded_base_address  cl_abap_char_utilities=>newline lv_expiry_time_adf INTO lv_string_to_sign.
-
-              lo_conv = cl_abap_conv_out_ce=>create( encoding = 'UTF-8' ).
-              lo_conv->convert( EXPORTING data = lv_string_to_sign IMPORTING buffer = lv_body_xstring ).
-
-              lo_conv = cl_abap_conv_out_ce=>create( encoding = 'UTF-8' ).
-              lo_conv->convert( EXPORTING data = lv_sas_key IMPORTING buffer = lv_decoded ).
-              TRY.
-                  CALL METHOD cl_abap_hmac=>calculate_hmac_for_raw
-                    EXPORTING
-                      if_algorithm     = 'sha-256'
-                      if_key           = lv_decoded
-                      if_data          = lv_body_xstring
-                      if_length        = 0
-                    IMPORTING
-                      ef_hmacb64string = lv_sign.
-                CATCH cx_abap_message_digest.
-              ENDTRY.
-              lv_new_expiry_adf = lv_expiry_time_adf.
-              CONDENSE lv_new_expiry_adf.
-              IF NOT lv_sign IS INITIAL.
-                DATA wa_policy TYPE zadf_ehub_policy.
-                SELECT SINGLE * FROM zadf_ehub_policy INTO wa_policy WHERE interface_id EQ interface_name.
-                lv_sign = escape( val = lv_sign format = lv_format  ).
-                IF lw_zadf_config-interface_type eq lc_servicebus. "Servicebus signature string
-                   CONCATENATE 'SharedAccessSignature sig=' lv_encoded_base_address  '&sig=' lv_sign '&se=' lv_new_expiry_adf '&skn='
-                   wa_policy-policy INTO lv_final_token.
-                ELSEIF lw_zadf_config-interface_type eq lc_eventhub. "Eventhub signature string
-                   CONCATENATE 'SharedAccessSignature sr=' lv_encoded_base_address  '&sig=' lv_sign '&se=' lv_new_expiry_adf '&skn='
-                   wa_policy-policy INTO lv_final_token.
-                ENDIF.
-              ENDIF.
-            ENDIF.
-          ENDIF.
-      ENDCASE.
-    ENDIF.
-    LOOP AT result_tab INTO wa_result_tab.
+    DATA:wa_header TYPE ihttpnvp.
+    SPLIT lv_string AT '|' INTO TABLE DATA(result_tab) IN CHARACTER MODE.
+    LOOP AT result_tab INTO DATA(wa_result_tab).
       SPLIT wa_result_tab AT ':' INTO wa_header-name wa_header-value.
-**Replacing Authorization header value with newly generated SAS Token
-      IF ( lw_zadf_config-interface_type EQ lc_servicebus OR lw_zadf_config-interface_type EQ lc_eventhub ) AND
-         ( wa_header-name EQ lc_auth ) AND
-         ( NOT lv_final_token IS INITIAL ).
-        rest_handler->set_request_header( iv_name = wa_header-name  iv_value = lv_final_token ).
-      ELSE.
-        rest_handler->set_request_header( iv_name = wa_header-name  iv_value = wa_header-value  ).
-      ENDIF.
+* Begin of Change SANJUKUM_SMTK907382
+      CASE wa_header-name.
+        WHEN lc_auth OR lc_auth1.                         " authorization or Auhorization Header
+          IF lv_aad_auth IS NOT INITIAL .                 " AAD Auth token
+            DATA(lv_value) = lv_aad_auth.
+          ELSEIF lv_interfacetype EQ lc_servicebus AND lv_final_token IS NOT INITIAL.      " ServiceBus Token
+            lv_value = lv_final_token.
+          ELSEIF lv_mi_token IS NOT INITIAL.              " MI Token
+            lv_value = lv_mi_token.
+          ELSEIF lv_interfacetype EQ lc_service_cosmosdb AND lv_sas_token IS NOT INITIAL.   " CosmosDB token
+            lv_value = lv_sas_token.
+          ENDIF.
+        WHEN lc_date.                                     " x-ms-date Header
+          IF lv_interfacetype EQ lc_service_cosmosdb AND lv_sas_date IS NOT INITIAL.       " CosmosDB SAS date
+            lv_value = lv_sas_date.
+          ENDIF.
+        WHEN OTHERS.
+          lv_value =  wa_header-value.
+      ENDCASE.
+* Add headers
+      rest_handler->set_request_header( iv_name = wa_header-name  iv_value = lv_value  ).
+* End of Change SANJUKUM_SMTK907382
     ENDLOOP.
-    rest_handler->set_callingprogram( 'ZCL_REST_UTILITY_CLASS' ).
+
+*   //Begin of code by Ashutosh - to retain the calling program VSO#4360996 TR#MS2K981536
+*    rest_handler->set_callingprogram('ZCL_REST_UTILITY_CLASS').
+    IF monitor-calling_program IS NOT INITIAL.
+      rest_handler->set_callingprogram( monitor-calling_program ).
+    ELSE.
+      rest_handler->set_callingprogram('ZCL_REST_UTILITY_CLASS').
+    ENDIF.
+
+*   //Retain Submit date and time
+    IF monitor-submit_date IS NOT INITIAL.
+      rest_handler->keep_submit_params( im_submit_date = monitor-submit_date im_submit_time = monitor-submit_time ).
+    ENDIF.
+*   //up to here VSO#4360996 TR#MS2K981536
+
     lv_string = wa_paylod-uri.
-    rest_handler->set_uri( lv_string ).
+
+* Begin of Change SANJUKUM_SMTK907382
+* Reprocessing logic for Azure Blob Service
+    IF ( lv_interfacetype EQ lc_blob ) AND ( lv_sas_token IS NOT INITIAL ).
+* End of Change SANJUKUM_SMTK907382
+      rest_handler->set_uri( lv_sas_token ).
+    ELSEIF lv_interfacetype EQ lc_servicebus.
+* Ignore URI aadition as already taken care earlier
+    ELSE.
+      rest_handler->set_uri( lv_string ).
+    ENDIF.
 *   Retry
     response = rest_handler->zif_rest_framework~execute( io_entity  = request
                                                          async      = abap_false
                                                          is_retry   = abap_true
                                                          messageid  = message_id
                                                          retry_count = wa_paylod-retry_num ).
+    rest_handler->close( ). "Added by KRDASH SMTK906003
+    FREE rest_handler.    " VSO#2636456 TR#DG2K902770
 
-    FREE rest_handler.  "v-javeda -    MS2K948920
+    CLEAR: lv_aad_auth, lv_app_id, lv_resource.
   ENDMETHOD.
 
 
@@ -934,6 +999,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 
     DATA:it_data            TYPE TABLE OF zrest_monitor,
          it_retrynum        TYPE TABLE OF zrest_conf_misc,
+         lw_retrynum        TYPE zrest_conf_misc,
          wa_data            TYPE zrest_monitor,
          wa_retrynum        TYPE zrest_conf_misc,
          lt_lines           TYPE TABLE OF tline,
@@ -952,6 +1018,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
          lv_result          TYPE os_boolean,
          lt_retry_report    TYPE TABLE OF zrest_retry_limi,
          lw_retry_report    TYPE zrest_retry_limi,
+         lv_body            TYPE char255,
          lv_messageid       TYPE char50,
          lv_tabix           TYPE sytabix.
 
@@ -960,7 +1027,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
              mail_body_txt TYPE tdobname,
              max_retry     TYPE zq_counte,
              retry_method  TYPE zretry_method.
-        INCLUDE        TYPE zrest_monitor.
+            INCLUDE        TYPE zrest_monitor.
     TYPES: END OF lty_email_data.
 
     DATA: lw_email_data TYPE lty_email_data,
@@ -1223,14 +1290,14 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
           lv_recepient = lw_email_data-email_id.
 
 *// Call the email send Method
-          send_email(
+          CALL METHOD me->send_email
             EXPORTING
               iv_recepient = lv_recepient
               iv_subject   = lv_subject
               it_body      = lt_body_email
             IMPORTING
               ew_return    = lw_return
-              ev_result    = lv_result ).
+              ev_result    = lv_result.
 
           IF lv_result IS NOT INITIAL.
 *// Collect to final table to Update Email Sent Flag.
@@ -1336,16 +1403,18 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     DATA: lv_string     TYPE string,
           lv_retry_date TYPE char10,
           lv_retry_time TYPE char8,
-          lt_retries    TYPE TABLE OF zrest_retries,
-          wa_retries    TYPE zrest_retries.
-
+          lt_retries type TABLE OF zrest_retries,
+          wa_retries type zrest_retries.
+*    SELECT * FROM zrest_retries INTO TABLE @DATA(lt_retries) v-jobpau
+*      WHERE zmessageid = @message_id.
     SELECT * FROM zrest_retries INTO TABLE lt_retries
       WHERE zmessageid = message_id.
     IF sy-subrc EQ 0.
       SORT lt_retries BY retry_num DESCENDING.
     ENDIF.
 
-    LOOP AT lt_retries INTO wa_retries.
+*    LOOP AT lt_retries INTO DATA(wa_retries).  v-jobpau
+     LOOP AT lt_retries INTO wa_retries.
       AT FIRST.
         lv_string =
        '<htm1 lang="EN">' &&
@@ -1381,19 +1450,24 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 
 
     CALL METHOD cl_abap_browser=>show_html(
+      EXPORTING
         title       = 'Retry Log'
         html_string = lv_string ).
   ENDMETHOD.
 
 
   METHOD send_email.
+    DATA:wa_input TYPE zrest_monitor.
     DATA: lo_send_request    TYPE REF TO cl_bcs.
-    DATA: lv_subject       TYPE so_obj_des,
+    DATA: ip_subject       TYPE string,
+          lv_subject       TYPE so_obj_des,
           lv_recepient     TYPE adr6-smtp_addr,
           lt_body          TYPE soli_tab,
           lo_recipient     TYPE REF TO if_recipient_bcs,
+          ls_content       TYPE LINE OF soli_tab,
           lo_document      TYPE REF TO cl_document_bcs,
           lx_bcs_exception TYPE REF TO cx_bcs,
+          lo_sender        TYPE REF TO if_sender_bcs,
           lv_result        TYPE os_boolean.
 
     lv_subject    = iv_subject.
@@ -1416,7 +1490,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
         lo_send_request->add_recipient( i_recipient = lo_recipient ).
 
 *//     ---------- send document ---------------------------------------
-        lo_send_request->set_send_immediately( 'X' ).
+        lo_send_request->set_send_immediately('X').
         CALL METHOD lo_send_request->send(
           EXPORTING
             i_with_error_screen = 'X'
@@ -1446,11 +1520,18 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 * Date      | USER ID  |  VSTF  | Transport  | Remarks                 *
 *-----------|----------|--------|------------|-------------------------*
 * 04|28|2016|V-DEVEER  |2163894 | DGDK903413 | Authorization Check
+* 06|28|2019|V_ANYALL  |4668163 | SMTK905370 | Sync MS1
 *----------------------------------------------------------------------*
     DATA : wa_payload TYPE zrest_mo_payload,
-           it_payload TYPE STANDARD TABLE OF zrest_mo_payload.
+           it_payload TYPE STANDARD TABLE OF zrest_mo_payload,
+           wa_monitor TYPE zrest_monitor.
     DATA : lv_content LIKE wa_payload-payload,
-           output     TYPE xstring.
+
+           output     TYPE xstring,
+           l_exception_error TYPE REF TO cx_st_error,
+           l_exception_rt_error TYPE REF TO cx_xslt_runtime_error,
+           lv_content_cpy LIKE wa_payload-payload.
+
 *   Check if user has the authority to call.
 
 *   Begin of changes VSTF # 2163894 | DGDK903413
@@ -1467,10 +1548,56 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     ELSE.
       EXIT.
     ENDIF.
+*   Based on the response indicator ..set the payload
+*    IF response EQ abap_true.
+*      CLEAR lv_content.
+*      LOOP AT it_payload INTO wa_payload.
+*        CHECK NOT wa_payload-content_type_res CS 'text/html'.
+*        CONCATENATE wa_payload-response
+*                    lv_content
+*               INTO lv_content IN BYTE MODE.
+*      ENDLOOP.
+*      IF wa_payload-content_type_res CS 'application/json' .
+*        CALL METHOD cl_abap_browser=>show_html( EXPORTING html_xstring = lv_content ).
+*      ELSEIF lv_content IS INITIAL.
+*        SELECT SINGLE status INTO @DATA(lv_text) FROM zrest_monitor WHERE zmessageid = @wa_payload-messageid.
+*        MESSAGE lv_text TYPE 'I'.
+*        EXIT.
+*      ELSE.
+*        CALL METHOD cl_abap_browser=>show_xml( EXPORTING xml_xstring = lv_content ).
+*      ENDIF.
+*    ELSE.
+*      CLEAR lv_content.
+*      LOOP AT it_payload INTO wa_payload.
+*        CONCATENATE wa_payload-payload
+*                    lv_content INTO
+*                    lv_content IN BYTE MODE.
+*      ENDLOOP.
+*      IF  wa_payload-content_type_req CS 'application/json'.
+*        CALL METHOD cl_abap_browser=>show_html( EXPORTING html_xstring = lv_content ).
+*      ELSE.
+*        CALL METHOD cl_abap_browser=>show_xml( EXPORTING xml_xstring = lv_content ).
+*      ENDIF.
+*    ENDIF.
+*Commented for VSTF # 2163894 | DGDK903413
+*    IF sy-uname EQ 'SAPURANA' OR sy-uname = 'TST-ZREST' or sy-uname = 'V-DEVEER'.
+*      IF check_obfuscation_needed( inetrface_in = wa_payload-interface_id ) EQ abap_true.
+*        DATA(output) = obfuscate( input = lv_content ).
+*        lv_content = output.
+*      ENDIF.
+*    ENDIF.
+*  End of changes for VSTF # 2163894 | DGDK903413
+*   if its json..call up the HTML editor
+*    IF wa_payload-content_type_res CS 'application/json' OR
+*       wa_payload-content_type_req CS 'application/json'.
+*      CALL METHOD cl_abap_browser=>show_html( EXPORTING html_xstring = lv_content ).
+*    ELSE.
+*      CALL METHOD cl_abap_browser=>show_xml( EXPORTING xml_xstring = lv_content ).
+*    ENDIF.
 
 *   Based on the response indicator ..set the payload
-    CLEAR lv_content.
     IF response EQ abap_true.
+      CLEAR lv_content.
       LOOP AT it_payload INTO wa_payload.
         CONCATENATE wa_payload-response
                     lv_content
@@ -1485,7 +1612,9 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
           lv_content = output.
         ENDIF.
       ENDIF.
+      CALL METHOD cl_abap_browser=>show_html( EXPORTING html_xstring = lv_content ).
     ELSE.
+      CLEAR lv_content.
       LOOP AT it_payload INTO wa_payload.
         CONCATENATE wa_payload-payload
                     lv_content INTO
@@ -1501,12 +1630,8 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
       ENDIF.
 
 *   This bit transforms a JSON string into a lovely hierarchical format
-
-      DATA: l_exception_error TYPE REF TO cx_st_error.
-      DATA: l_exception_rt_error TYPE REF TO cx_xslt_runtime_error.
-      DATA: lv_content_cpy LIKE wa_payload-payload.
-
       lv_content_cpy = lv_content.
+
 
       TRY.
           CALL TRANSFORMATION sjson2html  SOURCE XML lv_content RESULT XML lv_content.
@@ -1516,11 +1641,12 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
           lv_content = lv_content_cpy.
       ENDTRY.
 
+
+
+
+      CALL METHOD cl_abap_browser=>show_html( EXPORTING html_xstring = lv_content ).
     ENDIF.
-
-    CALL METHOD cl_abap_browser=>show_html( html_xstring = lv_content ).
-
-  ENDMETHOD.
+    ENDMETHOD.
 
 
   METHOD show_submitted_headers.
@@ -1531,7 +1657,15 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 *-----------|----------|--------|------------|-------------------------*
 * 04|28|2016|V-DEVEER  |2163894 | DGDK903413 | Authorization Check
 *----------------------------------------------------------------------*
-    DATA : lv_string  TYPE string.
+* 04|28|2020| KRDASH   |5566653 | SMTK906003 | Correction to show all
+*                                              request/response headers
+*                                              in ZREST_UTIL monitor
+*----------------------------------------------------------------------*
+    DATA :  wa_monitor TYPE zrest_monitor,
+            lcl_object TYPE REF TO zcl_rest_framework,
+            lv_string  TYPE string,
+            lx_string  TYPE xstring.
+    CONSTANTS : c_comma TYPE c VALUE ','.
     TYPES : BEGIN OF ty_string,
               line TYPE string,
             END OF ty_string.
@@ -1539,6 +1673,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     DATA : wa_payload TYPE zrest_mo_payload,
            it_payload TYPE STANDARD TABLE OF zrest_mo_payload,
            wa_string  TYPE ty_string,
+           it_string  TYPE STANDARD TABLE OF ty_string,
            output     TYPE xstring.
 *   Check if user has the authority to call.
 *   Begin of changes VSTF # 2163894 | DGDK903413
@@ -1560,8 +1695,9 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
         AUTHORITY-CHECK OBJECT 'ZREST_AUTH'
         ID 'ZBOOLEAN' FIELD 'X'.
         IF sy-subrc NE 0.
-          READ TABLE it_payload INTO wa_payload INDEX 1.
+*          READ TABLE it_payload INTO wa_payload INDEX 1. "Commented by KRDASH SMTK906003
           IF check_obfuscation_needed( inetrface_in = wa_payload-interface_id ) EQ abap_true.
+*            data(output) = obfuscate( input = wa_payload-headers ). v-jobpau
             output = obfuscate( input = wa_payload-headers ).
             wa_payload-headers = output.
           ENDIF.
@@ -1590,6 +1726,7 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
                   INTO lv_string SEPARATED BY cl_abap_char_utilities=>cr_lf.
 
       CALL METHOD cl_abap_browser=>show_html(
+        EXPORTING
           html_string = lv_string ).
 
     ENDIF.
@@ -1599,16 +1736,18 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 
   METHOD unprocessed_data.
 * Get the data waiting to be processed
+*  SELECT * FROM zrest_mo_payload INTO TABLE result WHERE status EQ 0.
+*    v-javeda MS2K948826
     TYPES: BEGIN OF ty_range,
-             sign(1)   TYPE c,
-             option(2) TYPE c,
-             low       TYPE int4,
-             high      TYPE  int4,
-           END   OF ty_range.
+                     sign(1) TYPE c,
+                     option(2) TYPE c,
+                     low          TYPE int4,
+                     high         TYPE  int4,
+                 END   OF ty_range.
 
     TYPES: ty_ranges TYPE TABLE OF ty_range.
 
-    DATA: lw_range  TYPE  ty_range,
+    DATA: lw_range TYPE  ty_range,
           lr_ranges TYPE  ty_ranges.
 
     lw_range-sign   = 'I'.
@@ -1621,7 +1760,9 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     DATA: lt_monitor TYPE TABLE OF zrest_monitor.
     SELECT * FROM zrest_monitor
       INTO TABLE lt_monitor ". v-javeda - MS2K948543
+*      where  ( httpstatus LT 200 OR httpstatus GE 300 )"AND httpstatus GE 300 )  "v-javeda - MS2K948543 - for performance
      WHERE   httpstatus IN lr_ranges. "v-javeda MS2K948826
+*      AND zdelete NE 'X'. "v-javeda - MS2K948543 - for not preocessing deleted records
     IF sy-subrc = 0.
       DELETE lt_monitor WHERE zdelete EQ 'X'."( httpstatus GE 200 AND httpstatus LT 300 ).v-javeda - MS2K948543
 * End of changes v-jobpau
@@ -1646,6 +1787,15 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
 
 
   METHOD write_application_log.
+*----------------------------------------------------------------------*
+*                       Modification History                           *
+*----------------------------------------------------------------------*
+* Date     | USER ID       | VSTF#  | Transport  | Description         *
+*----------|---------------|--------|------------|---------------------*
+*10/05/21  | V-PRALAV      |   -    | SMTK906965 | Changing message    *
+*                                                  type E to I         *
+*09|29|2022| V-ASHOKM1     |        | SMTK907895 | Fixing VF Errors    *
+*----------------------------------------------------------------------*
 *********************************************************************
 *                   Variable Declaration                            *
 *********************************************************************
@@ -1660,7 +1810,9 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
     CONSTANTS: lc_bl TYPE char2      VALUE 'BL',
                lc_no TYPE char4      VALUE '0001',
                lc_e  TYPE char1      VALUE 'E',
-               lc_s  TYPE char1      VALUE 'S'.
+               lc_s  TYPE char1      VALUE 'S',
+               lc_b  TYPE char1      VALUE 'B',
+               lc_i  TYPE char1      VALUE 'I'. "(+)V-PRALAV TR# SMTK906965
 
 *// Populate the Data for the Hierarchial update
     lw_log-extnumber  = iv_extnumber.
@@ -1712,7 +1864,11 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
             msg_inconsistent = 2
             log_is_full      = 3
             OTHERS           = 4.
-
+*-Begin of changes by V-ASHOKM1 ++ SMTK907895
+        IF sy-subrc <> 0.
+          MESSAGE e004(zvf_zrest).  "Error in adding the Application Log Messages
+        ENDIF.
+*-End of changes by V-ASHOKM1 ++ SMTK907895
         CLEAR:  lw_msg-msgv1,
                 lw_msg-msgv2,
                 lw_msg-msgv3,
@@ -1733,12 +1889,13 @@ CLASS zcl_rest_utility_class IMPLEMENTATION.
       IF sy-subrc EQ 0.
 
 *// 'Messages posted to Application Log Successfully'
-        MESSAGE TEXT-002 TYPE lc_s. "'S'.
+        MESSAGE text-002 TYPE lc_s. "'S'.
       ENDIF.
     ELSE.
 
 *// 'Application Log Creation Failed'
-      MESSAGE TEXT-001 TYPE lc_e DISPLAY LIKE lc_s.
+*    MESSAGE text-001 TYPE lc_e DISPLAY LIKE lc_s.  "(-)V-PRALAV TR# SMTK906965
+      MESSAGE text-001 TYPE lc_i DISPLAY LIKE lc_s.  "(+)V-PRALAV TR# SMTK906965
     ENDIF.
   ENDMETHOD.
 ENDCLASS.

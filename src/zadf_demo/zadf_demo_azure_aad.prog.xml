@@ -5,6 +5,8 @@
    <PROGDIR>
     <NAME>ZADF_DEMO_AZURE_AAD</NAME>
     <SUBC>1</SUBC>
+    <APPL>*</APPL>
+    <SECU>ZADFDEMO</SECU>
     <RLOAD>E</RLOAD>
     <FIXPT>X</FIXPT>
     <UCCHECK>X</UCCHECK>
@@ -12,8 +14,8 @@
    <TPOOL>
     <item>
      <ID>R</ID>
-     <ENTRY>AAD Token Demo</ENTRY>
-     <LENGTH>14</LENGTH>
+     <ENTRY>Demo Program for AAD Token</ENTRY>
+     <LENGTH>26</LENGTH>
     </item>
    </TPOOL>
   </asx:values>
