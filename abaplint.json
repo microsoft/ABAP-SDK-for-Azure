@@ -37,7 +37,7 @@
     "downport": false,
     "forbidden_pseudo_and_pragma": false,
     "forbidden_void_type": false,
-    "identical_conditions": true,
+    "identical_conditions": false,
     "line_break_multiple_parameters": false,
     "line_break_style": false,
     "names_no_dash": true,
