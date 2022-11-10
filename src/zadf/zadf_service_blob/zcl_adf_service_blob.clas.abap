@@ -562,17 +562,21 @@ METHOD send.
     ENDIF.
 
     CASE lv_processing_method.
+* Applicable for SAS Token
       WHEN gc_sas.
         CALL METHOD me->set_service_sas_token
           EXPORTING
             iv_service_sas_token = lv_token.
       WHEN gc_mi_auth.
+* Applicable for MI and AAD.
         set_aad_token( ).
       WHEN OTHERS.
+*Applicable for Account Key
         set_sas_token( ).
     ENDCASE.
 
 **** Send file to Blob
+*Below file wise case will work for Account Key. for MI/AAD the file header needs to be set from Calling program.
     CASE gv_file_type.
       WHEN 'PDF'.
         CALL METHOD send_pdf(
@@ -609,11 +613,6 @@ METHOD send.
             it_headers = lt_headers
           IMPORTING
             eo_request = lo_request ).
-      WHEN OTHERS.
-        RAISE EXCEPTION TYPE zcx_adf_service
-          EXPORTING
-            textid       = zcx_adf_service=>file_type_not_handled
-            interface_id = gv_interface_id.
     ENDCASE.
 
     IF NOT lt_headers[] IS INITIAL.
@@ -904,7 +903,7 @@ ENDMETHOD.
         WHEN gc_append_blob.
           CONCATENATE gv_uri_string gc_comp_appendblock INTO gv_uri_string.
           go_rest_api->zif_rest_framework~set_uri( gv_uri_string ).
-        WHEN gc_b.
+        WHEN gc_b OR gc_block_blob.
           go_rest_api->zif_rest_framework~set_uri( gv_uri_string ).
           add_request_header( iv_name = 'x-ms-blob-type' iv_value = 'BlockBlob' ).
       ENDCASE.
@@ -1064,7 +1063,7 @@ METHOD set_sas_token.
         WHEN gc_append_blob.
           CONCATENATE gv_sas_token gc_comp_appendblock INTO gv_sas_token.
           go_rest_api->zif_rest_framework~set_uri( gv_sas_token ).
-        WHEN gc_block_blob.
+        WHEN gc_block_blob or gc_b.
           go_rest_api->zif_rest_framework~set_uri( gv_sas_token ).
       ENDCASE.
     ELSE.
@@ -1119,7 +1118,7 @@ ENDMETHOD.
         WHEN gc_append_blob.
           CONCATENATE gv_uri_string gc_comp_appendblock INTO gv_uri_string.
           go_rest_api->zif_rest_framework~set_uri( gv_uri_string ).
-        WHEN gc_b.
+        WHEN gc_b OR gc_block_blob.
           go_rest_api->zif_rest_framework~set_uri( gv_uri_string ).
           add_request_header( iv_name = 'x-ms-blob-type' iv_value = 'BlockBlob' ).
       ENDCASE.

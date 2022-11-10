@@ -123,9 +123,9 @@ private section.
 
 *"* private components of class ZCL_REST_FRAMEWORK
 *"* do not include other source files here!!!
-  types WA type ZREST_MON_TRACE .
-  types WA_EKKO type ZREST_MON_TRACE .
-  types ZREST_MON_TRACE type ZREST_MON_TRACE .
+*  types WA type ZREST_MON_TRACE .
+*  types WA_EKKO type ZREST_MON_TRACE .
+*  types ZREST_MON_TRACE type ZREST_MON_TRACE .
 
   constants CREATE_BY_DESTINATION type CHAR1 value 1 ##NO_TEXT.
   class-data GWA_HEADER type ZREST_MON_HEADER .
