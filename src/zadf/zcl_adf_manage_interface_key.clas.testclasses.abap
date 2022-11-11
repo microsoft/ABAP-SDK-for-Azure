@@ -1,129 +1,108 @@
-class lcl_Adf_Manage_Interface_Key_T definition deferred.
-class zcl_Adf_Manage_Interface_Key definition local friends lcl_Adf_Manage_Interface_Key_T.
+CLASS lcl_adf_manage_interface_key_t DEFINITION DEFERRED.
+CLASS zcl_adf_manage_interface_key DEFINITION LOCAL FRIENDS lcl_adf_manage_interface_key_t.
 
-class lcl_Adf_Manage_Interface_Key_T definition for testing
-  duration short
-  risk level harmless
-.
-*?﻿<asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
-*?<asx:values>
-*?<TESTCLASS_OPTIONS>
-*?<TEST_CLASS>lcl_Adf_Manage_Interface_Key_T
-*?</TEST_CLASS>
-*?<TEST_MEMBER>f_Cut
-*?</TEST_MEMBER>
-*?<OBJECT_UNDER_TEST>ZCL_ADF_MANAGE_INTERFACE_KEY
-*?</OBJECT_UNDER_TEST>
-*?<OBJECT_IS_LOCAL/>
-*?<GENERATE_FIXTURE>X
-*?</GENERATE_FIXTURE>
-*?<GENERATE_CLASS_FIXTURE>X
-*?</GENERATE_CLASS_FIXTURE>
-*?<GENERATE_INVOCATION>X
-*?</GENERATE_INVOCATION>
-*?<GENERATE_ASSERT_EQUAL>X
-*?</GENERATE_ASSERT_EQUAL>
-*?</TESTCLASS_OPTIONS>
-*?</asx:values>
-*?</asx:abap>
-  private section.
-    data:
-      f_Cut type ref to zcl_Adf_Manage_Interface_Key.  "class under test
+CLASS lcl_adf_manage_interface_key_t DEFINITION FOR TESTING
+  DURATION SHORT
+  RISK LEVEL HARMLESS.
 
-    class-methods: class_Setup.
-    class-methods: class_Teardown.
-    methods: setup.
-    methods: teardown.
-    methods: insert_Key for testing.
-    methods: insert_Key_With_Default_Pse for testing.
-    methods: insert_Key_With_Primary for testing.
-    methods: insert_Key_With_Secondary for testing.
-    methods: read_Config_Tables for testing.
-    methods: read_Key for testing.
-    methods: read_Key_With_Default_Pse for testing.
-    methods: read_Key_With_Primary for testing.
-    methods: read_Key_With_Secondary for testing.
-endclass.       "lcl_Adf_Manage_Interface_Key_T
+  PRIVATE SECTION.
+    DATA:
+      f_cut TYPE REF TO zcl_adf_manage_interface_key.  "class under test
+
+    CLASS-METHODS: class_setup.
+    CLASS-METHODS: class_teardown.
+    METHODS: setup.
+    METHODS: teardown.
+    METHODS: insert_key FOR TESTING.
+    METHODS: insert_key_with_default_pse FOR TESTING.
+    METHODS: insert_key_with_primary FOR TESTING.
+    METHODS: insert_key_with_secondary FOR TESTING.
+    METHODS: read_config_tables FOR TESTING.
+    METHODS: read_key FOR TESTING.
+    METHODS: read_key_with_default_pse FOR TESTING.
+    METHODS: read_key_with_primary FOR TESTING.
+    METHODS: read_key_with_secondary FOR TESTING.
+ENDCLASS.       "lcl_Adf_Manage_Interface_Key_T
 
 
-class lcl_Adf_Manage_Interface_Key_T implementation.
+CLASS lcl_adf_manage_interface_key_t IMPLEMENTATION.
 
-  method class_Setup.
+  METHOD class_setup.
 
 
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method class_Teardown.
+  METHOD class_teardown.
 
 
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method setup.
+  METHOD setup.
 
 *    data iv_Interface_Id type zinterface_Id.
 *
 *    create object f_Cut
 *      EXPORTING
 *        IV_INTERFACE_ID = iv_Interface_Id.
-  endmethod.
+  ENDMETHOD.
 
 
-  method teardown.
+  METHOD teardown.
 
 
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method insert_Key.
+  METHOD insert_key.
 
 *    data iv_Key type string.
 *
 *    f_Cut->insert_Key( iv_Key ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method insert_Key_With_Default_Pse.
+  METHOD insert_key_with_default_pse.
 *
 *    data iv_Key type string.
 *
 *    f_Cut->insert_Key_With_Default_Pse( iv_Key ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method insert_Key_With_Primary.
+  METHOD insert_key_with_primary.
 
 *    data iv_Key type string.
 *
 *    f_Cut->insert_Key_With_Primary( iv_Key ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method insert_Key_With_Secondary.
+  METHOD insert_key_with_secondary.
 
 *    data iv_Key type string.
 *
 *    f_Cut->insert_Key_With_Secondary( iv_Key ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method read_Config_Tables.
+  METHOD read_config_tables.
 
 
 *    f_Cut->read_Config_Tables(  ).
 
-  endmethod.
+  ENDMETHOD.
 
 
-  method read_Key.
+  METHOD read_key.
 
 *    data rv_Key type string.
 *
@@ -135,10 +114,10 @@ class lcl_Adf_Manage_Interface_Key_T implementation.
 *    " msg   = 'Testing value rv_Key'
 **     level =
 *    ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method read_Key_With_Default_Pse.
+  METHOD read_key_with_default_pse.
 
 *    data rv_Key type string.
 *
@@ -150,10 +129,10 @@ class lcl_Adf_Manage_Interface_Key_T implementation.
 *    " msg   = 'Testing value rv_Key'
 **     level =
 *    ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method read_Key_With_Primary.
+  METHOD read_key_with_primary.
 
 *    data rv_Key type string.
 *
@@ -165,10 +144,10 @@ class lcl_Adf_Manage_Interface_Key_T implementation.
 *    " msg   = 'Testing value rv_Key'
 **     level =
 *    ).
-  endmethod.
+  ENDMETHOD.
 
 
-  method read_Key_With_Secondary.
+  METHOD read_key_with_secondary.
 *
 *    data rv_Key type string.
 *
@@ -180,9 +159,9 @@ class lcl_Adf_Manage_Interface_Key_T implementation.
 *    " msg   = 'Testing value rv_Key'
 **     level =
 *    ).
-  endmethod.
+  ENDMETHOD.
 
 
 
 
-endclass.
+ENDCLASS.

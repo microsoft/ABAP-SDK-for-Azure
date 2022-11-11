@@ -60,7 +60,7 @@
     "check_ddic": true,
     "check_include": false,
     "check_no_handler_pragma": true,
-    "check_syntax": false,
+    "check_syntax": true,
     "check_text_elements": false,
     "check_transformation_exists": false,
     "constructor_visibility_public": true,
