@@ -67,6 +67,11 @@ public section.
     importing
       value(IV_FILENAME) type SDBAH-ACTID
       value(IV_FILETYPE) type CHAR200 .
+  methods DECODE_ADF_SAS_KEY
+    returning
+      value(RV_KEY) type STRING
+    raising
+      ZCX_ADF_SERVICE .
 
   methods SEND
     redefinition .
@@ -290,6 +295,13 @@ METHOD create_append_blob.
     ENDIF.
   ENDIF.
 ENDMETHOD.
+
+
+  METHOD decode_adf_sas_key.
+
+    rv_key = read_key( ).
+
+  ENDMETHOD.
 
 
   METHOD delete_blob.
