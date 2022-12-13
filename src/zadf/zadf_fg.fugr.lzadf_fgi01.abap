@@ -13,14 +13,14 @@ MODULE validate_saskey INPUT.
    ( extract[] NE total[] ).
 **Do nothing
   ELSE.
-    SELECT SINGLE sas_key FROM zadf_config
-                          INTO lv_sas_key
-                          WHERE interface_id EQ zadf_config-interface_id.
-    IF sy-subrc EQ 0.
-      IF lv_sas_key NE zadf_config-sas_key.
-        MESSAGE text-004 TYPE 'E'.
-      ENDIF.
-    ENDIF.
   ENDIF.
 
 ENDMODULE.                 " VALIDATE_SASKEY  INPUT
+*&---------------------------------------------------------------------*
+*&      Module  HIDE_ISTRYCOL  INPUT
+*&---------------------------------------------------------------------*
+*       text
+*----------------------------------------------------------------------*
+MODULE hide_istrycol OUTPUT.
+  tctrl_zadf_config-cols[ 6 ]-invisible = 'X'.
+ENDMODULE.

@@ -2,8 +2,8 @@
 *******************************************************************
 *   System-defined Include-files.                                 *
 *******************************************************************
-  INCLUDE LZADF_FGTOP.                       " Global Data
-  INCLUDE LZADF_FGUXX.                       " Function Modules
+  INCLUDE lzadf_fgtop.                       " Global Data
+  INCLUDE lzadf_fguxx.                       " Function Modules
 
 *******************************************************************
 *   User-defined Include-files (if necessary).                    *
@@ -14,14 +14,12 @@
 * INCLUDE LZADF_FGE...                       " Events
 * INCLUDE LZADF_FGP...                       " Local class implement.
 * INCLUDE LZADF_FGT99.                       " ABAP Unit tests
-  INCLUDE LZADF_FGF00                             . " subprograms
-  INCLUDE LZADF_FGI00                             . " PAI modules
-  INCLUDE LSVIMFXX                                . " subprograms
-  INCLUDE LSVIMOXX                                . " PBO modules
-  INCLUDE LSVIMIXX                                . " PAI modules
+  INCLUDE lzadf_fgf00                             . " subprograms
+  INCLUDE lzadf_fgi00                             . " PAI modules
+  INCLUDE lsvimfxx                                . " subprograms
+  INCLUDE lsvimoxx                                . " PBO modules
+  INCLUDE lsvimixx                                . " PAI modules
 
-*INCLUDE lzadf_fgf01.
+  INCLUDE lzadf_fgi01.
 
-INCLUDE lzadf_fgi01.
-
-INCLUDE lzadf_fgf01.
+  INCLUDE lzadf_fgf01.
