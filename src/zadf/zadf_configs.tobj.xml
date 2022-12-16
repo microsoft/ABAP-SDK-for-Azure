@@ -50,6 +50,11 @@
       <EVENT>05</EVENT>
       <FORMNAME>F_CREATE_ENTRY</FORMNAME>
      </TVIMF>
+     <TVIMF>
+      <TABNAME>ZADF_CONFIG</TABNAME>
+      <EVENT>21</EVENT>
+      <FORMNAME>F_CHANGE_ENTRY</FORMNAME>
+     </TVIMF>
     </TVIMF>
    </TOBJ>
   </asx:values>

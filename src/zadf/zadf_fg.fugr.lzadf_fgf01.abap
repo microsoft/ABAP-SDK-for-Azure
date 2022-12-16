@@ -229,34 +229,40 @@ ENDFORM.                    "f_create_entry
 *       Validation with DB to restrict any change in SAS_KEY
 *----------------------------------------------------------------------*
 FORM f_before_save.
-  TYPES: BEGIN OF lty_zadf,
-           interface_id TYPE zadf_config-interface_id,
-           sas_key      TYPE zadf_config-sas_key,
-         END OF lty_zadf.
-  DATA : lw_extract(4096) TYPE c,
-         lt_zadf_config   TYPE STANDARD TABLE OF lty_zadf,
-         lw_zadf_config   TYPE lty_zadf.
-  IF status-action NE 'A'.
-    SELECT interface_id sas_key FROM zadf_config
-                                INTO TABLE lt_zadf_config.
-    IF sy-subrc EQ 0.
-      IF NOT extract[] IS INITIAL.
-        LOOP AT extract INTO lw_extract.
-          CLEAR lw_zadf_config.
-          READ TABLE lt_zadf_config INTO lw_zadf_config
-                                 WITH KEY interface_id = lw_extract+3(10).
-          IF sy-subrc EQ 0.
-            IF lw_zadf_config-sas_key NE lw_extract+45(255).
-              MESSAGE text-004 TYPE 'E'.
-            ENDIF.
-          ENDIF.
-          CLEAR lw_extract.
-        ENDLOOP.
-      ELSE.
-        sy-subrc = 0.
-      ENDIF.
-    ELSE.
-      sy-subrc = 0.
-    ENDIF.
-  ENDIF.
 ENDFORM.                    "f_before_save
+
+FORM f_change_entry.
+  DATA : lv_key TYPE string.
+
+  IF status-action EQ 'U'.
+* Fetch the details from ZADF_CONFIG table to identify if the change in SAS Key is required
+    SELECT interface_id,
+           sas_key
+           FROM zadf_config
+           INTO TABLE @DATA(lt_zadf_config)
+           WHERE interface_id = @zadf_config-interface_id.
+* Check if event is triggered for SAS Key update
+    IF line_exists( lt_zadf_config[ 1 ] ) AND lt_zadf_config[ 1 ]-sas_key NE zadf_config-sas_key.
+      lv_key = zadf_config-sas_key.
+    ELSE.
+* No Key update during modification of the rest of fields
+      CLEAR lv_key.
+    ENDIF.
+
+    TRY.
+* Update the SAS Key
+        IF lv_key IS NOT INITIAL.
+          DATA(lo_interface_key) = NEW  zcl_adf_manage_interface_key( zadf_config-interface_id ).
+          lo_interface_key->insert_key( lv_key ).
+          CLEAR zadf_config-sas_key.
+          zadf_config-sas_key = '*****'.
+        ENDIF.
+      CATCH zcx_adf_manage_interface_key INTO DATA(lx_interface_key).
+        DATA(lv_message) = lx_interface_key->get_text( ).
+        MESSAGE lv_message TYPE 'E'.
+      CATCH zcx_adf_manage_access_keys INTO DATA(lx_access_key).
+        lv_message = lx_access_key->get_text( ).
+        MESSAGE lv_message TYPE 'E'.
+    ENDTRY.
+  ENDIF.
+ENDFORM.
