@@ -2632,7 +2632,7 @@
        <ELEMENT_OF>SCREEN</ELEMENT_OF>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
-       <LENGTH>050</LENGTH>
+       <LENGTH>074</LENGTH>
        <HEIGHT>059</HEIGHT>
        <C_RESIZE_V>X</C_RESIZE_V>
        <C_RESIZE_H>X</C_RESIZE_H>
@@ -2750,6 +2750,40 @@
       <RPY_DYFATC>
        <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
        <CONT_NAME>TCTRL_ZREST_CONFIG</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>*ZREST_CONFIG-SENSITIVE_FLAG</NAME>
+       <TEXT>Sens.Flag_______________________________</TEXT>
+       <LINE>001</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>010</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>1</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <TC_HEADING>X</TC_HEADING>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_ZREST_CONFIG</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>*ZREST_CONFIG-SENSITIVE_GROUP</NAME>
+       <TEXT>Sensitive_Group_________________________</TEXT>
+       <LINE>001</LINE>
+       <COLUMN>004</COLUMN>
+       <LENGTH>040</LENGTH>
+       <VISLENGTH>012</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>V</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <TC_HEADING>X</TC_HEADING>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_ZREST_CONFIG</CONT_NAME>
        <TYPE>CHECK</TYPE>
        <NAME>VIM_MARKED</NAME>
        <LINE>001</LINE>
@@ -2797,6 +2831,42 @@
        <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_ZREST_CONFIG</CONT_NAME>
+       <TYPE>CHECK</TYPE>
+       <NAME>ZREST_CONFIG-SENSITIVE_FLAG</NAME>
+       <LINE>001</LINE>
+       <COLUMN>003</COLUMN>
+       <LENGTH>001</LENGTH>
+       <VISLENGTH>010</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>X</MODIFIC>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <DICT_I_VAL>X</DICT_I_VAL>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>TABLE_CTRL</CONT_TYPE>
+       <CONT_NAME>TCTRL_ZREST_CONFIG</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>ZREST_CONFIG-SENSITIVE_GROUP</NAME>
+       <TEXT>____________</TEXT>
+       <LINE>001</LINE>
+       <COLUMN>004</COLUMN>
+       <LENGTH>012</LENGTH>
+       <VISLENGTH>012</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>X</MODIFIC>
+       <FOREIGNKEY>X</FOREIGNKEY>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <DICT_I_FKY>X</DICT_I_FKY>
       </RPY_DYFATC>
      </FIELDS>
      <FLOW_LOGIC>
@@ -2846,6 +2916,12 @@
        <LINE>FIELD ZREST_CONFIG-DESTINATION .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
+       <LINE>FIELD ZREST_CONFIG-SENSITIVE_FLAG .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD ZREST_CONFIG-SENSITIVE_GROUP .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
        <LINE>MODULE SET_UPDATE_FLAG ON CHAIN-REQUEST.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
@@ -2887,6 +2963,8 @@
       <item>1</item>
       <item>3</item>
       <item>3</item>
+      <item>4</item>
+      <item>4</item>
       <item>4</item>
       <item>4</item>
       <item>4</item>
@@ -2957,12 +3035,12 @@
        <CONT_NAME>SCREEN</CONT_NAME>
        <TYPE>FRAME_TMPL</TYPE>
        <NAME>VIM_FRAME_FIELD</NAME>
-       <TEXT>______________________________________________</TEXT>
+       <TEXT>_______________________________________________________</TEXT>
        <LINE>003</LINE>
        <COLUMN>001</COLUMN>
-       <LENGTH>046</LENGTH>
-       <VISLENGTH>046</VISLENGTH>
-       <HEIGHT>003</HEIGHT>
+       <LENGTH>055</LENGTH>
+       <VISLENGTH>055</VISLENGTH>
+       <HEIGHT>005</HEIGHT>
        <FORMAT>CHAR</FORMAT>
        <UP_LOWER>X</UP_LOWER>
        <OUTPUT_FLD>X</OUTPUT_FLD>
@@ -2992,7 +3070,7 @@
        <NAME>ZREST_CONFIG-DESTINATION</NAME>
        <TEXT>________________________________</TEXT>
        <LINE>004</LINE>
-       <COLUMN>014</COLUMN>
+       <COLUMN>023</COLUMN>
        <LENGTH>032</LENGTH>
        <VISLENGTH>032</VISLENGTH>
        <HEIGHT>001</HEIGHT>
@@ -3002,6 +3080,58 @@
        <UP_LOWER>X</UP_LOWER>
        <INPUT_FLD>X</INPUT_FLD>
        <OUTPUT_FLD>X</OUTPUT_FLD>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>CHECK</TYPE>
+       <NAME>ZREST_CONFIG-SENSITIVE_FLAG</NAME>
+       <TEXT>Sensitive_Flag______</TEXT>
+       <LINE>005</LINE>
+       <COLUMN>002</COLUMN>
+       <LENGTH>022</LENGTH>
+       <VISLENGTH>022</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>2</MODIFIC>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <DICT_I_VAL>X</DICT_I_VAL>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEXT</TYPE>
+       <NAME>ZREST_CONFIG-SENSITIVE_GROUP</NAME>
+       <TEXT>Sensitive_Group_____</TEXT>
+       <LINE>006</LINE>
+       <COLUMN>002</COLUMN>
+       <LENGTH>020</LENGTH>
+       <VISLENGTH>020</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <MODIFIC>2</MODIFIC>
+       <REQU_ENTRY>N</REQU_ENTRY>
+       <LABELLEFT>X</LABELLEFT>
+      </RPY_DYFATC>
+      <RPY_DYFATC>
+       <CONT_TYPE>SCREEN</CONT_TYPE>
+       <CONT_NAME>SCREEN</CONT_NAME>
+       <TYPE>TEMPLATE</TYPE>
+       <NAME>ZREST_CONFIG-SENSITIVE_GROUP</NAME>
+       <TEXT>____________</TEXT>
+       <LINE>006</LINE>
+       <COLUMN>023</COLUMN>
+       <LENGTH>012</LENGTH>
+       <VISLENGTH>012</VISLENGTH>
+       <HEIGHT>001</HEIGHT>
+       <FORMAT>CHAR</FORMAT>
+       <FROM_DICT>X</FROM_DICT>
+       <INPUT_FLD>X</INPUT_FLD>
+       <OUTPUT_FLD>X</OUTPUT_FLD>
+       <DICT_I_FKY>X</DICT_I_FKY>
       </RPY_DYFATC>
       <RPY_DYFATC>
        <CONT_TYPE>SCREEN</CONT_TYPE>
@@ -3045,6 +3175,12 @@
        <LINE>FIELD ZREST_CONFIG-DESTINATION .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
+       <LINE>FIELD ZREST_CONFIG-SENSITIVE_FLAG .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
+       <LINE>FIELD ZREST_CONFIG-SENSITIVE_GROUP .</LINE>
+      </RPY_DYFLOW>
+      <RPY_DYFLOW>
        <LINE>MODULE SET_UPDATE_FLAG ON CHAIN-REQUEST.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
@@ -3071,6 +3207,8 @@
       <item>1</item>
       <item>1</item>
       <item>1</item>
+      <item>4</item>
+      <item>4</item>
       <item>4</item>
       <item>4</item>
       <item>2</item>
