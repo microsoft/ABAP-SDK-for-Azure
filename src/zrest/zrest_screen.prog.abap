@@ -24,17 +24,11 @@
 *----------------------------------------------------------------------*
 * 08|15|2019|V-MOSN    |4668152 | SMTK905463 | Disply Tot Records Count*
 *----------------------------------------------------------------------*
-* 09|24|2019|V-SUTAD   |4909031 | SMTK905577 | Selection Screen Issue  *
-*                                            | Business ID length to 40*
+* 09|29|2022|V-GUPTASHIV |      | MS1K9A7DJR | logic to check the      *
+**                                             authorization to        *
+*                                              view/download           *
+*                                              the payload             *
 *----------------------------------------------------------------------*
-* 04|28|2020|KRDASH    |5566653 | SMTK906003 | Reverting changes due to*
-*                                              bug in screen           *
-*----------------------------------------------------------------------*
-*----------------------------------------------------------------------*
-* 09|29|2022|V-MPRAGALLAP |     | SMTK907859 | Fixing the Virtual Forge*
-*                                              errors                  *
-*----------------------------------------------------------------------*
-
 *&---------------------------------------------------------------------*
 *& Report  ZREST_SCREEN
 *&
@@ -57,7 +51,7 @@
            TYPES   : lights(1) TYPE c.
   TYPES:  END OF ty.
 
-*********************************,**************************
+***********************************************************
 
   DATA: itab      TYPE STANDARD TABLE OF ty, "Output Internal table
         fieldcat  TYPE lvc_t_fcat, "Field catalog
@@ -79,7 +73,7 @@
         event_receiver    TYPE REF TO lcl_event_receiver. "event receiver
   TABLES: icon.
 * Screen 100 to display the alv report
-  SET SCREEN 100.                           "(-)SMTK905577 +SMTK906003
+  SET SCREEN 100.
 
 ****** class definition******************************************
   CLASS lcl_event_receiver DEFINITION.
@@ -119,12 +113,12 @@
         w_subt     TYPE ty-submit_time.  "+SMTK905411/#VSO 4668157
   DATA: lt_tab TYPE TABLE OF zrest_config."v-javeda - MS2K948543 "for F4 values
   "Start of Selection Screen
-  SELECTION-SCREEN: BEGIN OF BLOCK blk0 WITH FRAME TITLE text-000.
+  SELECTION-SCREEN: BEGIN OF BLOCK blk0 WITH FRAME TITLE TEXT-000.
   SELECT-OPTIONS: s_id FOR zrest_config-interface_id.
   SELECTION-SCREEN: END   OF BLOCK blk0.
 
 
-  SELECTION-SCREEN: BEGIN OF BLOCK blk1 WITH FRAME TITLE text-001.
+  SELECTION-SCREEN: BEGIN OF BLOCK blk1 WITH FRAME TITLE TEXT-001.
   SELECT-OPTIONS: s_startd FOR w_startd DEFAULT sy-datum TO sy-datum," v-javeda - MS2K948543 - default today
                   s_stime FOR w_start,
                   s_compdt FOR w_compdate,
@@ -133,7 +127,7 @@
                   s_subt   FOR w_subt.   "+SMTK905411/#VSO 4668157
   SELECTION-SCREEN: END   OF BLOCK blk1.
 
-  SELECTION-SCREEN: BEGIN OF BLOCK blk2 WITH FRAME TITLE text-002.
+  SELECTION-SCREEN: BEGIN OF BLOCK blk2 WITH FRAME TITLE TEXT-002.
   SELECT-OPTIONS: s_httpst FOR w_httpst.
   SELECT-OPTIONS: s_msgid FOR w_carrid.
   SELECT-OPTIONS: s_busid FOR w_id.
@@ -165,7 +159,7 @@
         OTHERS          = 3.
     IF sy-subrc <> 0.
 * Implement suitable error handling here
-      "Begin Of Change v-mpragallap ++  SMTK907859
+      "Begin Of Change v-ashokka on 10/28/2022 ++MS1K9A7DJR
       CASE sy-subrc.
         WHEN 1.
           MESSAGE e000(zvf_zrest) RAISING parameter_error.
@@ -174,7 +168,7 @@
         WHEN OTHERS.
           MESSAGE e006(zvf_zrest).
       ENDCASE.
-      "End of Change v-mpragallap ++ SMTK907859
+      "End of Change v-ashokka on 10/28/2022 ++MS1K9A7DJR
     ENDIF.
 
   AT SELECTION-SCREEN ON VALUE-REQUEST FOR s_id-high.
@@ -195,8 +189,7 @@
         no_values_found = 2
         OTHERS          = 3.
     IF sy-subrc <> 0.
-* Implement suitable error handling here
-      "Begin Of Change v-mpragallap ++ SMTK907859
+      "Begin Of Change v-ashokka ++MS1K9A7DJR
       CASE sy-subrc.
         WHEN 1.
           MESSAGE e000(zvf_zrest) RAISING parameter_error.
@@ -205,7 +198,7 @@
         WHEN OTHERS.
           MESSAGE e006(zvf_zrest).
       ENDCASE.
-      "End of Change v-mpragallap ++ SMTK907859
+      "End of Change v-ashokka ++MS1K9A7DJR
     ENDIF.
 
 * Start of Selection
@@ -233,16 +226,14 @@
                     AND interface_id IN s_id
                     AND submit_date  IN s_subdt  "+SMTK905411/#VSO 4668157
                     AND submit_time  IN s_subt.   "+SMTK905411/#VSO 4668157
-*                  ORDER BY zcompdate DESCENDING zcomptime DESCENDING.  "V-SRDASGUPTA --
-
+*                  ORDER BY zcompdate DESCENDING zcomptime DESCENDING. -- Commneted by v-ashokka on 10/28/2022  ++MS1K9A7DJR
       IF sy-dbcnt IS INITIAL.
         MESSAGE s398(00) WITH 'No data selected'.
-*      Begin of Changes SMTK905463
+*     Begin of Changes SMTK905463
       ELSE.
-        SORT itab BY zcompdate DESCENDING zcomptime DESCENDING.  "V-SRDASGUPTA ++
+        SORT itab BY zcompdate DESCENDING zcomptime DESCENDING. " ++ Added by  v-ashokka on 10/28/2022  ++MS1K9A7DJR
         CLEAR gv_lines.
         DESCRIBE TABLE itab LINES gv_lines.
-*        CALL SCREEN 100.                    "(+)SMTK905577 (-)SMTK906003
 *      End of Changes SMTK905463
       ENDIF.
 
@@ -408,7 +399,6 @@
                 FROM icon
                 INTO lv_id
                 WHERE name = 'ICON_MESSAGE_WARNING'.
-              IF sy-subrc EQ 0. ENDIF.
               CALL FUNCTION 'POPUP_TO_INFORM'
                 EXPORTING
                   titel  = 'Warning'
@@ -416,12 +406,11 @@
                   txt2   = 'Select only one row.'
                 EXCEPTIONS
                   OTHERS = 1.
-              "Begin of Change V-MPRAGALLAP ++ SMTK907859
-              IF sy-subrc EQ 1.
-                MESSAGE e007(zvf_zrest).
-              ENDIF.
-              "End of Change V-MPRAGALLAP ++ SMTK907859
-
+*               Begin of change v-ashokka on 10/28/2022 ++MS1K9A7DJR
+                if sy-subrc <> 0.
+                  MESSAGE e007(zvf_zrest).
+                endif.
+*               End of change v-ashokka on 10/28/2022 ++MS1K9A7DJR
             ELSE.
               FREE MEMORY ID 'ABCD'.
               READ TABLE lt_rows INDEX 1 INTO l_row.
@@ -429,15 +418,45 @@
               DATA: pay_body TYPE zrest_mo_payload-payload.
               SELECT payload FROM  zrest_mo_payload INTO pay_body WHERE messageid = sel_row-zmessageid.
               ENDSELECT.
-              TRY.
-                  CALL METHOD zcl_rest_utility_class=>download_payload_file( xstring = pay_body message_id = sel_row-zmessageid ).
+**--    Begin of changes  by V-GUPTASHIV  MS1K9A7DJR
+              SELECT SINGLE sensitive_flag,
+                            sensitive_group
+                       FROM zrest_config
+                      INTO @DATA(lwa_zrest_config) WHERE interface_id = @sel_row-interface_id.
+              IF lwa_zrest_config-sensitive_flag IS NOT INITIAL.
+                AUTHORITY-CHECK OBJECT 'ZPAY_LOAD'
+                      ID 'ACTVT'  FIELD 'DL'
+                      ID 'ZGROUP' FIELD  lwa_zrest_config-sensitive_group.
+                IF sy-subrc <> 0.
+                  MESSAGE 'No Authorization to download the Paylaod'(001) TYPE 'I' DISPLAY LIKE 'E'.
+                  EXIT.
+                ENDIF.
+**--    End of changes by V-GUPTASHIV MS1K9A7DJR
+                TRY.
+                    CALL METHOD zcl_rest_utility_class=>download_payload_file( xstring = pay_body message_id = sel_row-zmessageid ).
 *                Authorization check VSTF # 2163894 | DGDK903413
 
-                CATCH zcx_http_client_failed INTO lv_textid.
-                  lv_text2 = lv_textid->if_t100_message~t100key.
-                  MESSAGE ID lv_text2-msgid TYPE 'I' NUMBER lv_text2-msgno.
-                  EXIT.
-              ENDTRY.
+                  CATCH zcx_http_client_failed INTO lv_textid.
+                    lv_text2 = lv_textid->if_t100_message~t100key.
+                    MESSAGE ID lv_text2-msgid TYPE 'I' NUMBER lv_text2-msgno.
+                    EXIT.
+                ENDTRY.
+              ELSE.
+**--    Begin of changes by V-GUPTASHIV MS1K9A7DJR
+*       Directly call the download payload file method.
+                TRY.
+                    CALL METHOD zcl_rest_utility_class=>download_payload_file( xstring = pay_body message_id = sel_row-zmessageid ).
+*                Authorization check VSTF # 2163894 | DGDK903413
+
+                  CATCH zcx_http_client_failed INTO lv_textid.
+                    lv_text2 = lv_textid->if_t100_message~t100key.
+                    MESSAGE ID lv_text2-msgid TYPE 'I' NUMBER lv_text2-msgno.
+                    EXIT.
+                ENDTRY.
+
+**                ENDIF.
+              ENDIF.
+**--    End of changes by V-GUPTASHIV MS1K9A7DJR
 *             end of changes VSTF # 2163894 | DGDK903413
             ENDIF.
           ENDIF.
@@ -493,36 +512,19 @@
           ELSE.
             FREE MEMORY ID 'ABCD'.
             DATA obj TYPE REF TO zcl_rest_utility_class.
-            CREATE OBJECT obj.
-            " Start of Change V-MPRAGALLAP ++  SMTK907859
-            DATA  lt_monitor  TYPE STANDARD TABLE OF zrest_monitor.
-            CONSTANTS lv_delete TYPE c VALUE 'X'.
-
-            SELECT  *  FROM zrest_monitor INTO TABLE lt_monitor
-                               WHERE zmessageid = sel_row-zmessageid
-                               AND zdelete = lv_delete.
-            "End of Change V-MPRAGALLAP ++ SMTK907859
+            CREATE OBJECT obj .
             LOOP AT lt_rows INTO l_row.
               READ TABLE itab INDEX l_row-index INTO sel_row.
 **   v-javeda - MS2K948543 - validation for not retrying deleted payload
-              "Start of Change V-MPRAGALLAP -- SMTK907859
-*              SELECT SINGLE *  FROM zrest_monitor INTO lw_monitor
-*                               WHERE zmessageid = sel_row-zmessageid
-*                               AND zdelete EQ 'X'.
-              "End of Change V-MPRAGALLAP -- SMTK907859
-** Start of Change V-MPRAGALLAP +++ SMTK907859
-              IF sel_row IS NOT INITIAL.
-                READ TABLE lt_monitor INTO lw_monitor WITH KEY zmessageid = sel_row-zmessageid.
-** End of Change V-MPRAGALLAP +++  SMTK907859
-
-                IF sy-subrc = 0.
-                  CALL FUNCTION 'POPUP_TO_INFORM'
-                    EXPORTING
-                      titel = g_repid
-                      txt2  = sel_row-zmessageid
-                      txt1  = 'Cannot process for Deleted message id : '(500).
-                ENDIF.
-
+              SELECT SINGLE *  FROM zrest_monitor INTO lw_monitor
+                               WHERE zmessageid = sel_row-zmessageid
+                               AND zdelete EQ 'X'.
+              IF sy-subrc = 0.
+                CALL FUNCTION 'POPUP_TO_INFORM'
+                  EXPORTING
+                    titel = g_repid
+                    txt2  = sel_row-zmessageid
+                    txt1  = 'Cannot process for Deleted message id : '(500).
               ELSE.
 **         v-javeda - MS2K948543
                 IF obj IS BOUND.
@@ -570,16 +572,51 @@
             CREATE OBJECT ob .
             IF ob IS BOUND.
 *             Changed for Authorization Check VSTF # 2163894 | DGDK903413
-              TRY.
-                  CALL METHOD ob->show_payload( message_id = sel_row-zmessageid ).
-                CATCH zcx_http_client_failed INTO lv_textid.
-                  lv_text2 = lv_textid->if_t100_message~t100key.
-                  MESSAGE ID lv_text2-msgid TYPE 'I' NUMBER lv_text2-msgno.
+**--  Begin of changes  by V-GUPTASHIV  MS1K9A7DJR
+              CLEAR lwa_zrest_config.
+              SELECT SINGLE sensitive_flag
+                            sensitive_group
+                       FROM zrest_config
+                       INTO lwa_zrest_config WHERE interface_id = sel_row-interface_id.
+              IF lwa_zrest_config-sensitive_flag IS NOT INITIAL.
+
+                AUTHORITY-CHECK OBJECT 'ZPAY_LOAD'
+                               ID 'ACTVT'  FIELD '03'
+                               ID 'ZGROUP' FIELD  lwa_zrest_config-sensitive_group.
+                IF sy-subrc <> 0.
+                  MESSAGE 'No Authorization to view the Paylaod'(002) TYPE 'I' DISPLAY LIKE 'E'.
                   EXIT.
-              ENDTRY.
+                ENDIF.
+**--End  of changes  by V-GUPTASHIV  MS1K9A7DJR
+                TRY.
+                    CALL METHOD ob->show_payload( message_id = sel_row-zmessageid ).
+                  CATCH zcx_http_client_failed INTO lv_textid.
+                    lv_text2 = lv_textid->if_t100_message~t100key.
+                    MESSAGE ID lv_text2-msgid TYPE 'I' NUMBER lv_text2-msgno.
+                    EXIT.
+                ENDTRY.
+
+              ELSE.
+**--Begin of changes  by V-GUPTASHIV  MS1K9A7DJR
+*                Directly call the show payload method
+                TRY.
+                    CALL METHOD ob->show_payload( message_id = sel_row-zmessageid ).
+                  CATCH zcx_http_client_failed INTO lv_textid.
+                    lv_text2 = lv_textid->if_t100_message~t100key.
+                    MESSAGE ID lv_text2-msgid TYPE 'I' NUMBER lv_text2-msgno.
+                    EXIT.
+                ENDTRY.
+
+*                ENDIF.
+              ENDIF.
+**--End  of changes  by V-GUPTASHIV  MS1K9A7DJR
+** end of changes VSTF # | MS1K9A7DJR
+
 *             end of changes VSTF # 2163894 | DGDK903413
             ENDIF.
           ENDIF.
+
+
 
         WHEN 'SHOW RESPONSE'.
           CALL METHOD grid1->get_selected_rows
@@ -678,8 +715,7 @@
     IF ok_code = 'EXIT'.
       LEAVE PROGRAM.
     ELSEIF ok_code = 'BACK'.
-      LEAVE TO TRANSACTION 'ZREST_UTIL'.   "(-)SMTK905577 (+)SMTK906003
-*      LEAVE TO SCREEN 0.                    "(+)SMTK905577 (-)SMTK906003
+      LEAVE TO TRANSACTION 'ZREST_UTIL'.
 *      CALL METHOD grid1->refresh_table_display.
 *      CALL METHOD grid1->free.
 *      CALL SELECTION-SCREEN 1000.
@@ -814,7 +850,7 @@
         inconsistent_interface = 1
         program_error          = 2
         OTHERS                 = 3.
-    "Begin Of Change v-mpragallap ++ SMTK907859
+    "Begin Of Change v-ashokka on 10/28/2022 ++ MS1K9A7DJR
     IF sy-subrc <> 0.
       CASE sy-subrc.
         WHEN 1.
@@ -825,7 +861,7 @@
           MESSAGE e008(zvf_zrest).
       ENDCASE.
     ENDIF.
-    "End of Change v-mpragallap ++ SMTK907859
+    "End of Change v-ashokka on 10/28/2022 ++ MS1K9A7DJR
   ENDFORM. " create_fieldcat
 
 *&---------------------------------------------------------------------*
