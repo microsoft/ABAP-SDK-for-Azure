@@ -56,10 +56,13 @@ TRY.
       GET TIME STAMP FIELD  DATA(lv_current_timestamp) .
 
       ls_payload = VALUE #(
-                  topic            = ''                         " Optional (but if included, must match the Event Grid topic Azure Resource Manager ID exactly. If not included, Event Grid will stamp onto the event)
+                  topic            = ''                         " Optional (but if included, must match the Event Grid topic Azure Resource Manager ID exactly.
+                                                                " If not included, Event Grid will stamp onto the event)
                   id               = '9932432499'               " Mendatory ( Unique identifier for the event) Like Billing Doc number created in SAP.
-                  eventtype        = 'SAP.BILLING DOC.CREATED'  " Mandatory(One of the registered event types for this event source) Like SAP.BILLING DOC.CREATED
-                  subject          = 'SAP/SALES/Billing DOC'    " Mandatory( Publisher-defined path to the event subject) Like 'SAP/SALES/Billing DOC'
+                  eventtype        = 'SAP.BILLING DOC.CREATED'  " Mandatory(One of the registered event types for this event source)
+                                                                " Like SAP.BILLING DOC.CREATED
+                  subject          = 'SAP/SALES/Billing DOC'    " Mandatory( Publisher-defined path to the event subject) Like
+                                                                " 'SAP/SALES/Billing DOC'
                   "eventtime        = lv_current_timestamp      " Mandatory( The time the event is generated based on the provider's UTC time.
                   data             = lv1_string                 " Optional ( Like Billing data in Json string )
              ) .
