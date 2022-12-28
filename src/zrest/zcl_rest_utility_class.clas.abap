@@ -721,23 +721,6 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
 * ---------------------------------------------------------------------*
     interface_name = wa_paylod-interface_id.
 * ---------------------------------------------------------------------*
-*   Begin of changes for 2163894 | DGDK903413
-    TRY.
-*        To be uncommented later - sapurana - 6/24
-*        check_authority( ).
-*        AUTHORITY-CHECK OBJECT 'ZREST_RETR'
-*        ID 'ZBOOLEAN' FIELD 'X'.
-*        IF sy-subrc NE 0.
-*          lv_textid2-msgid = 'Z_FI_MDG'.
-*          lv_textid2-msgno = '057'.
-*          RAISE EXCEPTION TYPE zcx_http_client_failed EXPORTING textid = lv_textid2.
-*        ENDIF.
-* End of changes for 2163894 | DGDK903413
-      CATCH zcx_http_client_failed INTO DATA(lv_textid).
-        DATA(lv_text2) = lv_textid->if_t100_message~t100key.
-        RAISE EXCEPTION TYPE zcx_http_client_failed EXPORTING textid = lv_text2.
-    ENDTRY.
-*   End of changes for 2163894 | DGDK903413
 *-----------------------Get the config ------------------------------*
 * Begin of changes V-LAUPPA
     DATA: wa_config TYPE zrest_srtuct_config.
@@ -943,6 +926,10 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
             lv_value = lv_mi_token.
           ELSEIF lv_interfacetype EQ lc_service_cosmosdb AND lv_sas_token IS NOT INITIAL.   " CosmosDB token
             lv_value = lv_sas_token.
+          ELSEIF lv_sas_token IS NOT INITIAL.
+            lv_value = lv_sas_token.
+          ELSE.
+           lv_value =  wa_header-value.
           ENDIF.
         WHEN lc_date.                                     " x-ms-date Header
           IF lv_interfacetype EQ lc_service_cosmosdb AND lv_sas_date IS NOT INITIAL.       " CosmosDB SAS date
@@ -979,7 +966,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
       rest_handler->set_uri( lv_sas_token ).
     ELSEIF lv_interfacetype EQ lc_servicebus.
 * Ignore URI aadition as already taken care earlier
-    ELSE.
+    ELSEIF lv_string IS NOT INITIAL.
       rest_handler->set_uri( lv_string ).
     ENDIF.
 *   Retry

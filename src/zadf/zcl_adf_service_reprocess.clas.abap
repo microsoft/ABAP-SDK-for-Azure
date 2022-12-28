@@ -11,6 +11,7 @@ public section.
   constants GC_I type CHAR1 value 'I' ##NO_TEXT.
   constants GC_SERVICE_BLOB type ZADF_CONFIG-INTERFACE_TYPE value 'BLOB' ##NO_TEXT.
   constants GC_SERVICEBUS type ZAZURE_DEST value 'SERVICEBUS' ##NO_TEXT.
+  constants GC_EVENTGRID type ZAZURE_DEST value 'EVENTGRID' ##NO_TEXT.
 
   methods GENERATE_AUTH_TOKEN
     importing
@@ -84,6 +85,16 @@ private section.
     exporting
       value(RV_SAS_TOKEN) type STRING
       value(RV_DATE) type STRING
+    raising
+      ZCX_ADF_SERVICE
+      ZCX_INTERACE_CONFIG_MISSING
+      ZCX_HTTP_CLIENT_FAILED .
+  methods GET_TOKEN_EVENTGRID
+    importing
+      !IV_INTERFACE_NAME type ZINTERFACE_ID
+      !IV_URI type ZURI
+    exporting
+      !EV_FINAL_TOKEN type STRING
     raising
       ZCX_ADF_SERVICE
       ZCX_INTERACE_CONFIG_MISSING
@@ -177,6 +188,14 @@ METHOD generate_auth_token.
               IMPORTING
                 ev_final_token    = rv_sbus_token.
 * End of Change SANJUKUM_SMTK907382
+
+     WHEN gc_eventgrid.
+        CALL METHOD me->get_token_eventgrid
+            EXPORTING
+              iv_interface_name = iv_interface_id
+              iv_uri            = iv_uri
+            IMPORTING
+              ev_final_token    = rv_token.
       WHEN OTHERS.
         RAISE EXCEPTION TYPE zcx_adf_service
           EXPORTING
@@ -334,6 +353,27 @@ METHOD get_token_cosmosdb.
         interface_id = iv_interface_id.
   ENDIF.
 ENDMETHOD.
+
+
+  METHOD get_token_eventgrid.
+    DATA :lo_oref_eventgrid TYPE REF TO zcl_adf_service_eventgrid,
+          lo_oref           TYPE REF TO zcl_adf_service.
+
+**Calling Factory method to instantiate eventgrid client
+    lo_oref = zcl_adf_service_factory=>create( iv_interface_id = iv_interface_name ).
+    lo_oref_eventgrid ?= lo_oref.
+
+**Setting Expiry time Default 30 min
+    CALL METHOD lo_oref_eventgrid->add_expiry_time
+      EXPORTING
+        iv_expiry_hour = 0
+        iv_expiry_min  = 30
+        iv_expiry_sec  = 0.
+
+    lo_oref_eventgrid->get_sas_token( EXPORTING iv_baseaddress = lo_oref_eventgrid->gv_uri "CONV #( iv_uri )
+                              RECEIVING rv_sas_token  = ev_final_token ).
+
+  ENDMETHOD.
 
 
   METHOD get_token_mi.

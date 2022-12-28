@@ -402,6 +402,7 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
       CONDENSE lv_url NO-GAPS.
     ENDIF.
 
+
 * Create the HTTP client by URL
     CALL METHOD cl_http_client=>create_by_url
       EXPORTING
@@ -762,6 +763,7 @@ ENDMETHOD.
 
 *   Get the static headers from the configuration
     rest_client->if_rest_client~set_request_headers( zcl_rest_utility_class=>get_static_headers( interface_id =  interface ) ).
+
 *   Set the corelation id
     DATA lv_value TYPE string.
     lv_value = message_id.
