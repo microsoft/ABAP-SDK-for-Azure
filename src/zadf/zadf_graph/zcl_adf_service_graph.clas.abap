@@ -1,14 +1,12 @@
-CLASS zcl_adf_service_graph DEFINITION
+class ZCL_ADF_SERVICE_GRAPH definition
+  public
+  inheriting from ZCL_ADF_SERVICE
+  final
+  create public .
 
-  PUBLIC
+public section.
 
-  INHERITING FROM zcl_adf_service
-
-  CREATE PUBLIC .
-
-  PUBLIC SECTION.
-    INTERFACES zif_adf_service_graph.
-
+  interfaces ZIF_ADF_SERVICE_GRAPH .
   PROTECTED SECTION.
 
   PRIVATE SECTION.
@@ -92,10 +90,10 @@ CLASS ZCL_ADF_SERVICE_GRAPH IMPLEMENTATION.
         DATA(lt_errors) = json_to_http_fields( iv_response_data = lo_response_string ).
         READ TABLE lt_errors ASSIGNING FIELD-SYMBOL(<fs_error>) INDEX 1.
 
-        RAISE EXCEPTION TYPE zcx_adf_service_graph
+        RAISE EXCEPTION TYPE zcx_adf_service
           EXPORTING
-            textid         = zcx_adf_service_graph=>general_exception
-            error_response = <fs_error>-value.
+            textid         = zcx_adf_service=>general_exception
+            text           = <fs_error>-value.
 
       ENDIF.
 
@@ -171,10 +169,7 @@ CLASS ZCL_ADF_SERVICE_GRAPH IMPLEMENTATION.
           lv_host_s      TYPE string,
           ls_response    TYPE response.
 
-
-
     IF go_rest_api IS BOUND.
-
       lv_path_prefix = '/users'.
       IF NOT lv_path_prefix IS INITIAL.
         go_rest_api->zif_rest_framework~set_uri( lv_path_prefix ).
@@ -197,15 +192,14 @@ CLASS ZCL_ADF_SERVICE_GRAPH IMPLEMENTATION.
       IF lo_response IS BOUND.
         DATA(response) = lo_response->get_string_data( ).
         IF ev_http_status = 400.
-          RAISE EXCEPTION TYPE zcx_adf_service_graph
+          RAISE EXCEPTION TYPE zcx_adf_service
             EXPORTING
-              textid         = zcx_adf_service_graph=>general_exception
-              error_response = response.
+              textid = zcx_adf_service=>general_exception
+              text   = response.
         ELSE.
           /ui2/cl_json=>deserialize(
                               EXPORTING
                                 json = response   " Data to serialize
-
                               "  pretty_name = abap_true    " Pretty Print property names
                               CHANGING
                                 data = ls_response

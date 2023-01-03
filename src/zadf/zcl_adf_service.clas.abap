@@ -99,10 +99,10 @@ public section.
       ZCX_ADF_SERVICE .
 protected section.
 
+  data GV_URI type STRING .
   constants GC_ERROR type CHAR1 value 'E' ##NO_TEXT.
   data GV_INTERFACE_ID type ZINTERFACE_ID .
   data GV_SAS_KEY type STRING .
-  data GV_URI type STRING .
   data GO_REST_API type ref to ZCL_REST_FRAMEWORK .
   data GV_ASYNCHRONOUS type ABAP_BOOL .
   data GV_IS_TRY type ABAP_BOOL .
@@ -785,7 +785,7 @@ METHOD get_interface_details.
         interface_id = gv_interface_id.
   ENDIF.
 
-  gv_is_try = ls_config-is_try.
+*  gv_is_try = ls_config-is_try.
   gv_sas_key = ls_config-sas_key. "Added by KRDASH
 ENDMETHOD.
 
@@ -802,26 +802,11 @@ METHOD get_rest_api_ref.
          lcx_http      TYPE REF TO zcx_http_client_failed.
   IF go_rest_api IS INITIAL.
     TRY.
-        CASE gv_service_id.
-          WHEN gc_service_blob.
-            CREATE OBJECT go_rest_api
-              EXPORTING
-                interface_name      = gv_interface_id       "Mandatory
-                business_identifier = iv_business_identifier
-                method              = gv_method_call.       " Method determined from rest config
-          WHEN gc_service_msi.                              " For MSI the method must be GET
-            CREATE OBJECT go_rest_api
-              EXPORTING
-                interface_name      = gv_interface_id       "Mandatory
-                business_identifier = iv_business_identifier
-                method              = 'GET'.                "For troubleshooting
-          WHEN OTHERS.
-            CREATE OBJECT go_rest_api
-              EXPORTING
-                interface_name      = gv_interface_id       "Mandatory
-                business_identifier = iv_business_identifier
-                method              = 'POST'.               "For troubleshooting
-        ENDCASE.
+        CREATE OBJECT go_rest_api
+          EXPORTING
+            interface_name      = gv_interface_id       "Mandatory
+            business_identifier = iv_business_identifier
+            method              = gv_method_call.       "Assign method from ZREST_CONF_MISC
       CATCH zcx_interace_config_missing INTO lcx_interface.
         RAISE EXCEPTION lcx_interface.
       CATCH zcx_http_client_failed INTO lcx_http .
@@ -1105,16 +1090,35 @@ METHOD send.
          lv_sas_token    TYPE string,
          lv_msg          TYPE string,
          lcx_adf_service TYPE REF TO zcx_adf_service.
+
   IF go_rest_api IS BOUND.
+* Read token from headers for Managed Identity/AAD
+    IF line_exists( it_headers[ name = gc_mi_auth ] ).
+      DATA(lv_processing_method) = gc_mi_auth.
+      DATA(lv_aad_token) = it_headers[ name = gc_mi_auth ]-value.
+    ENDIF.
+
     TRY.
-        get_sas_token( EXPORTING iv_baseaddress = gv_uri
-                       RECEIVING rv_sas_token  = lv_sas_token ).
+        CASE lv_processing_method.
+* AAD/Managed Identity token
+          WHEN gc_mi_auth.
+            CLEAR lv_sas_token.
+            lv_sas_token = lv_aad_token.
+* SAS keys
+          WHEN OTHERS.
+            get_sas_token( EXPORTING iv_baseaddress = gv_uri
+                           RECEIVING rv_sas_token  = lv_sas_token ).
+        ENDCASE.
       CATCH zcx_adf_service INTO lcx_adf_service.
         lv_msg =  lcx_adf_service->get_text( ).
         MESSAGE lv_msg TYPE 'I'.
     ENDTRY.
+
     add_request_header( iv_name = 'Content-Type' iv_value = 'application/json; charset=utf-8' ).
+
+* Add Managed Identity/AAD/SAS keys to the headers
     add_request_header( iv_name = 'Authorization' iv_value = lv_sas_token ).
+
     go_rest_api->zif_rest_framework~set_binary_body( request ).
     IF NOT it_headers[] IS INITIAL.
       go_rest_api->zif_rest_framework~set_request_headers( it_header_fields = it_headers[] ).

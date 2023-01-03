@@ -4,7 +4,6 @@
   <asx:values>
    <VSEOINTERF>
     <CLSNAME>ZIF_ADF_SERVICE_GRAPH</CLSNAME>
-    <VERSION>1</VERSION>
     <LANGU>E</LANGU>
     <DESCRIPT>Interface for Graph API</DESCRIPT>
     <EXPOSURE>2</EXPOSURE>
