@@ -376,7 +376,11 @@ METHOD send.
 
     TRY.
         CASE lv_processing_method.
+* AAD/Managed Identity token
           WHEN gc_mi_auth.
+            CLEAR lv_sas_token.
+            lv_sas_token = lv_aad_token.
+* SAS keys
           WHEN OTHERS.
             get_sas_token( EXPORTING iv_baseaddress = gv_uri
                            RECEIVING rv_sas_token  = lv_sas_token ).
@@ -398,13 +402,10 @@ METHOD send.
 
 *   Add custom headers.
     add_request_header( iv_name = 'Content-Type' iv_value = 'application/json; charset=utf-8' ).
-* Add Managed Identity token to the headers
-    IF lv_processing_method EQ gc_mi_auth.
-      add_request_header( iv_name = 'Authorization' iv_value = lv_aad_token ).
-    ELSE.
-* Add provided SAS token/generated token via Account Key to the headers
-      add_request_header( iv_name = 'Authorization' iv_value = lv_sas_token ).
-    ENDIF.
+
+* Add Managed Identity/AAD/SAS keys to the headers
+    add_request_header( iv_name = 'Authorization' iv_value = lv_sas_token ).
+
     go_rest_api->zif_rest_framework~set_binary_body( request ).
     IF NOT it_headers[] IS INITIAL.
       go_rest_api->zif_rest_framework~set_request_headers( it_header_fields = lt_headers[] ).

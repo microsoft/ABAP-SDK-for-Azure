@@ -132,8 +132,10 @@ METHOD get_rfc7231_time.
   CONDENSE lv_day_name.
 ** make timestamp in RFC7231 format
   CONCATENATE lv_day_name
-              lv_date+4(2)
-              lv_date(3)
+*              lv_date+4(2)
+*              lv_date(3)
+              lv_date(2)
+              lv_date+3(3)
               lv_date+7(4)
               lv_time
               lc_gmt
@@ -234,7 +236,7 @@ METHOD send.
     IF NOT gv_partition_key_val IS INITIAL.
       add_request_header( iv_name = 'x-ms-documentdb-partitionkey' iv_value = gv_partition_key_val ).
     ENDIF.
-    add_request_header( iv_name = 'x-ms-version' iv_value = '2015-12-16').
+    add_request_header( iv_name = 'x-ms-version' iv_value = '2018-12-31').
     add_request_header( iv_name = 'x-ms-documentdb-is-upsert' iv_value = 'true').
     add_request_header( iv_name = 'Accept' iv_value = 'application/json').
     add_request_header( iv_name = 'x-ms-date' iv_value = gv_http_date ).
