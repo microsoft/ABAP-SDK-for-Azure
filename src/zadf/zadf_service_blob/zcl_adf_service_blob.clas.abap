@@ -1077,6 +1077,7 @@ METHOD set_sas_token.
           go_rest_api->zif_rest_framework~set_uri( gv_sas_token ).
         WHEN gc_block_blob or gc_b.
           go_rest_api->zif_rest_framework~set_uri( gv_sas_token ).
+          add_request_header( iv_name = 'x-ms-blob-type' iv_value = 'BlockBlob' ).
       ENDCASE.
     ELSE.
 **validation logic for URI parameter while sending data to existing append blob
