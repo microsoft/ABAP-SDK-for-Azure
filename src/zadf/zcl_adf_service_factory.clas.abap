@@ -8,6 +8,7 @@ public section.
   constants GC_SERVICE_EVENTHUB type ZAZURE_DEST value 'EVENTHUB' ##NO_TEXT.
   constants GC_SERVICE_BLOB type ZAZURE_DEST value 'BLOB' ##NO_TEXT.
   constants GC_SERVICE_SERVICEBUS type ZAZURE_DEST value 'SERVICEBUS' ##NO_TEXT.
+  constants GC_SERVICE_EVENTGRID type ZAZURE_DEST value 'EVENTGRID' ##NO_TEXT.
   constants GC_SERVICE_AAD type ZAZURE_DEST value 'AAD' ##NO_TEXT.
   constants GC_SERVICE_KEYVAULT type ZAZURE_DEST value 'KV' ##NO_TEXT.
   constants GC_SERVICE_OMS_LA type ZAZURE_DEST value 'OMS_LA' ##NO_TEXT.
@@ -15,6 +16,7 @@ public section.
   constants GC_SERVICE_APPINSIGHTS type ZAZURE_DEST value 'APPINS' ##NO_TEXT.
   constants GC_SERVICE_FILES type ZAZURE_DEST value 'FILE' ##NO_TEXT.
   constants GC_SERVICE_MSI type ZAZURE_DEST value 'MSI' ##NO_TEXT.
+  constants GC_GRAPH type ZAZURE_DEST value 'GRAPH' ##NO_TEXT.
 
   class-methods CREATE
     importing
@@ -66,6 +68,14 @@ METHOD create.
             iv_interface_id        = iv_interface_id
             iv_service_id          = lv_interface_type
             iv_business_identifier = iv_business_identifier.
+* Insert Begin of VBANSAL- 06/12/2022 - Event Grid
+      WHEN gc_service_eventgrid.
+        CREATE OBJECT ro_service TYPE zcl_adf_service_eventgrid
+          EXPORTING
+            iv_interface_id        = iv_interface_id
+            iv_service_id          = lv_interface_type
+            iv_business_identifier = iv_business_identifier.
+* Insert End of VBANSAL- 06/12/2022  - Event Grid
       WHEN gc_service_keyvault.
         CREATE OBJECT ro_service TYPE zcl_adf_service_keyvault
           EXPORTING
@@ -92,6 +102,12 @@ METHOD create.
             iv_business_identifier = iv_business_identifier.
       WHEN gc_service_aad OR gc_service_msi.                  " Adding logic to enable MSI
         CREATE OBJECT ro_service TYPE zcl_adf_service_aad
+          EXPORTING
+            iv_interface_id        = iv_interface_id
+            iv_service_id          = lv_interface_type
+            iv_business_identifier = iv_business_identifier.
+      WHEN gc_graph.
+        CREATE OBJECT ro_service TYPE zcl_adf_service_graph
           EXPORTING
             iv_interface_id        = iv_interface_id
             iv_service_id          = lv_interface_type
