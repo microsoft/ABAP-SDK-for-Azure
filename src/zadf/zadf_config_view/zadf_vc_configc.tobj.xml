@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_TOBJ" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <OBJH>
+    <OBJECTNAME>ZADF_VC_CONFIG</OBJECTNAME>
+    <OBJECTTYPE>C</OBJECTTYPE>
+    <CLIDEP>X</CLIDEP>
+    <OBJCATEG>CUST</OBJCATEG>
+    <OBJTRANSP>2</OBJTRANSP>
+    <IMPORTABLE>3</IMPORTABLE>
+   </OBJH>
+   <OBJT>
+    <LANGUAGE>E</LANGUAGE>
+    <OBJECTNAME>ZADF_VC_CONFIG</OBJECTNAME>
+    <OBJECTTYPE>C</OBJECTTYPE>
+    <DDTEXT>Azure Configuration View Cluster</DDTEXT>
+   </OBJT>
+   <OBJS>
+    <OBJS>
+     <OBJECTNAME>ZADF_VC_CONFIG</OBJECTNAME>
+     <OBJECTTYPE>C</OBJECTTYPE>
+     <TABNAME>ZADF_CONFIG</TABNAME>
+     <DDIC>X</DDIC>
+    </OBJS>
+    <OBJS>
+     <OBJECTNAME>ZADF_VC_CONFIG</OBJECTNAME>
+     <OBJECTTYPE>C</OBJECTTYPE>
+     <TABNAME>ZADF_EHUB_POLICY</TABNAME>
+     <DDIC>X</DDIC>
+    </OBJS>
+    <OBJS>
+     <OBJECTNAME>ZADF_VC_CONFIG</OBJECTNAME>
+     <OBJECTTYPE>C</OBJECTTYPE>
+     <TABNAME>ZADF_MI_CONFIG</TABNAME>
+     <DDIC>X</DDIC>
+    </OBJS>
+    <OBJS>
+     <OBJECTNAME>ZADF_VC_CONFIG</OBJECTNAME>
+     <OBJECTTYPE>C</OBJECTTYPE>
+     <TABNAME>ZADF_V_RESTDEST</TABNAME>
+     <DDIC>X</DDIC>
+    </OBJS>
+    <OBJS>
+     <OBJECTNAME>ZADF_VC_CONFIG</OBJECTNAME>
+     <OBJECTTYPE>C</OBJECTTYPE>
+     <TABNAME>ZREST_CONF_MISC</TABNAME>
+     <DDIC>X</DDIC>
+    </OBJS>
+   </OBJS>
+  </asx:values>
+ </asx:abap>
+</abapGit>
