@@ -8,7 +8,28 @@ class ZCL_ADF_SERVICE_EVENTGRID definition
 
 public section.
 
+  types:
+    BEGIN OF gty_egrid_schema ,
+        topic           TYPE  zadf_egrid_topic,
+        subject         TYPE  zadf_egrid_subj,
+        eventtype       TYPE  zadf_egrid_typ,
+        eventtime       TYPE  zadf_egrid_etime,
+        id              TYPE  zadf_egrid_id,
+        dataversion     TYPE  zadf_egrid_dversion,
+        metadataversion TYPE  zadf_egrid_mdversion,
+        data            TYPE  REF TO data,
+      END OF  gty_egrid_schema .
+  types:
+    gtty_egrid_schema TYPE STANDARD TABLE OF gty_egrid_schema .
+
   methods SET_EVENTGRID_SCHEMA
+    importing
+      !IT_EGRID_SCHEMA type GTTY_EGRID_SCHEMA
+    returning
+      value(RV_XSTRING) type XSTRING
+    raising
+      ZCX_ADF_SERVICE .
+  methods SET_EVENTGRID_SCHEMA_JSON
     importing
       !IT_EGRID_SCHEMA type ZADF_TT_EGRID_SCHEMA
     returning
@@ -18,27 +39,32 @@ public section.
 
   methods SEND
     redefinition .
-protected section.
+  PROTECTED SECTION.
 
-  methods GET_SAS_TOKEN
-    redefinition .
-private section.
+    METHODS get_sas_token
+        REDEFINITION .
+  PRIVATE SECTION.
 
-  data GT_EGRID_SCHEMA type ZADF_TT_EGRID_SCHEMA .
-  constants GC_UTC_ZONE type TZNZONE value 'UTC' ##NO_TEXT.
-  constants GC_SEP_HYPHEN type CHAR1 value '-' ##NO_TEXT.
-  constants GC_SEP_COLON type CHAR1 value ':' ##NO_TEXT.
-  data GV_START_UTC_TIME type STRING .
-  data GV_EXPIRY_UTC_TIME type STRING .
+    DATA:
+      gt_egrid_schema TYPE STANDARD TABLE OF gty_egrid_schema .  "zadf_tt_egrid_schema .
 
-  methods SET_EXPIRY_UTC_TIME
-    raising
-      ZCX_ADF_SERVICE .
-  methods CONVERT_TSTAMP_UTC
-    importing
-      !IM_TIMESTAMP type TIMESTAMP
-    returning
-      value(RE_UTCTIME) type CHAR100 .
+    DATA
+      gt_egrid_schema_json TYPE zadf_tt_egrid_schema .
+
+    CONSTANTS gc_utc_zone TYPE tznzone VALUE 'UTC' ##NO_TEXT.
+    CONSTANTS gc_sep_hyphen TYPE char1 VALUE '-' ##NO_TEXT.
+    CONSTANTS gc_sep_colon TYPE char1 VALUE ':' ##NO_TEXT.
+    DATA gv_start_utc_time TYPE string .
+    DATA gv_expiry_utc_time TYPE string .
+
+    METHODS set_expiry_utc_time
+      RAISING
+        zcx_adf_service .
+    METHODS convert_tstamp_utc
+      IMPORTING
+        !im_timestamp     TYPE timestamp
+      RETURNING
+        VALUE(re_utctime) TYPE char100 .
 ENDCLASS.
 
 
@@ -241,10 +267,67 @@ CLASS ZCL_ADF_SERVICE_EVENTGRID IMPLEMENTATION.
         failed = 1
         OTHERS = 2.
     IF sy-subrc <> 0.
-       RAISE EXCEPTION TYPE zcx_adf_service
-          EXPORTING
-            textid       = zcx_adf_service=>error_con_xstring
-            interface_id = gv_interface_id.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>error_con_xstring
+          interface_id = gv_interface_id.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD set_eventgrid_schema_json.
+
+    DATA : ls_ploaddata TYPE string .
+
+    gt_egrid_schema_json = it_egrid_schema.
+
+    LOOP AT gt_egrid_schema_json ASSIGNING FIELD-SYMBOL(<lfs_schema>).
+
+* Convert Timestamp in UTC format  (Ex:2017-02-08T12:32:21Z)
+      IF <lfs_schema>-eventtime IS INITIAL.
+        GET TIME STAMP FIELD  DATA(lv_current_timestamp) .
+        convert_tstamp_utc( EXPORTING im_timestamp = lv_current_timestamp
+                            RECEIVING re_utctime   = <lfs_schema>-eventtime ).
+
+      ELSE.
+        CONDENSE <lfs_schema>-eventtime.
+        convert_tstamp_utc( EXPORTING im_timestamp = CONV #( <lfs_schema>-eventtime )
+                          RECEIVING re_utctime   = <lfs_schema>-eventtime ).
+      ENDIF.
+
+      IF <lfs_schema>-metadataversion IS INITIAL.
+        <lfs_schema>-metadataversion  = '1'.
+      ENDIF.
+    ENDLOOP.
+
+* Convert Data into json format
+    /ui2/cl_json=>serialize(
+       EXPORTING
+         data             = gt_egrid_schema_json
+         pretty_name      = 'X'
+*         EXPAND_INCLUDES  = space
+       RECEIVING
+         r_json           = DATA(lv_jsondata) ).
+
+    REPLACE ALL OCCURRENCES OF '\' IN lv_jsondata WITH space.
+    REPLACE ALL OCCURRENCES OF '"[' IN lv_jsondata WITH '['.
+    REPLACE ALL OCCURRENCES OF ']"' IN lv_jsondata WITH ']'.
+
+*Convert string data to Xstring format
+    CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
+      EXPORTING
+        text   = lv_jsondata
+      IMPORTING
+        buffer = rv_xstring
+      EXCEPTIONS
+        failed = 1
+        OTHERS = 2.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>error_con_xstring
+          interface_id = gv_interface_id.
     ENDIF.
 
   ENDMETHOD.
