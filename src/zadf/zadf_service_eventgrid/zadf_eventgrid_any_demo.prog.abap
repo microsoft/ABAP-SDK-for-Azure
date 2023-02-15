@@ -1,14 +1,12 @@
 *&---------------------------------------------------------------------*
-*& Report  ZADF_EVENTGRID_DEMO
+*& Report  ZADF_EVENTGRID_ANY_DEMO
 *&
 *&---------------------------------------------------------------------*
 *&
 *&
 *&---------------------------------------------------------------------*
-REPORT zadf_eventgrid_demo.
+REPORT zadf_eventgrid_any_demo.
 
-DATA : lt_payload TYPE TABLE OF zadf_str_egrid_schema,
-       ls_payload TYPE  zadf_str_egrid_schema.
 
 DATA:
   lt_headers     TYPE tihttpnvp,
@@ -25,6 +23,25 @@ DATA:
   lo_json        TYPE REF TO cl_trex_json_serializer,
   lv1_string     TYPE string,
   lv_xstring     TYPE xstring.
+
+
+TYPES : BEGIN OF ty_egrid_schema1 ,
+          topic           TYPE  zadf_egrid_topic,
+          subject         TYPE  zadf_egrid_subj,
+          eventtype       TYPE  zadf_egrid_typ,
+          eventtime       TYPE  zadf_egrid_etime,
+          id              TYPE  zadf_egrid_id,
+          dataversion     TYPE  zadf_egrid_dversion,
+          metadataversion TYPE  zadf_egrid_mdversion,
+          data           TYPE  REF TO data,
+        END OF  ty_egrid_schema1.
+
+
+DATA : ls_egridschema TYPE ty_egrid_schema1,
+     lt_egridschema TYPE STANDARD TABLE OF ty_egrid_schema1.
+
+FIELD-SYMBOLS : <lfs_data>     TYPE STANDARD TABLE,
+                <lfs_data_tmp> TYPE STANDARD TABLE.
 
 TRY.
 **Calling Factory method to instantiate eventgrid client
@@ -45,31 +62,30 @@ TRY.
          INTO TABLE @DATA(lt_data).
     IF sy-subrc EQ 0.
 
-* Convert Data into json format
-      /ui2/cl_json=>serialize(
-         EXPORTING
-           data             = lt_data
-           pretty_name      = 'X'
-         RECEIVING
-           r_json           = lv1_string ).
-
       GET TIME STAMP FIELD  DATA(lv_current_timestamp) .
 
-      ls_payload = VALUE #(
+      ls_egridschema = VALUE #(
                   topic            = ''                         " Optional (but if included, must match the Event Grid topic Azure Resource Manager ID exactly.
                                                                 " If not included, Event Grid will stamp onto the event)
                   id               = '9932432499'               " Mendatory ( Unique identifier for the event) Like Billing Doc number created in SAP.
                   eventtype        = 'SAP.BILLING DOC.CREATED'  " Mandatory(One of the registered event types for this event source)
                                                                 " Like SAP.BILLING DOC.CREATED
-                  subject          = 'SAP/SALES/Billing DOC'    " Mandatory( Publisher-defined path to the event subject) Like
+                 subject          = 'SAP/SALES/Billing DOC'    " Mandatory( Publisher-defined path to the event subject) Like
                                                                 " 'SAP/SALES/Billing DOC'
                   "eventtime        = lv_current_timestamp      " Mandatory( The time the event is generated based on the provider's UTC time.
-                  data             = lv1_string                " Optional ( Like Billing data in Json string )
+*                  data             =                          " Optional ( Like Billing data in Json string )
              ) .
 
-      APPEND ls_payload TO lt_payload.
+* Dynamically assign intenal Table Data to payload
+      ASSIGN lt_data TO <lfs_data>.
+      CREATE DATA ls_egridschema-data LIKE <lfs_data>.
 
-      oref_eventgrid->set_eventgrid_schema_json( EXPORTING it_egrid_schema = lt_payload
+      ASSIGN ls_egridschema-data->* TO <lfs_data_tmp>.
+      <lfs_data_tmp>   = <lfs_data>.
+
+      APPEND ls_egridschema TO lt_egridschema.
+
+      oref_eventgrid->set_eventgrid_schema( EXPORTING it_egrid_schema = lt_egridschema
                                             RECEIVING rv_xstring      = DATA(lv_pxstring) ).
 
 **Sending Converted SAP data to Azure eventgrid

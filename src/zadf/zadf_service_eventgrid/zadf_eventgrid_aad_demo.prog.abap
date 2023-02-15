@@ -36,7 +36,7 @@ DATA:
 TRY.
     CALL METHOD zcl_adf_service_factory=>create
       EXPORTING
-        iv_interface_id        = 'DEMO_AAD' " Generate the token
+        iv_interface_id        = 'VIK_AAD' " Generate the token
         iv_business_identifier = 'AAD_TOKEN'
       RECEIVING
         ro_service             = lo_oref.
@@ -68,7 +68,7 @@ ENDIF.
 
 TRY.
 **Calling Factory method to instantiate eventgrid client
-    oref = zcl_adf_service_factory=>create( iv_interface_id = 'DEMO_EGRID'
+    oref = zcl_adf_service_factory=>create( iv_interface_id = 'VIK_EGRID'
                                             iv_business_identifier = filter ).
     oref_eventgrid ?= oref.
 
