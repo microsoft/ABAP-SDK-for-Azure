@@ -45,7 +45,7 @@ FIELD-SYMBOLS : <lfs_data>     TYPE STANDARD TABLE,
 
 TRY.
 **Calling Factory method to instantiate eventgrid client
-    oref = zcl_adf_service_factory=>create( iv_interface_id = 'VIK_EGRID'
+    oref = zcl_adf_service_factory=>create( iv_interface_id = 'DEMO_EGRID'
                                             iv_business_identifier = filter ).
     oref_eventgrid ?= oref.
 
