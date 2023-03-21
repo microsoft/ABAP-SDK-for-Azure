@@ -10,6 +10,7 @@ Please check document [ABAP SDK for Azure – Github](https://github.com/Microso
 As of now, ABAP SDK supports direct integration with following Azure services,
 * Event hub
 * Service bus
+* Event Grid
 * Key vault
 * Active Directory
 * Blob
