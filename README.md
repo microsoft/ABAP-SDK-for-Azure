@@ -17,6 +17,7 @@ As of now, ABAP SDK supports direct integration with following Azure services,
 * Cosmos DB
 * OMS Log Analytics
 * Microsoft Graph API
+* O365(sharepoint)
 
 Note: We are continuously enhancing these libraries and you may find few class methods unimplemented. These will be released in next versions.
 
