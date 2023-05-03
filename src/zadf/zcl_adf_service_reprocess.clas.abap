@@ -21,9 +21,6 @@ public section.
     exporting
       value(RV_TOKEN) type STRING
       value(RV_DATE) type STRING
-      value(RV_AAD_TOKEN) type STRING
-      value(RV_MI_TOKEN) type STRING
-      value(RV_SBUS_TOKEN) type STRING
     raising
       ZCX_ADF_SERVICE
       ZCX_INTERACE_CONFIG_MISSING
@@ -40,11 +37,28 @@ public section.
     importing
       value(IV_INTERFACE_ID) type ZINTERFACE_ID
       value(IV_CLIENT_ID) type STRING
+      value(IV_INT_TYPE) type ZAZURE_DEST optional
       value(IV_RESOURCE) type TVARV_VAL optional
     exporting
       value(EV_AAD_TOKEN) type STRING .
+  methods SDK_REST_RETRY
+    importing
+      value(IV_REST_RETRY) type ZADF_SDK_RETRY
+      value(IV_URL) type ZURI_AZURE optional
+    exporting
+      value(RV_TOKEN) type STRING
+      value(RV_DATE) type STRING
+      value(RV_AAD_TOKEN) type STRING
+      !RV_URL type ZURI_AZURE .
 protected section.
 private section.
+
+  constants GC_TYPE_AAD type STRING value 'type=aad' ##NO_TEXT.
+  constants GC_TYPE type STRING value 'type=master' ##NO_TEXT.
+  constants GC_VERSION type STRING value 'ver=1.0' ##NO_TEXT.
+  constants GC_SEPARATOR type STRING value '&' ##NO_TEXT.
+  constants GC_SIG type STRING value 'sig=' ##NO_TEXT.
+  constants GC_COSMOSDB type CHAR10 value 'COSMOSDB' ##NO_TEXT.
 
   methods GET_TOKEN_MI
     importing
@@ -179,14 +193,14 @@ METHOD generate_auth_token.
             iv_interface_id = iv_interface_id
             iv_uri          = iv_uri
           IMPORTING
-            rv_mi_token    = rv_mi_token.
+            rv_mi_token    = rv_token."rv_mi_token.
       WHEN gc_servicebus.
           CALL METHOD me->get_token_servicebus
               EXPORTING
                 iv_interface_name = iv_interface_id
                 iv_uri            = iv_uri
               IMPORTING
-                ev_final_token    = rv_sbus_token.
+                ev_final_token    = rv_token."rv_sbus_token.
 * End of Change SANJUKUM_SMTK907382
 
      WHEN gc_eventgrid.
@@ -223,7 +237,7 @@ ENDMETHOD.
             ev_aad_token = DATA(lv_aad_token)
             ev_response  = DATA(lv_response).
 
-        CONCATENATE 'Bearer' space lv_aad_token INTO ev_aad_token RESPECTING BLANKS.
+        CONCATENATE 'Bearer' space lv_aad_token INTO lv_aad_token RESPECTING BLANKS.
       CATCH zcx_interace_config_missing INTO DATA(cx_interface_aad).
         DATA(lv_string1) = cx_interface_aad->get_text( ).
         MESSAGE lv_string1 TYPE gc_i.
@@ -237,6 +251,20 @@ ENDMETHOD.
         MESSAGE lv_string1 TYPE gc_i.
         RETURN.
     ENDTRY.
+
+
+*  Build AAD/MI Token based on specific Azure service.
+    CASE iv_int_type.
+      WHEN gc_cosmosdb.
+
+        REPLACE ALL OCCURRENCES OF 'Bearer' IN lv_aad_token WITH space.
+        CONDENSE lv_aad_token.
+        CONCATENATE gc_type_aad gc_separator gc_version gc_separator gc_sig lv_aad_token INTO DATA(lv_authstring).
+
+        lv_aad_token  = cl_http_utility=>escape_url( lv_authstring  ).
+      WHEN OTHERS.
+    ENDCASE.
+    ev_aad_token =  lv_aad_token.
   ENDMETHOD.
 
 
@@ -637,4 +665,68 @@ ENDMETHOD.
       ENDIF.
     ENDIF.
   ENDMETHOD.
+
+
+METHOD sdk_rest_retry.
+
+  DATA  : ls_retry TYPE zadf_sdk_retry.
+
+  ls_retry  = iv_rest_retry.
+
+*Reprocessing logic for Azure services AAD & MI.
+  IF ls_retry-auth_intf_id IS NOT INITIAL
+                                  AND ls_retry-client_id IS NOT INITIAL
+                                        AND ls_retry-resource_id IS NOT INITIAL.
+* Fetch AAD/MI Token.
+    CALL METHOD me->get_aad_token
+      EXPORTING
+        iv_interface_id = ls_retry-auth_intf_id
+        iv_client_id    = CONV #( ls_retry-client_id )
+        iv_resource     = CONV #( ls_retry-resource_id )
+        iv_int_type     = ls_retry-interface_type
+      IMPORTING
+        ev_aad_token    = rv_aad_token.
+
+* Reprocessing logic for Azure services excluding AAD( with SAS KEY/SASTOKEN/PKEY)
+  ELSE.
+
+    SELECT SINGLE interface_type,sas_key,
+           uri
+           FROM zadf_config
+           INTO ( @DATA(lv_interfacetype) , @DATA(lv_saskey), @DATA(lv_url) )
+           WHERE interface_id = @ls_retry-interface_id.
+    IF sy-subrc EQ 0 AND lv_saskey IS NOT INITIAL.
+
+      IF lv_interfacetype = gc_servicebus.
+        rv_url = lv_url.
+      ELSE.
+        lv_url = iv_url.
+      ENDIF.
+      TRY.
+* Fetch the Auth Token/Signature
+          CALL METHOD me->generate_auth_token
+            EXPORTING
+              iv_interface_id   = ls_retry-interface_id
+              iv_uri            = CONV #( lv_url )
+              iv_interface_type = lv_interfacetype
+            IMPORTING
+              rv_token          = rv_token
+              rv_date           = rv_date.
+        CATCH zcx_adf_service INTO DATA(lcx_adf_service).
+          DATA(lv_msg) =  lcx_adf_service->get_text( ).
+          MESSAGE lv_msg TYPE gc_i.
+          RETURN.
+        CATCH zcx_interace_config_missing INTO DATA(lcx_interface).
+          lv_msg =  lcx_interface->get_text( ).
+          MESSAGE lv_msg TYPE gc_i.
+          RETURN.
+        CATCH zcx_http_client_failed INTO DATA(lcx_http).
+          lv_msg =  lcx_http->get_text( ).
+          MESSAGE lv_msg TYPE gc_i.
+          RETURN.
+      ENDTRY.
+    ENDIF.
+  ENDIF.
+
+ENDMETHOD.
 ENDCLASS.

@@ -1,7 +1,5 @@
 *---------------------------------------------------------------------*
 *    program for:   VIEWFRAME_ZADF_V_CONFIG
-*   generation date: 01/16/2023 at 21:47:10
-*   view maintenance generator version: #001407#
 *---------------------------------------------------------------------*
 FUNCTION VIEWFRAME_ZADF_V_CONFIG       .
 

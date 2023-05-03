@@ -107,6 +107,11 @@ private section.
   class-data METHODNAME type CHAR5 .
   class-data INTERFACE_NAME type ZINTERFACE_ID .
   class-data IT_ZOBFUSCATE type ZTOBFUSCATE .
+  constants GC_TYPE_AAD type STRING value 'type=aad' ##NO_TEXT.
+  constants GC_TYPE type STRING value 'type=master' ##NO_TEXT.
+  constants GC_VERSION type STRING value 'ver=1.0' ##NO_TEXT.
+  constants GC_SEPARATOR type STRING value '&' ##NO_TEXT.
+  constants GC_SIG type STRING value 'sig=' ##NO_TEXT.
 
   class-methods GET_DB_DATA
     importing
@@ -673,6 +678,9 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
 * 03|01|2022|SANJUKUM  |8222481 | SMTK907382  | Reprocessing logic for
 *                                               Managed Identity
 *----------------------------------------------------------------------*
+*----------------------------------------------------------------------*
+* 19|04|2023| VBANSAL  |8222481 | SMTK90841  | Reprocessing Logic MI/AAD token gen.
+*----------------------------------------------------------------------*
 
     DATA : lv_string        TYPE string,
 * Start of changes by KRDASH DGDK911539 4812204
@@ -786,96 +794,67 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
     ENDIF.
 *    end of change.
 *------------------------------------- --------------------------------*
-*--Begin of Changes by V-SRKURA 03/13/2019 4364787/DGDK910813
-    CLEAR: lv_interface_id, lv_interface_aad.
-    SELECT SINGLE low                                     " Given current reprocessing App Interface
-           high                                           " Fetch corresponding AAD Interface for a given app Interface
-           FROM ztvarvc
-           INTO ( lv_interface_id, lv_interface_aad )
-           WHERE varname = lc_interface_id
-             AND low     = wa_paylod-interface_id.
-    IF sy-subrc EQ 0.
-* Begin OF changes by KRDASH SMTK906003
-      CLEAR : lv_low.
-      SELECT SINGLE low,                                  " Client ID
-             high                                         " Resource
-             FROM ztvarvc
-             INTO ( @lv_low, @DATA(lv_resource) )
-             WHERE varname = @lv_interface_id.
-      IF sy-subrc EQ 0 AND lv_resource IS NOT INITIAL AND lv_interface_aad IS NOT INITIAL.
-        lv_app_id = lv_low.
-* Begin of Change SANJUKUM_SMTK907382
-        CALL METHOD lo_adf_reprocess->get_aad_token
-          EXPORTING
-            iv_interface_id = lv_interface_aad
-            iv_client_id    = lv_app_id
-            iv_resource     = lv_resource
-          IMPORTING
-            ev_aad_token    = DATA(lv_aad_auth).
-* End of Change SANJUKUM_SMTK907382
-      ENDIF.
-    ENDIF.
-* End of changes by KRDASH SMTK906003
-*--End of Changes by V-SRKURA 03/13/2019 4364787/DGDK910813
 
-* Start of changes by KRDASH DGDK911539 4812204
-* Reprocessing logic for Azure services excluding AAD as Reprocessing for AAD has already been taken care above
-    CLEAR lv_interfacetype.
-    SELECT SINGLE interface_type,
-           uri
-           FROM zadf_config
-           INTO ( @lv_interfacetype , @DATA(lv_uri) )
-           WHERE interface_id EQ @interface_name.
-    IF sy-subrc EQ 0.
-      CLEAR: lv_sas_token, lv_sas_date.
-* Begin of Change SANJUKUM_SMTK907382
-* Check if Reprocessing allowed
-      SELECT SINGLE high                      " Fetch the corresponding Interface, if any,required for fetching token
+    CLEAR: lv_interface_id, lv_interface_aad.
+    CLEAR : lv_low.
+
+* Check entry for Azure SDK in zadf_sdk_retry for retry mechanism
+    SELECT SINGLE  *
+               FROM zadf_sdk_retry
+               INTO  @DATA(ls_sdk_retry)
+               WHERE interface_id = @wa_paylod-interface_id.
+    IF sy-subrc EQ 0 AND ls_sdk_retry-retry_flag IS NOT INITIAL.
+*Reprocessing logic for Azure services Getting Auth Token.
+      CREATE OBJECT lo_adf_reprocess.
+      CALL METHOD lo_adf_reprocess->sdk_rest_retry
+        EXPORTING
+          iv_rest_retry = ls_sdk_retry
+          iv_url        = CONV #( wa_paylod-uri )
+        IMPORTING
+          rv_token      = lv_sas_token
+          rv_date       = lv_sas_date
+          rv_aad_token  = DATA(lv_aad_auth)
+          rv_url        = DATA(lv_uri).
+
+      IF lv_interfacetype EQ lc_servicebus.
+        wa_paylod-uri = lv_uri.
+      ENDIF.
+
+* Else follow the ZTVRAVC approch for reprocessing AAD
+    ELSE.
+
+      CLEAR: lv_interface_id, lv_interface_aad.
+      SELECT SINGLE low                                     " Given current reprocessing App Interface
+             high                                           " Fetch corresponding AAD Interface for a given app Interface
              FROM ztvarvc
-             INTO lv_interfaceid
-             WHERE varname = lc_zadf_reprocess_interface_id
-             AND low       = interface_name.
+             INTO ( lv_interface_id, lv_interface_aad )
+             WHERE varname = lc_interface_id
+               AND low     = wa_paylod-interface_id.
       IF sy-subrc EQ 0.
-* If no corresponding authentication Interface maintained, then assign the current interface
-        IF lv_interfaceid IS INITIAL.
-          lv_interfaceid = interface_name.
-        ENDIF.
-        IF lv_interfacetype EQ lc_servicebus.
-          wa_paylod-uri = lv_uri.
-        ENDIF.
-        TRY.
-            CREATE OBJECT lo_adf_reprocess.
-* Fetch the Auth Token/Signature
-            CALL METHOD lo_adf_reprocess->generate_auth_token
-              EXPORTING
-                iv_interface_id   = lv_interfaceid
-                iv_uri            = wa_paylod-uri
-                iv_interface_type = lv_interfacetype
-              IMPORTING
-                rv_token          = lv_sas_token
-                rv_date           = lv_sas_date
-                rv_mi_token       = DATA(lv_mi_token)
-                rv_sbus_token     = DATA(lv_final_token).
-          CATCH zcx_adf_service INTO DATA(lcx_adf_service).
-            DATA(lv_msg) =  lcx_adf_service->get_text( ).
-            MESSAGE lv_msg TYPE gc_i.
-            RETURN.
-          CATCH zcx_interace_config_missing INTO DATA(lcx_interface).
-            lv_msg =  lcx_interface->get_text( ).
-            MESSAGE lv_msg TYPE gc_i.
-            RETURN.
-          CATCH zcx_http_client_failed INTO DATA(lcx_http).
-            lv_msg =  lcx_http->get_text( ).
-            MESSAGE lv_msg TYPE gc_i.
-            RETURN.
-        ENDTRY.
-        IF lv_mi_token IS NOT INITIAL.
-          lv_mi_token =  |Bearer { lv_mi_token }|.
-        ENDIF.
+* Begin OF changes by KRDASH SMTK906003
+        CLEAR : lv_low.
+        SELECT SINGLE low,                                  " Client ID
+               high                                         " Resource
+               FROM ztvarvc
+               INTO ( @lv_low, @DATA(lv_resource) )
+               WHERE varname = @lv_interface_id.
+        IF sy-subrc EQ 0 AND lv_resource IS NOT INITIAL AND lv_interface_aad IS NOT INITIAL.
+          lv_app_id = lv_low.
+* Begin of Change SANJUKUM_SMTK907382
+          CREATE OBJECT lo_adf_reprocess.
+          CALL METHOD lo_adf_reprocess->get_aad_token
+            EXPORTING
+              iv_interface_id = lv_interface_aad
+              iv_client_id    = lv_app_id
+              iv_resource     = lv_resource
+            IMPORTING
+              ev_aad_token    = lv_aad_auth.
 * End of Change SANJUKUM_SMTK907382
+        ENDIF.
       ENDIF.
     ENDIF.
 **End of changes by KRDASH DGDK911539 4812204
+
     TRY .
         lv_method = wa_config-method.
         CREATE OBJECT rest_handler
@@ -915,32 +894,31 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
     SPLIT lv_string AT '|' INTO TABLE DATA(result_tab) IN CHARACTER MODE.
     LOOP AT result_tab INTO DATA(wa_result_tab).
       SPLIT wa_result_tab AT ':' INTO wa_header-name wa_header-value.
-* Begin of Change SANJUKUM_SMTK907382
       CASE wa_header-name.
         WHEN lc_auth OR lc_auth1.                         " authorization or Auhorization Header
           IF lv_aad_auth IS NOT INITIAL .                 " AAD Auth token
             DATA(lv_value) = lv_aad_auth.
-          ELSEIF lv_interfacetype EQ lc_servicebus AND lv_final_token IS NOT INITIAL.      " ServiceBus Token
-            lv_value = lv_final_token.
-          ELSEIF lv_mi_token IS NOT INITIAL.              " MI Token
-            lv_value = lv_mi_token.
-          ELSEIF lv_interfacetype EQ lc_service_cosmosdb AND lv_sas_token IS NOT INITIAL.   " CosmosDB token
-            lv_value = lv_sas_token.
+*          ELSEIF lv_final_token IS NOT INITIAL."lv_interfacetype EQ lc_servicebus AND lv_final_token IS NOT INITIAL.      " ServiceBus Token
+*            lv_value = lv_final_token.
+*          ELSEIF lv_mi_token IS NOT INITIAL.              " MI Token
+*            lv_value = lv_mi_token.
           ELSEIF lv_sas_token IS NOT INITIAL.
             lv_value = lv_sas_token.
           ELSE.
-           lv_value =  wa_header-value.
+            lv_value =  wa_header-value.
           ENDIF.
         WHEN lc_date.                                     " x-ms-date Header
-          IF lv_interfacetype EQ lc_service_cosmosdb AND lv_sas_date IS NOT INITIAL.       " CosmosDB SAS date
+*          IF lv_interfacetype EQ lc_service_cosmosdb AND lv_sas_date IS NOT INITIAL.       " CosmosDB SAS date
+          IF lv_sas_date IS NOT INITIAL.
             lv_value = lv_sas_date.
+          ELSE.
+            lv_value =  wa_header-value.
           ENDIF.
         WHEN OTHERS.
           lv_value =  wa_header-value.
       ENDCASE.
 * Add headers
       rest_handler->set_request_header( iv_name = wa_header-name  iv_value = lv_value  ).
-* End of Change SANJUKUM_SMTK907382
     ENDLOOP.
 
 *   //Begin of code by Ashutosh - to retain the calling program VSO#4360996 TR#MS2K981536
@@ -975,10 +953,10 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
                                                          is_retry   = abap_true
                                                          messageid  = message_id
                                                          retry_count = wa_paylod-retry_num ).
-    rest_handler->close( ). "Added by KRDASH SMTK906003
-    FREE rest_handler.    " VSO#2636456 TR#DG2K902770
-
-    CLEAR: lv_aad_auth, lv_app_id, lv_resource.
+    rest_handler->close( ).
+    FREE rest_handler.
+    FREE lo_adf_reprocess.
+    CLEAR: lv_aad_auth, lv_app_id.
   ENDMETHOD.
 
 

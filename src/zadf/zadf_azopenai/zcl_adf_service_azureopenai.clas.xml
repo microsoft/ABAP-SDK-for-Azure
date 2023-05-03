@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZCL_ADF_SERVICE_AZUREOPENAI</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>SAP-Azure Data Framework - Azure Open AI</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>GS_AZUREOPENAI_SCHEMA</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Request Body for Azure Open AI</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>GV_URI_STRING</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>URI String</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>SET_COMPOPR_REQ_BODY</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Set Azure Open AI  json in Completion Operation Payload Data</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>SET_COMPOPR_REQ_BODY</CMPNAME>
+     <SCONAME>IM_AZOPENAI_REQBODY</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Request Body for Azure Open AI</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>SET_COMPOPR_REQ_BODY</CMPNAME>
+     <SCONAME>IM_SET_COMPLETION_OPVER</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Set Open AI URL Version</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>SET_COMPOPR_REQ_BODY</CMPNAME>
+     <SCONAME>ZCX_ADF_SERVICE</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>SAP-Azure Data Framework Service Exceptions</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

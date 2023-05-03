@@ -17,6 +17,7 @@ public section.
   constants GC_SERVICE_FILES type ZAZURE_DEST value 'FILE' ##NO_TEXT.
   constants GC_SERVICE_MSI type ZAZURE_DEST value 'MSI' ##NO_TEXT.
   constants GC_GRAPH type ZAZURE_DEST value 'GRAPH' ##NO_TEXT.
+  constants GC_SERVICE_AZOPENAI type ZAZURE_DEST value 'AZOPENAI' ##NO_TEXT.
 
   class-methods CREATE
     importing
@@ -76,6 +77,16 @@ METHOD create.
             iv_service_id          = lv_interface_type
             iv_business_identifier = iv_business_identifier.
 * Insert End of VBANSAL- 06/12/2022  - Event Grid
+
+* Insert Begin of VBANSAL- 02/05/2023 - Azure Open AI
+      WHEN gc_service_azopenai.
+        CREATE OBJECT ro_service TYPE zcl_adf_service_azureopenai
+          EXPORTING
+            iv_interface_id        = iv_interface_id
+            iv_service_id          = lv_interface_type
+            iv_business_identifier = iv_business_identifier.
+* Insert End of VBANSAL- 06/12/2022  - Azure Open AI
+
       WHEN gc_service_keyvault.
         CREATE OBJECT ro_service TYPE zcl_adf_service_keyvault
           EXPORTING

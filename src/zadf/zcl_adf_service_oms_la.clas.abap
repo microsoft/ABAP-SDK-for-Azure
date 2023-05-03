@@ -1,47 +1,47 @@
-class ZCL_ADF_SERVICE_OMS_LA definition
-  public
-  inheriting from ZCL_ADF_SERVICE
-  final
-  create public
+CLASS zcl_adf_service_oms_la DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_adf_service
+  FINAL
+  CREATE PUBLIC
 
-  global friends ZCL_ADF_SERVICE_REPROCESS .
+  GLOBAL FRIENDS zcl_adf_service_reprocess .
 
-public section.
+  PUBLIC SECTION.
 
-  methods SET_WORKSPACE_ID
-    importing
-      value(IV_WORKSPACE_ID) type STRING .
-  methods SET_LOG_TYPE
-    importing
-      !IV_LOG_TYPE type STRING .
+    METHODS set_workspace_id
+      IMPORTING
+        VALUE(iv_workspace_id) TYPE string .
+    METHODS set_log_type
+      IMPORTING
+        !iv_log_type TYPE string .
 
-  methods SEND
-    redefinition .
-protected section.
-private section.
+    METHODS send
+        REDEFINITION .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  data GV_WORKSPACE_ID type STRING .
-  data GV_TIMESTAMP type STRING .
-  data GV_AUTH_HEAD type STRING .
-  data GV_LOG_TYPE type STRING value 'Sample' ##NO_TEXT.
+    DATA gv_workspace_id TYPE string .
+    DATA gv_timestamp TYPE string .
+    DATA gv_auth_head TYPE string .
+    DATA gv_log_type TYPE string VALUE 'Sample' ##NO_TEXT.
 
-  methods GENERATE_SIGNATURE
-    importing
-      value(IV_JSON_LEN) type I
-    returning
-      value(EV_AUTH_HEAD) type STRING
-    raising
-      ZCX_ADF_SERVICE .
-  methods GET_RFC1123_TIME
-    exporting
-      value(EV_TIMESTAMP) type STRING .
-  methods GENERATE_SIGN_STRING
-    importing
-      value(IV_VERB) type STRING default 'POST'
-      value(IV_LENGTH) type I
-      value(IV_TIMESTAMP) type STRING
-    exporting
-      value(EV_SIGN_TEXT) type STRING .
+    METHODS generate_signature
+      IMPORTING
+        VALUE(iv_json_len)  TYPE i
+      RETURNING
+        VALUE(ev_auth_head) TYPE string
+      RAISING
+        zcx_adf_service .
+    METHODS get_rfc1123_time
+      EXPORTING
+        VALUE(ev_timestamp) TYPE string .
+    METHODS generate_sign_string
+      IMPORTING
+        VALUE(iv_verb)      TYPE string DEFAULT 'POST'
+        VALUE(iv_length)    TYPE i
+        VALUE(iv_timestamp) TYPE string
+      EXPORTING
+        VALUE(ev_sign_text) TYPE string .
 ENDCLASS.
 
 
@@ -82,38 +82,43 @@ CLASS ZCL_ADF_SERVICE_OMS_LA IMPLEMENTATION.
     lo_conv->convert( EXPORTING data = lv_sign IMPORTING buffer = lv_sign_utf ).
 
     DEFINE encrypt_signature.
-      decode_sign( receiving rv_secret = lv_key_enc ).
+*    decode_sign( receiving rv_secret = lv_key_enc ).
+      IF gv_sas_key IS INITIAL.
+       lv_key_enc = read_ssf_key( ).
+     ELSE.
+         lv_key_enc = read_key( ).
+     ENDIF.
 ** Decode Key from base64
-      call function 'SSFC_BASE64_DECODE'
-        exporting
-          b64data                  = lv_key_enc
-        importing
-          bindata                  = lv_key
-        exceptions
-          ssf_krn_error            = 1
-          ssf_krn_noop             = 2
-          ssf_krn_nomemory         = 3
-          ssf_krn_opinv            = 4
-          ssf_krn_input_data_error = 5
-          ssf_krn_invalid_par      = 6
-          ssf_krn_invalid_parlen   = 7
-          others                   = 8.
-      if sy-subrc <> 0.
-        raise exception type zcx_adf_service
-         exporting
-          textid       = zcx_adf_service=>key_decoding_failed
-          interface_id = gv_interface_id.
-      endif.
+     CALL FUNCTION 'SSFC_BASE64_DECODE'
+       EXPORTING
+         b64data                  = lv_key_enc
+       IMPORTING
+         bindata                  = lv_key
+       EXCEPTIONS
+         ssf_krn_error            = 1
+         ssf_krn_noop             = 2
+         ssf_krn_nomemory         = 3
+         ssf_krn_opinv            = 4
+         ssf_krn_input_data_error = 5
+         ssf_krn_invalid_par      = 6
+         ssf_krn_invalid_parlen   = 7
+         OTHERS                   = 8.
+     IF sy-subrc <> 0.
+       RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+         textid       = zcx_adf_service=>key_decoding_failed
+         interface_id = gv_interface_id.
+     ENDIF.
 ** Encode the signature with the Key in SHA 56 format
-      call method cl_abap_hmac=>calculate_hmac_for_raw
-        exporting
-          if_algorithm     = 'sha-256'
-          if_key           = lv_key
-          if_data          = lv_sign_utf
-          if_length        = 0
-        importing
-          ef_hmacb64string = lv_signature.
-      clear lv_key.
+     CALL METHOD cl_abap_hmac=>calculate_hmac_for_raw
+       EXPORTING
+         if_algorithm     = 'sha-256'
+         if_key           = lv_key
+         if_data          = lv_sign_utf
+         if_length        = 0
+       IMPORTING
+         ef_hmacb64string = lv_signature.
+     CLEAR lv_key.
     END-OF-DEFINITION.
 ** call macro
     encrypt_signature.
@@ -230,14 +235,14 @@ CLASS ZCL_ADF_SERVICE_OMS_LA IMPLEMENTATION.
 
 
   METHOD send.
-    DATA :  lo_response     TYPE REF TO if_rest_entity,
-            lo_request      TYPE REF TO if_rest_entity,
-            lv_expiry       TYPE string,
-            lv_sas_token    TYPE string,
-            lv_msg          TYPE string,
-            lcx_adf_service TYPE REF TO zcx_adf_service,
-            lv_json_len     TYPE i,
-            lw_header       TYPE ihttpnvp.
+    DATA : lo_response     TYPE REF TO if_rest_entity,
+           lo_request      TYPE REF TO if_rest_entity,
+           lv_expiry       TYPE string,
+           lv_sas_token    TYPE string,
+           lv_msg          TYPE string,
+           lcx_adf_service TYPE REF TO zcx_adf_service,
+           lv_json_len     TYPE i,
+           lw_header       TYPE ihttpnvp.
 
     IF go_rest_api IS BOUND.
 ** Calculate the JSON length
@@ -251,7 +256,16 @@ CLASS ZCL_ADF_SERVICE_OMS_LA IMPLEMENTATION.
                 interface_id = gv_interface_id.
           ENDIF.
 ** Get Auth header
-          gv_auth_head = generate_signature( iv_json_len  = lv_json_len  ).
+          READ TABLE it_headers INTO DATA(lwa_header) WITH KEY name = 'Authorization'.
+          IF sy-subrc EQ 0.
+            CLEAR gv_timestamp.
+            CALL METHOD me->get_rfc1123_time
+              IMPORTING
+                ev_timestamp = gv_timestamp.
+            gv_auth_head = |Bearer { lwa_header-value }|.
+          ELSE.
+            gv_auth_head = generate_signature( iv_json_len  = lv_json_len  ).
+          ENDIF.
         CATCH zcx_adf_service INTO lcx_adf_service.
           lv_msg =  lcx_adf_service->get_text( ).
           MESSAGE lv_msg TYPE 'I'.

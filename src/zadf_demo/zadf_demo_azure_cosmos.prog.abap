@@ -11,7 +11,7 @@
 ** 1.Create your CosmosDB instance *
 ** 2.Maintain CosmosDB primary key in ZADF_CONFIG table *
 *&---------------------------------------------------------------------*
-REPORT ZADF_DEMO_AZURE_COSMOS.
+REPORT zadf_demo_azure_cosmos.
 CONSTANTS: gc_interface TYPE zinterface_id VALUE 'DEMOCOSMOS'.
 
 TYPES: BEGIN OF lty_data,
@@ -20,33 +20,33 @@ TYPES: BEGIN OF lty_data,
          connid    TYPE    s_conn_id,
          fldate    TYPE    s_date,
          planetype TYPE    s_planetye,
-         SEATSMAX  TYPE    int4,
-         SEATSOCC  TYPE    int4,
+         seatsmax  TYPE    int4,
+         seatsocc  TYPE    int4,
        END OF lty_data.
 
-DATA: it_headers      TYPE tihttpnvp,
-      wa_headers      TYPE LINE OF tihttpnvp,
-      lv_string       TYPE string,
-      lv_response     TYPE string,
-      cx_interface    TYPE REF TO zcx_interace_config_missing,
-      cx_http         TYPE REF TO zcx_http_client_failed,
-      cx_adf_service  TYPE REF TO zcx_adf_service,
-      oref_cosmos     TYPE REF TO zcl_adf_service_cosmosdb,
-      oref            TYPE REF TO zcl_adf_service,
-      filter          TYPE zbusinessid,
-      lv_http_status  TYPE i,
-      lo_json         TYPE REF TO cl_trex_json_serializer,
-      lv1_string      TYPE string,
-      lv_xstring      TYPE xstring,
-      it_data         TYPE STANDARD TABLE OF lty_data,
-      W_LEN           TYPE I.
+DATA: it_headers     TYPE tihttpnvp,
+      wa_headers     TYPE LINE OF tihttpnvp,
+      lv_string      TYPE string,
+      lv_response    TYPE string,
+      cx_interface   TYPE REF TO zcx_interace_config_missing,
+      cx_http        TYPE REF TO zcx_http_client_failed,
+      cx_adf_service TYPE REF TO zcx_adf_service,
+      oref_cosmos    TYPE REF TO zcl_adf_service_cosmosdb,
+      oref           TYPE REF TO zcl_adf_service,
+      filter         TYPE zbusinessid,
+      lv_http_status TYPE i,
+      lo_json        TYPE REF TO cl_trex_json_serializer,
+      lv1_string     TYPE string,
+      lv_xstring     TYPE xstring,
+      it_data        TYPE STANDARD TABLE OF lty_data,
+      w_len          TYPE i.
 
 SELECTION-SCREEN BEGIN OF BLOCK bl1 WITH FRAME.
 PARAMETER: p_sbifid TYPE zinterface_id DEFAULT gc_interface.
 SELECTION-SCREEN END OF BLOCK bl1.
 
 *Sample data population for sending it to Azure Cosmos
-SELECT  connid carrid connid fldate planetype SEATSMAX SEATSOCC
+SELECT  connid carrid connid fldate planetype seatsmax seatsocc
         FROM sflight
         INTO TABLE it_data
         WHERE connid = 64 AND fldate = '20210813'.
@@ -67,8 +67,8 @@ IF sy-subrc EQ 0.
 
       lv1_string = /ui2/cl_json=>serialize( data = it_data compress = abap_false pretty_name = /ui2/cl_json=>pretty_mode-camel_case ).
 **Cut array [] from json string for expected format for cosmos api request
-      W_LEN = STRLEN( lv1_string ) - 2.
-      lv1_string = lv1_string+1(W_LEN).
+      w_len = strlen( lv1_string ) - 2.
+      lv1_string = lv1_string+1(w_len).
 
 **Convert input string data to Xstring format
       CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
