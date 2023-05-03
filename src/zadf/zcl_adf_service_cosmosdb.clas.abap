@@ -19,6 +19,15 @@ public section.
     redefinition .
 protected section.
 
+  methods GET_AAD_TOKEN
+    importing
+      value(IV_BASEADDRESS) type STRING
+      !IV_AAD_TOKEN type STRING
+    returning
+      value(RV_AAD_ENCODED_TOKEN) type STRING
+    raising
+      ZCX_ADF_SERVICE .
+
   methods GET_SAS_TOKEN
     redefinition .
 private section.
@@ -26,6 +35,7 @@ private section.
   data GV_HTTP_VERB type STRING .
   data GV_RESOURCE_TYPE type STRING .
   data GV_RESOURCE_LINK type STRING .
+  constants GC_TYPE_AAD type STRING value 'type=aad' ##NO_TEXT.
   constants GC_TYPE type STRING value 'type=master' ##NO_TEXT.
   constants GC_VERSION type STRING value 'ver=1.0' ##NO_TEXT.
   constants GC_SEPARATOR type STRING value '&' ##NO_TEXT.
@@ -68,6 +78,24 @@ METHOD generate_string_to_sign.
               lv_http_date cl_abap_char_utilities=>newline
               cl_abap_char_utilities=>newline INTO rv_string_to_sign.
 ENDMETHOD.
+
+
+  METHOD get_aad_token.
+    DATA :
+          lv_authstring     TYPE string.
+
+    IF NOT iv_aad_token IS INITIAL.
+** Construct AuthString
+      CONCATENATE gc_type_aad gc_separator gc_version gc_separator gc_sig iv_aad_token INTO lv_authstring.
+** Generate AuthToken
+      rv_aad_encoded_token = cl_http_utility=>escape_url( lv_authstring ).
+    ELSE.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>auth_token_not_generated
+          interface_id = gv_interface_id.
+    ENDIF.
+  ENDMETHOD.
 
 
 METHOD get_rfc7231_time.
@@ -131,15 +159,23 @@ METHOD get_rfc7231_time.
   CONCATENATE lv_day(3) lc_com INTO lv_day_name.
   CONDENSE lv_day_name.
 ** make timestamp in RFC7231 format
+*  CONCATENATE lv_day_name
+**              lv_date+4(2)
+**              lv_date(3)
+*              lv_date(2)
+*              lv_date+3(3)
+*              lv_date+7(4)
+*              lv_time
+*              lc_gmt
+*           INTO rv_timestamp SEPARATED BY space.
   CONCATENATE lv_day_name
-*              lv_date+4(2)
-*              lv_date(3)
-              lv_date(2)
-              lv_date+3(3)
-              lv_date+7(4)
-              lv_time
-              lc_gmt
-           INTO rv_timestamp SEPARATED BY space.
+            lv_date+4(2)
+            lv_date(3)
+            lv_date+7(4)
+            lv_time
+            lc_gmt
+         INTO rv_timestamp SEPARATED BY space.
+
 ENDMETHOD.
 
 
@@ -214,16 +250,36 @@ ENDMETHOD.
 
 METHOD send.
   CONSTANTS : lc_separator TYPE c VALUE '/'.
-  DATA :  lo_response     TYPE REF TO if_rest_entity,
-          lo_request      TYPE REF TO if_rest_entity,
-          lv_msg          TYPE string,
-          lv_path_prefix  TYPE string,
-          lcx_adf_service TYPE REF TO zcx_adf_service,
-          lv_auth_token   TYPE string.
+  DATA : lo_response     TYPE REF TO if_rest_entity,
+         lo_request      TYPE REF TO if_rest_entity,
+         lv_msg          TYPE string,
+         lv_path_prefix  TYPE string,
+         lcx_adf_service TYPE REF TO zcx_adf_service,
+         lv_auth_token   TYPE string,
+         lt_header       TYPE tihttpnvp.
   IF go_rest_api IS BOUND.
+
+* Read token from headers for Managed Identity/AAD
+    lt_header = it_headers.
+    IF line_exists( it_headers[ name = gc_mi_auth ] ).
+      DATA(lv_processing_method) = gc_mi_auth.
+      lv_auth_token = it_headers[ name = gc_mi_auth ]-value.
+      DELETE lt_header WHERE name = gc_mi_auth.
+    ENDIF.
+
     TRY.
-        get_sas_token( EXPORTING iv_baseaddress = gv_uri
-                       RECEIVING rv_sas_token  = lv_auth_token ).
+        CASE lv_processing_method.
+          WHEN gc_mi_auth.
+            CALL METHOD me->get_aad_token
+              EXPORTING
+                iv_baseaddress       = gv_uri
+                iv_aad_token         = lv_auth_token
+              RECEIVING
+                rv_aad_encoded_token = lv_auth_token.
+          WHEN OTHERS.
+            get_sas_token( EXPORTING iv_baseaddress = gv_uri
+                           RECEIVING rv_sas_token  = lv_auth_token ).
+        ENDCASE.
       CATCH zcx_adf_service INTO lcx_adf_service.
         lv_msg =  lcx_adf_service->get_text( ).
         MESSAGE lv_msg TYPE 'I'.
@@ -232,17 +288,21 @@ METHOD send.
     CONCATENATE lc_separator gv_resource_link lc_separator gv_resource_type INTO lv_path_prefix.
     go_rest_api->zif_rest_framework~set_uri( uri = lv_path_prefix ).
 
-** Fill in header values.
+** Fill in header values
     IF NOT gv_partition_key_val IS INITIAL.
       add_request_header( iv_name = 'x-ms-documentdb-partitionkey' iv_value = gv_partition_key_val ).
     ENDIF.
     add_request_header( iv_name = 'x-ms-version' iv_value = '2018-12-31').
     add_request_header( iv_name = 'x-ms-documentdb-is-upsert' iv_value = 'true').
+    IF gv_http_date IS NOT INITIAL.
+      add_request_header( iv_name = 'x-ms-date' iv_value = gv_http_date ).
+    ENDIF.
     add_request_header( iv_name = 'Accept' iv_value = 'application/json').
-    add_request_header( iv_name = 'x-ms-date' iv_value = gv_http_date ).
+
     add_request_header( iv_name = 'Authorization' iv_value = lv_auth_token ).
-    IF NOT it_headers[] IS INITIAL.
-      go_rest_api->zif_rest_framework~set_request_headers( it_header_fields = it_headers[] ).
+
+    IF NOT lt_header[] IS INITIAL.
+      go_rest_api->zif_rest_framework~set_request_headers( it_header_fields = lt_header[] ).
     ENDIF.
     go_rest_api->zif_rest_framework~set_binary_body( request ).
 **Rest API call to get response from Azure Destination

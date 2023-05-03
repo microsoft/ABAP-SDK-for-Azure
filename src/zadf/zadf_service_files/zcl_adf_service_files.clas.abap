@@ -546,7 +546,7 @@ CLASS ZCL_ADF_SERVICE_FILES IMPLEMENTATION.
               xml_table = lt_xml_info
               return    = lt_return
             EXCEPTIONS
-              OTHERS    = 0.
+              OTHERS    = 1.
           IF sy-subrc EQ 0.
             DELETE lt_xml_info WHERE type NE 'V'.
           ENDIF.

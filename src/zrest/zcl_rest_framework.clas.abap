@@ -399,6 +399,17 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
       lv_resource = escape( val = lv_resource format = format ).
       CONCATENATE '&resource=' lv_resource INTO lv_resource.
       CONCATENATE lv_url lv_resource INTO lv_url.
+
+*
+*      IF sy-uname = 'VIKASBANSAL'.
+*        DATA(lv_resource_tmp) =
+*           '/subscriptions/cf814bf2-d425-4b7f-bba2-e815cef7cba7/resourceGroups/SAP_AUTOMATION/providers/Microsoft.DocumentDB/databaseAccounts/smt-test-mi-cosmos'.
+*
+*        DATA(lv_resourceid) = escape( val = lv_resource_tmp format = format ).
+*        CONCATENATE lv_url '&msi_res_id=' lv_resourceid
+*         INTO lv_url.
+*      ENDIF.
+
       CONDENSE lv_url NO-GAPS.
     ENDIF.
 
