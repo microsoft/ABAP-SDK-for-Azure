@@ -28,7 +28,7 @@ PARAMETERS : p_aaireq TYPE string.
 
 TRY.
 **Calling Factory method to instantiate AZUREOPENAI client
-    oref = zcl_adf_service_factory=>create( iv_interface_id = 'ZVIK_AZAI'
+    oref = zcl_adf_service_factory=>create( iv_interface_id = 'DEM_AZAI'
                                             iv_business_identifier = filter ).
     oref_azureopenai ?= oref.
 
