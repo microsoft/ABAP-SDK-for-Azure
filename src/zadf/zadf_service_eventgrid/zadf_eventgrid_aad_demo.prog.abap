@@ -108,7 +108,7 @@ TRY.
 
       APPEND ls_payload TO lt_payload.
 
-      oref_eventgrid->set_eventgrid_schema( EXPORTING it_egrid_schema = lt_payload
+      oref_eventgrid->set_eventgrid_schema_json( EXPORTING it_egrid_schema = lt_payload
                                             RECEIVING rv_xstring      = DATA(lv_pxstring) ).
 
       wa_headers-name = 'Authorization'.

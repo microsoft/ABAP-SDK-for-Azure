@@ -10,12 +10,14 @@ Please check document [ABAP SDK for Azure – Github](https://github.com/Microso
 As of now, ABAP SDK supports direct integration with following Azure services,
 * Event hub
 * Service bus
+* Event Grid
 * Key vault
 * Active Directory
 * Blob
 * Cosmos DB
 * OMS Log Analytics
 * Microsoft Graph API
+* O365(sharepoint)
 
 Note: We are continuously enhancing these libraries and you may find few class methods unimplemented. These will be released in next versions.
 
