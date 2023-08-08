@@ -80,10 +80,11 @@ TRY.
       IMPORTING
         et_xml_data   = lt_data
         et_return     = lt_return.
-
-    IF lt_data IS NOT INITIAL.
-      cl_demo_output=>display_data( lt_data[] ).
-      MESSAGE 'BLOB list fetched successfully' TYPE 'S'.
-    ENDIF.
-
+  CATCH cx_root INTO DATA(lx_root)                  ##NEEDED ##CATCH_ALL.
+    DATA(lv_str) = lx_root->if_message~get_text( )   ##NEEDED.
+    MESSAGE:lv_str TYPE 'E'.
 ENDTRY.
+IF lt_data IS NOT INITIAL.
+  cl_demo_output=>display_data( lt_data[] ).
+  MESSAGE 'BLOB list fetched successfully' TYPE 'S'.
+ENDIF.
