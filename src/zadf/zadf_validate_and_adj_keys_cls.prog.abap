@@ -437,23 +437,33 @@ CLASS lcl_adf_validate_and_adj_keys IMPLEMENTATION.
 * +-------------------------------------------------------------------------------------------------+
 * +--------------------------------------------------------------------------------------</SIGNATURE>
   METHOD read_config_tables.
-    IF p_all EQ abap_true.
-      SELECT * FROM zadf_config INTO TABLE lt_adf_config.
-      IF sy-subrc = 0 AND lt_adf_config IS NOT INITIAL.
-        SELECT * FROM zrest_config
-          INTO TABLE lt_rest_config
-          FOR ALL ENTRIES IN lt_adf_config
-          WHERE interface_id = lt_adf_config-interface_id.
-      ENDIF.
+   IF p_all EQ abap_true.
+      SELECT * FROM zadf_config
+               INTO TABLE lt_adf_config.
     ELSE.
-      SELECT * FROM zadf_config INTO TABLE lt_adf_config
-        WHERE interface_id IN s_intf.
-      IF sy-subrc = 0 AND lt_adf_config IS NOT INITIAL.
-        SELECT * FROM zrest_config
-          INTO TABLE lt_rest_config
-          FOR ALL ENTRIES IN lt_adf_config
-          WHERE interface_id = lt_adf_config-interface_id.
+      SELECT * FROM zadf_config
+               INTO TABLE lt_adf_config
+               WHERE interface_id IN s_intf.
+    ENDIF.
+
+    LOOP AT lt_adf_config INTO DATA(ls_adf) WHERE sas_key IS INITIAL.
+      IF p_chk EQ abap_true.
+        DATA(lv_str) = |{ text-003 } { ls_adf-interface_id } { text-020 }|.
+      ELSEIF p_adj EQ abap_true.
+        lv_str = |{ text-003 } { ls_adf-interface_id } { text-021 }|.
       ENDIF.
+      WRITE /: lv_str COLOR COL_POSITIVE.
+    ENDLOOP.
+
+* Remove records with no key in ZADF_CONFIG table
+    DELETE lt_adf_config WHERE sas_key IS INITIAL.
+
+    IF lt_adf_config IS NOT INITIAL.
+* Fetch the destination for the remaining interfaces
+      SELECT * FROM zrest_config
+        INTO TABLE lt_rest_config
+        FOR ALL ENTRIES IN lt_adf_config
+        WHERE interface_id = lt_adf_config-interface_id.
     ENDIF.
   ENDMETHOD.
 

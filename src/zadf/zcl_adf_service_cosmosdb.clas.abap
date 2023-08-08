@@ -21,7 +21,6 @@ protected section.
 
   methods GET_AAD_TOKEN
     importing
-      value(IV_BASEADDRESS) type STRING
       !IV_AAD_TOKEN type STRING
     returning
       value(RV_AAD_ENCODED_TOKEN) type STRING
@@ -272,7 +271,6 @@ METHOD send.
           WHEN gc_mi_auth.
             CALL METHOD me->get_aad_token
               EXPORTING
-                iv_baseaddress       = gv_uri
                 iv_aad_token         = lv_auth_token
               RECEIVING
                 rv_aad_encoded_token = lv_auth_token.

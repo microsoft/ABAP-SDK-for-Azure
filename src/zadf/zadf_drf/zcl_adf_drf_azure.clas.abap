@@ -15,7 +15,9 @@ public section.
       !IM_BUSINESSID type ZBUSINESSID
     exporting
       !ET_STATUS type BAPIRET2_T
-      !EV_SUCCESS type CHAR1 .
+      !EV_SUCCESS type CHAR1
+    raising
+      ZCX_ADF_SERVICE .
 protected section.
 private section.
 ENDCLASS.
@@ -25,28 +27,28 @@ ENDCLASS.
 CLASS ZCL_ADF_DRF_AZURE IMPLEMENTATION.
 
 
-METHOD EXECUTE_OUTBOUND_CALL.
+METHOD execute_outbound_call.
 
 **********************************************************************
 * Local data declaration
 **********************************************************************
 
   CONSTANTS:
-              lc_sep       TYPE char1 VALUE '"',
-              lc_sep_space TYPE char2 VALUE ': ',
-              lc_space     TYPE char1 VALUE ' ',
-              lc_sep_cama  TYPE char2 VALUE ','.
+    lc_sep       TYPE char1 VALUE '"',
+    lc_sep_space TYPE char2 VALUE ': ',
+    lc_space     TYPE char1 VALUE ' ',
+    lc_sep_cama  TYPE char2 VALUE ','.
 
 
-  DATA: ls_ai_info  TYPE zadf_stru_ai_info,
-        lt_ai_info  TYPE zadf_tt_ai_info,
-        lt_ai_send  TYPE zadf_tt_ai_info,
+  DATA: ls_ai_info         TYPE zadf_stru_ai_info,
+        lt_ai_info         TYPE zadf_tt_ai_info,
+        lt_ai_send         TYPE zadf_tt_ai_info,
         oref_ai            TYPE REF TO zcl_adf_service_appinsights,
         oref               TYPE REF TO zcl_adf_service,
         cx_interface       TYPE REF TO zcx_interace_config_missing,
         cx_http            TYPE REF TO zcx_http_client_failed,
         cx_adf_service     TYPE REF TO zcx_adf_service,
-        oref_utility        TYPE REF TO zcl_ssf_utility,
+        oref_utility       TYPE REF TO zcl_ssf_utility,
         lv_response        TYPE string,
         lv_http_status     TYPE i,
         ls_status          TYPE bapiret2,
@@ -58,7 +60,7 @@ METHOD EXECUTE_OUTBOUND_CALL.
         lv_date_time_stamp TYPE string,
         lv_string          TYPE string,
         lv_xstring         TYPE xstring,
-        lv_key            TYPE string,
+        lv_key             TYPE string,
         lv_inst_key        TYPE string.
 
 
@@ -103,8 +105,8 @@ METHOD EXECUTE_OUTBOUND_CALL.
 **************Needs to handle*******************************************
 
 
-          fill_error 'E' 'ZMSG_AZURE' '007' 'Error in recovering key' is_ai_header-service_line
-                      is_ai_header-business_process is_ai_header-sub_process ''.
+      fill_error 'E' 'ZMSG_AZURE' '007' 'Error in recovering key' is_ai_header-service_line
+                  is_ai_header-business_process is_ai_header-sub_process ''.
 * Error in recovering key from key store & & & &
   ENDTRY.
 
@@ -183,16 +185,19 @@ METHOD EXECUTE_OUTBOUND_CALL.
 
       CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
         EXPORTING
-          text     = lv_string
+          text   = lv_string
 *         MIMETYPE = ' '
 *         ENCODING =
         IMPORTING
-          buffer   = lv_xstring
+          buffer = lv_xstring
         EXCEPTIONS
-          failed   = 1
-          OTHERS   = 2.
+          failed = 1
+          OTHERS = 2.
       IF sy-subrc <> 0.
-* Implement suitable error handling here
+        RAISE EXCEPTION TYPE zcx_adf_service
+          EXPORTING
+            textid       = zcx_adf_service=>error_in_conversion
+            interface_id = im_interface_id.
       ENDIF.
 
       TRY.

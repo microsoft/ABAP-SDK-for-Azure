@@ -598,7 +598,7 @@ METHOD decode_sign.
               EXCEPTIONS
                 failed        = 1
                 OTHERS        = 2.
-            IF lv_decoded_str IS INITIAL.
+            IF sy-subrc <> 0.
 **Raise exception
               RAISE EXCEPTION TYPE zcx_adf_service
                 EXPORTING

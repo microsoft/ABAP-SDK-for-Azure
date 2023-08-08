@@ -54,10 +54,15 @@ CLASS ZCL_ADF_SERVICE_GRAPH IMPLEMENTATION.
         EXPORTING
           text   = lv_body_json
         IMPORTING
-          buffer = lv_body_xstring.
+          buffer = lv_body_xstring
+        EXCEPTIONS
+          failed = 1
+          OTHERS = 2.
       IF sy-subrc <> 0.
-* MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
-*   WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+       RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>error_con_xstring
+          interface_id = gv_interface_id.
       ENDIF.
       go_rest_api->zif_rest_framework~set_binary_body( lv_body_xstring ).
 
@@ -90,10 +95,10 @@ CLASS ZCL_ADF_SERVICE_GRAPH IMPLEMENTATION.
         DATA(lt_errors) = json_to_http_fields( iv_response_data = lo_response_string ).
         READ TABLE lt_errors ASSIGNING FIELD-SYMBOL(<fs_error>) INDEX 1.
 
-        RAISE EXCEPTION TYPE zcx_adf_service
-          EXPORTING
-            textid         = zcx_adf_service=>general_exception
-            text           = <fs_error>-value.
+*        RAISE EXCEPTION TYPE zcx_adf_service
+*          EXPORTING
+*            textid = zcx_adf_service=>general_exception
+*            text   = <fs_error>-value.
 
       ENDIF.
 

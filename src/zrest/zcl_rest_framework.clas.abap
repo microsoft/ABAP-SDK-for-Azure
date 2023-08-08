@@ -398,6 +398,7 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
       lv_resource = iv_resource.
       lv_resource = escape( val = lv_resource format = format ).
       CONCATENATE '&resource=' lv_resource INTO lv_resource.
+
       CONCATENATE lv_url lv_resource INTO lv_url.
       CONDENSE lv_url NO-GAPS.
     ENDIF.
