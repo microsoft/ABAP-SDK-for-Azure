@@ -44,7 +44,7 @@
     "parser_missing_space": false,
     "prefer_inline": false,
     "reduce_string_templates": false,
-    "unused_types": true,
+    "unused_types": false,
     "use_line_exists": false,
     "forbidden_identifier": false,
     "try_without_catch": true,
