@@ -91,6 +91,12 @@
      <DOMVALUE_L>AZOPENAI</DOMVALUE_L>
      <DDTEXT>Azure Open AI</DDTEXT>
     </DD07V>
+    <DD07V>
+     <VALPOS>0014</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>AZTABLE</DOMVALUE_L>
+     <DDTEXT>Azure Table</DDTEXT>
+    </DD07V>
    </DD07V_TAB>
   </asx:values>
  </asx:abap>

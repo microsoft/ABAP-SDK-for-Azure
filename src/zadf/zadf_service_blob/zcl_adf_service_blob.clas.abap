@@ -25,7 +25,7 @@ public section.
       !IV_IDENTIFIER type STRING optional
       !IV_IP type STRING optional
       !IV_PROTOCOL type STRING optional
-      !IV_VERSION type STRING default '2016-05-31'
+      !IV_VERSION type STRING default '2017-11-09'
       !IV_RSCC type STRING optional
       !IV_RSCD type STRING optional
       !IV_RSCE type STRING optional
@@ -72,6 +72,26 @@ public section.
       value(RV_KEY) type STRING
     raising
       ZCX_ADF_SERVICE .
+  methods GET_LIST_BLOB
+    importing
+      !IT_HEADERS type TIHTTPNVP optional
+      !I_MARKER type ABAP_BOOL optional
+      !I_MARKER_VAL type CHAR255 optional
+      !IV_PREFIX type CHAR255 optional
+      !I_EXPRESSION type STRING optional
+      !I_DELIMITER type CHAR255 optional
+    exporting
+      value(RESPONSE) type XSTRING
+      !EV_HTTP_STATUS type I
+      !ET_DATA type ZADF_XMLTB_T .
+  methods CONV_XML_TO_INTTAB
+    importing
+      value(IV_XML_STRING) type XSTRING
+      value(IV_PROPERTY) type STRING optional
+      value(IT_HEADERS) type TIHTTPNVP optional
+    exporting
+      value(ET_XML_DATA) type ZADF_XMLTB_T
+      !ET_RETURN type BAPIRET2_T .
 
   methods SEND
     redefinition .
@@ -257,6 +277,82 @@ CLASS ZCL_ADF_SERVICE_BLOB IMPLEMENTATION.
     gv_file_type = lv_file_type.
 
     CLEAR: lv_length,lt_tab_file,ls_xstring,lv_base64,ls_xstring1,lv_filename,lv_file_type.
+  ENDMETHOD.
+
+
+  METHOD conv_xml_to_inttab.
+
+    DATA: lt_xml_tab TYPE TABLE OF smum_xmltb,
+          lt_xml_t   TYPE TABLE OF smum_xmltb,
+          lv_text    TYPE string.
+
+    DATA(lv_response) = iv_xml_string.
+* Fetch xml contents atleast for 1 time
+    DO.
+      CALL FUNCTION 'SMUM_XML_PARSE'
+        EXPORTING
+          xml_input = lv_response
+        TABLES
+          xml_table = lt_xml_tab
+          return    = et_return.
+      IF line_exists( lt_xml_tab[ cname = 'Error' ] ) .
+        lv_text = lt_xml_tab[ cname = 'Message' ]-cvalue.
+        RAISE EXCEPTION TYPE zcx_adf_service
+          EXPORTING
+            textid       = zcx_adf_service=>zcx_adf_manage_key_exception
+            text         = lv_text
+            interface_id = gv_interface_id.
+      ELSEIF line_exists( et_return[ type = gc_error ] ).
+        lv_text = et_return[ type = gc_error ]-message.
+        RAISE EXCEPTION TYPE zcx_adf_service
+          EXPORTING
+            textid       = zcx_adf_service=>zcx_adf_manage_key_exception
+            text         = lv_text
+            interface_id = gv_interface_id.
+      ENDIF.
+
+      APPEND LINES OF lt_xml_tab TO lt_xml_t.
+      CLEAR lv_response.
+
+* Check if NextMarker Continuation token is not empty in xml content table
+      READ TABLE lt_xml_tab INTO DATA(lw_xml_data) WITH KEY cname = 'NextMarker'.
+      IF sy-subrc EQ 0.
+        DATA(lv_marker_val) = lw_xml_data-cvalue.
+        CLEAR lt_xml_tab.
+        IF lv_marker_val IS NOT INITIAL.
+          TRY.
+* Read another set of list of blobs for a given Continuation Token
+              get_list_blob(
+                EXPORTING
+                  it_headers     = it_headers
+                  i_marker       = abap_true
+                  i_marker_val   = lv_marker_val
+                IMPORTING
+                  response       = lv_response
+                  ev_http_status = DATA(lv_status) ).
+            CATCH cx_root INTO DATA(lx_root).
+              DATA(lv_str) = lx_root->if_message~get_text( ).
+              MESSAGE lv_str TYPE gc_error.
+          ENDTRY.
+        ELSE.
+          EXIT.
+        ENDIF.
+      ELSE.
+        EXIT.
+      ENDIF.
+    ENDDO.
+
+    IF iv_property IS NOT INITIAL.
+* Get the list of blobs for a specific property
+      et_xml_data = VALUE #( FOR lw_xml_tab IN lt_xml_t WHERE ( cname = iv_property )
+                                                  ( hier = lw_xml_tab-hier
+                                                    type = lw_xml_tab-type
+                                                    cname = lw_xml_tab-cname
+                                                    cvalue = lw_xml_tab-cvalue ) ).
+    ELSE.
+* Return the list of all properties
+      et_xml_data = lt_xml_tab.
+    ENDIF.
   ENDMETHOD.
 
 
@@ -450,6 +546,104 @@ ENDMETHOD.
         go_rest_api->close( ).
       ELSE.
         go_rest_api->close( ).
+        RAISE EXCEPTION TYPE zcx_adf_service
+          EXPORTING
+            textid       = zcx_adf_service_blob=>restapi_response_not_found
+            interface_id = gv_interface_id.
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD get_list_blob.
+    DATA: lo_response TYPE REF TO if_rest_entity,
+          lo_request  TYPE REF TO if_rest_entity,
+          lt_headers  TYPE tihttpnvp.
+
+    DATA: lv_list_str TYPE string VALUE '?restype=container&comp=list&'.
+    CONSTANTS : lc_service_version TYPE string VALUE '2021-12-02'.
+
+* Filter based on the matching prefix
+    IF iv_prefix IS NOT INITIAL.
+      lv_list_str = |{ lv_list_str }prefix={ iv_prefix }&|.
+    ENDIF.
+
+* Read next set of lists of blob if next_marker is not empty
+    IF i_marker EQ abap_true.
+      lv_list_str = |{ lv_list_str }marker={ i_marker_val }&|.
+    ENDIF.
+
+* Apply delimiters if any
+    IF i_delimiter IS NOT INITIAL.
+      lv_list_str = |{ lv_list_str }delimiter={ i_delimiter }&|.
+    ENDIF.
+* Apply filters based on expression
+    IF i_expression IS NOT INITIAL.
+      lv_list_str = |{ lv_list_str }where={ i_expression }&|.
+    ENDIF.
+
+    IF go_rest_api IS BOUND.
+* Check if the Authentication Type is SAS Token based
+      IF line_exists( it_headers[ name = gc_sas ] ).
+        DATA(lv_blob_sas) = it_headers[ name = gc_sas ]-value.
+        DATA(lv_processing_method) = gc_sas.
+* Check if the Authentication Type is Managed IDentity based
+      ELSEIF line_exists( it_headers[ name = gc_mi_auth ] ).
+        lv_processing_method = gc_mi_auth.
+      ENDIF.
+
+* Set the token the based on the Authentication type
+      CASE lv_processing_method.
+        WHEN gc_sas.
+* Set the pre-configured SAS Token to request
+          DATA(lv_uri_string) = |/{ gv_container_name }{ lv_list_str }|.
+
+* Generate the URI containing SAS Token
+          IF lv_blob_sas IS NOT INITIAL.
+            lv_uri_string = |{ lv_uri_string }{ lv_blob_sas }|.
+          ENDIF.
+
+        WHEN gc_mi_auth.
+* Build the Path for the Azure blob service
+          lv_uri_string = |/{ gv_container_name }{ lv_list_str }|.
+
+* Assign the required version for OAuth Bearer access token
+          add_request_header( iv_name = 'x-ms-version' iv_value = lc_service_version ).
+
+        WHEN OTHERS.
+          generate_sas_token( ).
+          IF gv_folder IS NOT INITIAL.
+* Get the String to be replaced
+            DATA(lv_str_replace) =  |/{ gv_folder }/{ gv_blob_name }?|.
+          ELSE.
+            lv_str_replace =  |/{ gv_blob_name }?|.
+          ENDIF.
+          lv_uri_string = gv_sas_token.
+          REPLACE FIRST OCCURRENCE OF lv_str_replace IN lv_uri_string WITH lv_list_str.
+      ENDCASE.
+
+* Add the Auth token to the Request
+      go_rest_api->zif_rest_framework~set_uri( lv_uri_string ).
+
+      IF NOT it_headers[] IS INITIAL.
+        APPEND LINES OF it_headers TO lt_headers.
+* Exclude SAS token header
+        IF line_exists( lt_headers[ name = gc_sas ] ).
+          DATA(lv_tabix) = sy-tabix.
+          DELETE lt_headers INDEX lv_tabix.
+        ENDIF.
+      ENDIF.
+
+      go_rest_api->zif_rest_framework~set_request_headers( it_header_fields = lt_headers[] ).
+**** Rest API call to get response from Azure Destination
+**** Get reference
+      lo_response = go_rest_api->zif_rest_framework~execute( io_entity = lo_request
+                                                             async = gv_asynchronous
+                                                             is_retry = gv_is_try ).
+      ev_http_status = go_rest_api->get_status( ).
+      IF lo_response IS BOUND.
+        response = lo_response->get_binary_data( ).
+      ELSE.
         RAISE EXCEPTION TYPE zcx_adf_service
           EXPORTING
             textid       = zcx_adf_service_blob=>restapi_response_not_found

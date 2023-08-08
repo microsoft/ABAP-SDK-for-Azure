@@ -61,18 +61,18 @@ CLASS ZCL_ADF_SERVICE_EVENTHUB IMPLEMENTATION.
 
 
 METHOD create_consumer_group.
-  DATA :    lo_response     TYPE REF TO if_rest_entity,
-            lo_request      TYPE REF TO if_rest_entity,
-            lv_expiry       TYPE string,
-            lv_sas_token    TYPE string,
-            lv_msg          TYPE string,
-            lcx_adf_service TYPE REF TO zcx_adf_service,
-            lv_path_prefix  TYPE string,
-            lv_host         TYPE rfcdisplay-rfchost,
-            lv_host_s       TYPE string,
-            lt_lines        TYPE STANDARD TABLE OF tline,
-            lw_lines        TYPE tline,
-            lv_body         TYPE string.
+  DATA : lo_response     TYPE REF TO if_rest_entity,
+         lo_request      TYPE REF TO if_rest_entity,
+         lv_expiry       TYPE string,
+         lv_sas_token    TYPE string,
+         lv_msg          TYPE string,
+         lcx_adf_service TYPE REF TO zcx_adf_service,
+         lv_path_prefix  TYPE string,
+         lv_host         TYPE rfcdisplay-rfchost,
+         lv_host_s       TYPE string,
+         lt_lines        TYPE STANDARD TABLE OF tline,
+         lw_lines        TYPE tline,
+         lv_body         TYPE string.
   IF go_rest_api IS BOUND.
     TRY.
         get_sas_token( EXPORTING iv_baseaddress = gv_uri
@@ -110,82 +110,10 @@ METHOD create_consumer_group.
         wrong_access_to_archive = 7
         OTHERS                  = 8.
     IF sy-subrc <> 0.
-* Implement suitable error handling here
-    ENDIF.
-    IF NOT lt_lines IS INITIAL.
-      LOOP AT lt_lines INTO lw_lines.
-        CONCATENATE lv_body  lw_lines-TDLINE INTO lv_body.
-        CLEAR: lw_lines.
-      ENDLOOP.
-      go_rest_api->zif_rest_framework~set_string_body( lv_body ).
-    ENDIF.
-**Rest API call to get response from Azure Destination
-    lo_response = go_rest_api->zif_rest_framework~execute( io_entity = lo_request async = gv_asynchronous is_retry = gv_is_try ).
-    ev_http_status = go_rest_api->get_status( ).
-    go_rest_api->close( ).
-    IF lo_response IS BOUND.
-      response = lo_response->get_string_data( ).
-    ELSE.
       RAISE EXCEPTION TYPE zcx_adf_service
         EXPORTING
-          textid       = zcx_adf_service=>restapi_response_not_found
+          textid       = zcx_adf_service=>error_in_conversion
           interface_id = gv_interface_id.
-    ENDIF.
-  ENDIF.
-ENDMETHOD.
-
-
-  METHOD delete_consumer_group.
- DATA :  lo_response     TYPE REF TO if_rest_entity,
-          lo_request      TYPE REF TO if_rest_entity,
-          lv_expiry       TYPE string,
-          lv_sas_token    TYPE string,
-          lv_msg          TYPE string,
-          lcx_adf_service TYPE REF TO zcx_adf_service,
-          lv_path_prefix  TYPE string,
-          lv_host         TYPE rfcdisplay-rfchost,
-          lv_host_s       TYPE string,
-          lt_lines        TYPE STANDARD TABLE OF tline,
-          lw_lines        TYPE tline,
-          lv_body         TYPE string.
-  IF go_rest_api IS BOUND.
-    TRY.
-        get_sas_token( EXPORTING iv_baseaddress = gv_uri
-                       RECEIVING rv_sas_token  = lv_sas_token ).
-      CATCH zcx_adf_service INTO lcx_adf_service.
-        lv_msg =  lcx_adf_service->get_text( ).
-        MESSAGE lv_msg TYPE 'I'.
-    ENDTRY.
-**Passing existing consumer group name in URI along with query parameters
-    CONCATENATE '/' iv_consumer_group '?api-version=2014-01' INTO lv_path_prefix.
-    IF NOT lv_path_prefix IS INITIAL.
-      go_rest_api->zif_rest_framework~set_uri( lv_path_prefix ).
-    ENDIF.
-    lv_host_s = gv_host.
-**Add header attributes in Rest call
-    add_request_header( iv_name = 'Content-Type' iv_value = 'application/xml; charset=utf-8' ).
-    add_request_header( iv_name = 'Host' iv_value = lv_host_s ).
-    add_request_header( iv_name = 'Authorization' iv_value = lv_sas_token ).
-**Reading xml body from text ID
-    CALL FUNCTION 'READ_TEXT'
-      EXPORTING
-        id                      = 'ST'
-        language                = 'E'
-        name                    = 'ZADF_EVENTHUB_DELETE_CONSUMER'
-        object                  = 'TEXT'
-      TABLES
-        lines                   = lt_lines
-      EXCEPTIONS
-        id                      = 1
-        language                = 2
-        name                    = 3
-        not_found               = 4
-        object                  = 5
-        reference_check         = 6
-        wrong_access_to_archive = 7
-        OTHERS                  = 8.
-    IF sy-subrc <> 0.
-* Implement suitable error handling here
     ENDIF.
     IF NOT lt_lines IS INITIAL.
       LOOP AT lt_lines INTO lw_lines.
@@ -207,6 +135,84 @@ ENDMETHOD.
           interface_id = gv_interface_id.
     ENDIF.
   ENDIF.
+ENDMETHOD.
+
+
+  METHOD delete_consumer_group.
+    DATA : lo_response     TYPE REF TO if_rest_entity,
+           lo_request      TYPE REF TO if_rest_entity,
+           lv_expiry       TYPE string,
+           lv_sas_token    TYPE string,
+           lv_msg          TYPE string,
+           lcx_adf_service TYPE REF TO zcx_adf_service,
+           lv_path_prefix  TYPE string,
+           lv_host         TYPE rfcdisplay-rfchost,
+           lv_host_s       TYPE string,
+           lt_lines        TYPE STANDARD TABLE OF tline,
+           lw_lines        TYPE tline,
+           lv_body         TYPE string.
+    IF go_rest_api IS BOUND.
+      TRY.
+          get_sas_token( EXPORTING iv_baseaddress = gv_uri
+                         RECEIVING rv_sas_token  = lv_sas_token ).
+        CATCH zcx_adf_service INTO lcx_adf_service.
+          lv_msg =  lcx_adf_service->get_text( ).
+          MESSAGE lv_msg TYPE 'I'.
+      ENDTRY.
+**Passing existing consumer group name in URI along with query parameters
+      CONCATENATE '/' iv_consumer_group '?api-version=2014-01' INTO lv_path_prefix.
+      IF NOT lv_path_prefix IS INITIAL.
+        go_rest_api->zif_rest_framework~set_uri( lv_path_prefix ).
+      ENDIF.
+      lv_host_s = gv_host.
+**Add header attributes in Rest call
+      add_request_header( iv_name = 'Content-Type' iv_value = 'application/xml; charset=utf-8' ).
+      add_request_header( iv_name = 'Host' iv_value = lv_host_s ).
+      add_request_header( iv_name = 'Authorization' iv_value = lv_sas_token ).
+**Reading xml body from text ID
+      CALL FUNCTION 'READ_TEXT'
+        EXPORTING
+          id                      = 'ST'
+          language                = 'E'
+          name                    = 'ZADF_EVENTHUB_DELETE_CONSUMER'
+          object                  = 'TEXT'
+        TABLES
+          lines                   = lt_lines
+        EXCEPTIONS
+          id                      = 1
+          language                = 2
+          name                    = 3
+          not_found               = 4
+          object                  = 5
+          reference_check         = 6
+          wrong_access_to_archive = 7
+          OTHERS                  = 8.
+      IF sy-subrc <> 0.
+        RAISE EXCEPTION TYPE zcx_adf_service
+          EXPORTING
+            textid       = zcx_adf_service=>error_in_conversion
+            interface_id = gv_interface_id.
+      ENDIF.
+      IF NOT lt_lines IS INITIAL.
+        LOOP AT lt_lines INTO lw_lines.
+          CONCATENATE lv_body  lw_lines-tdline INTO lv_body.
+          CLEAR: lw_lines.
+        ENDLOOP.
+        go_rest_api->zif_rest_framework~set_string_body( lv_body ).
+      ENDIF.
+**Rest API call to get response from Azure Destination
+      lo_response = go_rest_api->zif_rest_framework~execute( io_entity = lo_request async = gv_asynchronous is_retry = gv_is_try ).
+      ev_http_status = go_rest_api->get_status( ).
+      go_rest_api->close( ).
+      IF lo_response IS BOUND.
+        response = lo_response->get_string_data( ).
+      ELSE.
+        RAISE EXCEPTION TYPE zcx_adf_service
+          EXPORTING
+            textid       = zcx_adf_service=>restapi_response_not_found
+            interface_id = gv_interface_id.
+      ENDIF.
+    ENDIF.
   ENDMETHOD.
 
 
@@ -364,8 +370,7 @@ METHOD send.
          lv_expiry       TYPE string,
          lv_sas_token    TYPE string,
          lv_msg          TYPE string,
-         lcx_adf_service TYPE REF TO zcx_adf_service,
-         lt_headers1     TYPE tihttpnvp.
+         lcx_adf_service TYPE REF TO zcx_adf_service.
 
   IF go_rest_api IS BOUND.
 * Read token from headers for Managed Identity/AAD

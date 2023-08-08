@@ -3,18 +3,18 @@
  <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
   <asx:values>
    <DD04V>
-    <ROLLNAME>ZSAS_AZURE</ROLLNAME>
+    <ROLLNAME>ZADF_RESOURCE_SHORT</ROLLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
-    <DOMNAME>ZSAS_AZURE</DOMNAME>
-    <HEADLEN>40</HEADLEN>
+    <DOMNAME>ZADF_RESOURCE_SHORT</DOMNAME>
+    <HEADLEN>55</HEADLEN>
     <SCRLEN1>10</SCRLEN1>
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>SAS Key</DDTEXT>
-    <REPTEXT>Key/AAD Client Secret Encripted Format</REPTEXT>
-    <SCRTEXT_S>Key/Secret</SCRTEXT_S>
-    <SCRTEXT_M>Key/Secret Encripted</SCRTEXT_M>
-    <SCRTEXT_L>Key/AAD Client Secret Encripted Format</SCRTEXT_L>
+    <DDTEXT>Azure Resource</DDTEXT>
+    <REPTEXT>Azure Resource</REPTEXT>
+    <SCRTEXT_S>Azure Res.</SCRTEXT_S>
+    <SCRTEXT_M>Azure Resource</SCRTEXT_M>
+    <SCRTEXT_L>Azure Resource</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <REFKIND>D</REFKIND>
    </DD04V>

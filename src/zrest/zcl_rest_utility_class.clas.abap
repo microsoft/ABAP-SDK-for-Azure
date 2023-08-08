@@ -805,6 +805,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
                WHERE interface_id = @wa_paylod-interface_id.
     IF sy-subrc EQ 0 AND ls_sdk_retry-retry_flag IS NOT INITIAL.
 *Reprocessing logic for Azure services Getting Auth Token.
+      lv_interfacetype  = ls_sdk_retry-interface_type.
       CREATE OBJECT lo_adf_reprocess.
       CALL METHOD lo_adf_reprocess->sdk_rest_retry
         EXPORTING

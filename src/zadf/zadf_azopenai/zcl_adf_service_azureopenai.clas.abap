@@ -1,30 +1,80 @@
-class ZCL_ADF_SERVICE_AZUREOPENAI definition
-  public
-  inheriting from ZCL_ADF_SERVICE
-  final
-  create public .
+CLASS zcl_adf_service_azureopenai DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_adf_service
+  FINAL
+  CREATE PUBLIC .
 
-public section.
+  PUBLIC SECTION.
 
-  methods SET_COMPOPR_REQ_BODY
-    importing
-      !IM_AZOPENAI_REQBODY type ZADF_AZOPENAI_COMPOPR_REQ
-      !IM_SET_COMPLETION_OPVER type CHAR250_D default '/COMPLETIONS?API-VERSION=2022-12-01'
-    returning
-      value(RV_XSTRING) type XSTRING
-    raising
-      ZCX_ADF_SERVICE .
+    TYPES:
+      BEGIN OF ty_chatcompletion_message,
+        role    TYPE string,
+        content TYPE string,
+      END OF ty_chatcompletion_message .
+    TYPES:
+      tty_chatcompletion_messages TYPE STANDARD TABLE OF ty_chatcompletion_message WITH DEFAULT KEY .
+    TYPES:
+      BEGIN OF ty_chatcompletion_input,
+        messages   TYPE tty_chatcompletion_messages,
+        max_tokens TYPE i,
+        user       TYPE string,
+        n          TYPE i,
+      END OF ty_chatcompletion_input .
 
-  methods SEND
-    redefinition .
+
+    TYPES : BEGIN OF ty_chatcompl_resobj_choices,
+              text          TYPE string,
+              index         TYPE i,
+              finish_reason TYPE string,
+              message       TYPE ty_chatcompletion_message,
+            END OF ty_chatcompl_resobj_choices,
+
+            BEGIN OF ty_completion_resobj_usage,
+              completion_tokens TYPE i,
+              prompt_tokens     TYPE i,
+              total_tokens      TYPE i,
+            END OF ty_completion_resobj_usage,
+
+            tty_chatcompl_resobj_choices TYPE STANDARD TABLE OF ty_chatcompl_resobj_choices WITH DEFAULT KEY,
+
+            BEGIN OF ty_chatcompletion_output,
+              id      TYPE string,
+              object  TYPE string,
+              created TYPE i,
+              model   TYPE string,
+              choices TYPE tty_chatcompl_resobj_choices,
+              usage   TYPE ty_completion_resobj_usage,
+            END OF ty_chatcompletion_output.
+
+    METHODS set_compopr_req_body
+      IMPORTING
+        !im_azopenai_reqbody     TYPE zadf_azopenai_compopr_req OPTIONAL
+        !im_chatcomp_reqbody     TYPE ty_chatcompletion_input OPTIONAL
+        !im_set_completion_opver TYPE char250_d DEFAULT '/COMPLETIONS?API-VERSION=2022-12-01'
+      RETURNING
+        VALUE(rv_xstring)        TYPE xstring
+      RAISING
+        zcx_adf_service .
+    METHODS set_chatcomp_req_body
+      IMPORTING
+        !im_azopenai_reqbody     TYPE ty_chatcompletion_input OPTIONAL
+        !im_set_completion_opver TYPE char250_d DEFAULT '/CHAT/COMPLETIONS?API-VERSION=2023-03-15-preview'
+      RETURNING
+        VALUE(rv_xstring)        TYPE xstring
+      RAISING
+        zcx_adf_service .
+
+    METHODS send
+        REDEFINITION .
 protected section.
 
   data GS_AZUREOPENAI_SCHEMA type ZADF_AZOPENAI_COMPOPR_REQ .
   data GV_URI_STRING type STRING .
+  data GS_CHATCOMP_SCHEMA type TY_CHATCOMPLETION_INPUT .
 
   methods GET_SAS_TOKEN
     redefinition .
-private section.
+  PRIVATE SECTION.
 ENDCLASS.
 
 
@@ -33,21 +83,11 @@ CLASS ZCL_ADF_SERVICE_AZUREOPENAI IMPLEMENTATION.
 
 
   METHOD get_sas_token.
-    DATA : lv_string_to_sign    TYPE string,
-           encoded_base_address TYPE string,
-           lv_authstring         TYPE string,
+    DATA :
+           lv_authstring        TYPE string,
            sign                 TYPE string,
-           final_token          TYPE string,
-           decoded              TYPE xstring,
-           conv                 TYPE REF TO cl_abap_conv_out_ce,
-           conv_in              TYPE REF TO cl_abap_conv_in_ce,
-           lv_decoded_xstr      TYPE xstring,
            format               TYPE i,
-           new_expiry           TYPE string,
-           lv_sas_key           TYPE string,
-           lv_expiry_time       TYPE string,
-           lv_baseurl           TYPE string,
-           lv_encodedexptime    TYPE string.
+           lv_sas_key           TYPE string.
 
     format = 18.
 * Encript using SAS key, URL and  Exp Time.
@@ -60,7 +100,7 @@ CLASS ZCL_ADF_SERVICE_AZUREOPENAI IMPLEMENTATION.
       ENDIF.
       lv_authstring  = lv_sas_key.
 
-      CLEAR : lv_sas_key, decoded.
+      CLEAR : lv_sas_key.
     END-OF-DEFINITION.
     encrypt_key.
 
@@ -97,8 +137,6 @@ CLASS ZCL_ADF_SERVICE_AZUREOPENAI IMPLEMENTATION.
       TRY.
           CASE lv_processing_method.
             WHEN gc_mi_auth.
-*              add_request_header( iv_name = 'Authorization' iv_value = lv_sas_token ). "lv_sas_token ).
-
             WHEN OTHERS.
               get_sas_token( EXPORTING iv_baseaddress = gv_uri
                              RECEIVING rv_sas_token  = lv_sas_token ).
@@ -129,7 +167,7 @@ CLASS ZCL_ADF_SERVICE_AZUREOPENAI IMPLEMENTATION.
         response = lo_response->get_string_data( ).
         go_rest_api->close( ).
 
-          ELSE.
+      ELSE.
         go_rest_api->close( ).
         RAISE EXCEPTION TYPE zcx_adf_service
           EXPORTING
@@ -141,12 +179,69 @@ CLASS ZCL_ADF_SERVICE_AZUREOPENAI IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD SET_COMPOPR_REQ_BODY.
+  METHOD set_chatcomp_req_body.
+
+    gs_chatcomp_schema = im_azopenai_reqbody.
+
+    IF gs_chatcomp_schema-max_tokens IS INITIAL .
+      gs_chatcomp_schema-max_tokens  = 300.
+    ENDIF.
+
+    IF gs_chatcomp_schema-user IS INITIAL.
+      gs_chatcomp_schema-user = sy-uname.
+    ENDIF.
+
+    IF gs_chatcomp_schema-n IS INITIAL .
+      gs_chatcomp_schema-n = 1.
+    ENDIF.
+
+    IF  im_set_completion_opver IS NOT INITIAL.
+      gv_uri_string = im_set_completion_opver.
+      TRANSLATE gv_uri_string TO LOWER CASE.
+    ENDIF.
+
+* Convert Data into json format
+    /ui2/cl_json=>serialize(
+       EXPORTING
+         data             =  gs_chatcomp_schema
+         pretty_name      = 'L'
+*         EXPAND_INCLUDES  = space
+       RECEIVING
+         r_json           = DATA(lv_jsondata) ).
+
+
+*Convert string data to Xstring format
+    CALL FUNCTION 'SCMS_STRING_TO_XSTRING'
+      EXPORTING
+        text   = lv_jsondata
+      IMPORTING
+        buffer = rv_xstring
+      EXCEPTIONS
+        failed = 1
+        OTHERS = 2.
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE zcx_adf_service
+        EXPORTING
+          textid       = zcx_adf_service=>error_con_xstring
+          interface_id = gv_interface_id.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD set_compopr_req_body.
+
+    IF im_chatcomp_reqbody IS NOT INITIAL.
+      set_chatcomp_req_body( EXPORTING im_azopenai_reqbody = im_chatcomp_reqbody
+                                        im_set_completion_opver = im_set_completion_opver
+                             RECEIVING  rv_xstring      = rv_xstring  ).
+      RETURN.
+    ENDIF.
 
     gs_azureopenai_schema = im_azopenai_reqbody.
 
     IF gs_azureopenai_schema-max_tokens IS INITIAL .
-      gs_azureopenai_schema-max_tokens  = 1000.
+      gs_azureopenai_schema-max_tokens  = 300.
     ENDIF.
 
     IF gs_azureopenai_schema-user IS INITIAL.
@@ -166,13 +261,10 @@ CLASS ZCL_ADF_SERVICE_AZUREOPENAI IMPLEMENTATION.
     /ui2/cl_json=>serialize(
        EXPORTING
          data             =  gs_azureopenai_schema
-         pretty_name      = 'X'
+         pretty_name      = 'L'
 *         EXPAND_INCLUDES  = space
        RECEIVING
          r_json           = DATA(lv_jsondata) ).
-
-    REPLACE ALL OCCURRENCES OF 'maxTokens' IN lv_jsondata WITH 'max_tokens'.
-
 
 *Convert string data to Xstring format
     CALL FUNCTION 'SCMS_STRING_TO_XSTRING'

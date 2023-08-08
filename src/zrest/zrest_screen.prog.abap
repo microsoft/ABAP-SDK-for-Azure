@@ -113,12 +113,12 @@
         w_subt     TYPE ty-submit_time.  "+SMTK905411/#VSO 4668157
   DATA: lt_tab TYPE TABLE OF zrest_config."v-javeda - MS2K948543 "for F4 values
   "Start of Selection Screen
-  SELECTION-SCREEN: BEGIN OF BLOCK blk0 WITH FRAME TITLE TEXT-000.
+  SELECTION-SCREEN: BEGIN OF BLOCK blk0 WITH FRAME TITLE text-000.
   SELECT-OPTIONS: s_id FOR zrest_config-interface_id.
   SELECTION-SCREEN: END   OF BLOCK blk0.
 
 
-  SELECTION-SCREEN: BEGIN OF BLOCK blk1 WITH FRAME TITLE TEXT-001.
+  SELECTION-SCREEN: BEGIN OF BLOCK blk1 WITH FRAME TITLE text-001.
   SELECT-OPTIONS: s_startd FOR w_startd DEFAULT sy-datum TO sy-datum," v-javeda - MS2K948543 - default today
                   s_stime FOR w_start,
                   s_compdt FOR w_compdate,
@@ -127,7 +127,7 @@
                   s_subt   FOR w_subt.   "+SMTK905411/#VSO 4668157
   SELECTION-SCREEN: END   OF BLOCK blk1.
 
-  SELECTION-SCREEN: BEGIN OF BLOCK blk2 WITH FRAME TITLE TEXT-002.
+  SELECTION-SCREEN: BEGIN OF BLOCK blk2 WITH FRAME TITLE text-002.
   SELECT-OPTIONS: s_httpst FOR w_httpst.
   SELECT-OPTIONS: s_msgid FOR w_carrid.
   SELECT-OPTIONS: s_busid FOR w_id.
@@ -407,9 +407,9 @@
                 EXCEPTIONS
                   OTHERS = 1.
 *               Begin of change v-ashokka on 10/28/2022 ++MS1K9A7DJR
-                if sy-subrc <> 0.
-                  MESSAGE e007(zvf_zrest).
-                endif.
+              IF sy-subrc <> 0.
+                MESSAGE e007(zvf_zrest).
+              ENDIF.
 *               End of change v-ashokka on 10/28/2022 ++MS1K9A7DJR
             ELSE.
               FREE MEMORY ID 'ABCD'.
@@ -512,33 +512,50 @@
           ELSE.
             FREE MEMORY ID 'ABCD'.
             DATA obj TYPE REF TO zcl_rest_utility_class.
-            CREATE OBJECT obj .
+            CREATE OBJECT obj.
+**--Begin of changes by V-ASHOKM1 D15K908486
+            IF itab[] IS NOT INITIAL.
+              SELECT * FROM zrest_monitor INTO TABLE @DATA(lt_monitor)
+                       FOR ALL ENTRIES IN @itab
+                       WHERE zmessageid = @itab-zmessageid
+                       AND zdelete EQ 'X'.
+              IF sy-subrc = 0.
+                SORT lt_monitor BY zmessageid.
+              ENDIF.
+            ENDIF.
+**--End of changes by V-ASHOKM1 D15K908486
             LOOP AT lt_rows INTO l_row.
               READ TABLE itab INDEX l_row-index INTO sel_row.
+              IF sy-subrc = 0. "Added by V-ASHOKM1 D15K908486
 **   v-javeda - MS2K948543 - validation for not retrying deleted payload
-              SELECT SINGLE *  FROM zrest_monitor INTO lw_monitor
-                               WHERE zmessageid = sel_row-zmessageid
-                               AND zdelete EQ 'X'.
-              IF sy-subrc = 0.
-                CALL FUNCTION 'POPUP_TO_INFORM'
-                  EXPORTING
-                    titel = g_repid
-                    txt2  = sel_row-zmessageid
-                    txt1  = 'Cannot process for Deleted message id : '(500).
-              ELSE.
+**--Begin of changes by V-ASHOKM1 D15K908486
+*                SELECT SINGLE *  FROM zrest_monitor INTO lw_monitor         -- by V-ASHOKM1 D15K908486
+*                                 WHERE zmessageid = sel_row-zmessageid      -- by V-ASHOKM1 D15K908486
+*                                 AND zdelete EQ 'X'.                        -- by V-ASHOKM1 D15K908486
+                lw_monitor = VALUE #( lt_monitor[ zmessageid = sel_row-zmessageid ] OPTIONAL ).
+
+**--End of changes by V-ASHOKM1 D15K908486
+                IF lw_monitor IS NOT INITIAL. "sy-subrc = 0.
+                  CALL FUNCTION 'POPUP_TO_INFORM'
+                    EXPORTING
+                      titel = g_repid
+                      txt2  = sel_row-zmessageid
+                      txt1  = 'Cannot process for Deleted message id : '(500).
+                ELSE.
 **         v-javeda - MS2K948543
-                IF obj IS BOUND.
-                  TRY.
-                      CALL METHOD obj->retry( EXPORTING message_id = sel_row-zmessageid method = 'None' ).
+                  IF obj IS BOUND.
+                    TRY.
+                        CALL METHOD obj->retry( EXPORTING message_id = sel_row-zmessageid method = 'None' ).
 *                Authorization check VSTF # 2163894 | DGDK903413
-                    CATCH zcx_http_client_failed INTO lv_clnt_failed.
-                      lv_text2 = lv_clnt_failed->if_t100_message~t100key.
-                      MESSAGE ID lv_text2-msgid TYPE 'I' NUMBER lv_text2-msgno.
-                      EXIT.
-                  ENDTRY.
+                      CATCH zcx_http_client_failed INTO lv_clnt_failed.
+                        lv_text2 = lv_clnt_failed->if_t100_message~t100key.
+                        MESSAGE ID lv_text2-msgid TYPE 'I' NUMBER lv_text2-msgno.
+                        EXIT.
+                    ENDTRY.
 *             end of changes VSTF # 2163894 | DGDK903413
-                ENDIF.
-              ENDIF."              v-javeda - MS2K948543
+                  ENDIF.
+                ENDIF."              v-javeda - MS2K948543
+              ENDIF. " "Added by V-ASHOKM1 D15K908486
             ENDLOOP.
           ENDIF.
           lo_report->get_data( ).
