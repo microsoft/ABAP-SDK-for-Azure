@@ -12,7 +12,6 @@ DATA : lt_payload TYPE TABLE OF zadf_str_egrid_schema,
 
 DATA:
   lt_headers     TYPE tihttpnvp,
-  wa_headers     TYPE LINE OF tihttpnvp,
   lv_string      TYPE string,
   lv_response    TYPE string,
   cx_interface   TYPE REF TO zcx_interace_config_missing,
@@ -22,9 +21,7 @@ DATA:
   oref           TYPE REF TO zcl_adf_service,
   filter         TYPE zbusinessid,
   lv_http_status TYPE i,
-  lo_json        TYPE REF TO cl_trex_json_serializer,
-  lv1_string     TYPE string,
-  lv_xstring     TYPE xstring.
+  lv1_string     TYPE string.
 
 TRY.
 **Calling Factory method to instantiate eventgrid client

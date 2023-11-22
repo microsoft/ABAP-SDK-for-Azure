@@ -20,8 +20,7 @@ DATA:
   oref_azureopenai TYPE REF TO zcl_adf_service_azureopenai,
   oref             TYPE REF TO zcl_adf_service,
   filter           TYPE zbusinessid,
-  lv_http_status   TYPE i,
-  lo_json          TYPE REF TO cl_trex_json_serializer.
+  lv_http_status   TYPE i.
 
 
 PARAMETERS : p_aaireq TYPE char250_d.

@@ -10,7 +10,6 @@ REPORT zadf_eventgrid_any_demo.
 
 DATA:
   lt_headers     TYPE tihttpnvp,
-  wa_headers     TYPE LINE OF tihttpnvp,
   lv_string      TYPE string,
   lv_response    TYPE string,
   cx_interface   TYPE REF TO zcx_interace_config_missing,
@@ -19,10 +18,7 @@ DATA:
   oref_eventgrid TYPE REF TO zcl_adf_service_eventgrid,
   oref           TYPE REF TO zcl_adf_service,
   filter         TYPE zbusinessid,
-  lv_http_status TYPE i,
-  lo_json        TYPE REF TO cl_trex_json_serializer,
-  lv1_string     TYPE string,
-  lv_xstring     TYPE xstring.
+  lv_http_status TYPE i.
 
 
 TYPES : BEGIN OF ty_egrid_schema1 ,

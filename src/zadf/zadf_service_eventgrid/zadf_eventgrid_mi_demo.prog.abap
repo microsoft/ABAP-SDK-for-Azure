@@ -24,9 +24,7 @@ DATA:
   oref           TYPE REF TO zcl_adf_service,
   filter         TYPE zbusinessid,
   lv_http_status TYPE i,
-  lo_json        TYPE REF TO cl_trex_json_serializer,
-  lv1_string     TYPE string,
-  lv_xstring     TYPE xstring.
+  lv1_string     TYPE string.
 
 
 *----------------------------------------------------------------------*
@@ -106,7 +104,7 @@ TRY.
 
       APPEND ls_payload TO lt_payload.
 
-      oref_eventgrid->SET_EVENTGRID_SCHEMA_JSON( EXPORTING it_egrid_schema = lt_payload
+      oref_eventgrid->set_eventgrid_schema_json( EXPORTING it_egrid_schema = lt_payload
                                             RECEIVING rv_xstring      = DATA(lv_pxstring) ).
 
       wa_headers-name = 'Authorization'.
