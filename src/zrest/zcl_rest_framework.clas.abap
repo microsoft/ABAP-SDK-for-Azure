@@ -368,8 +368,6 @@ CLASS ZCL_REST_FRAMEWORK IMPLEMENTATION.
     DATA:
       lw_adf_config  TYPE zadf_config,
       lv_url         TYPE string,
-      lt_ranges_tab  TYPE rseloption,
-      lwa_ranges_tab TYPE rsdsselopt,
       format         TYPE i,
       lv_resource    TYPE string,
       lv_client_id   TYPE string.
