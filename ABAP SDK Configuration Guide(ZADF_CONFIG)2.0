@@ -1,0 +1,131 @@
+
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+      ABAP SDK 
+ Configuration guide for    Azure Interfaces 
+                     https://github.com/Microsoft/ABAP-SDK-for-Azure 
+ 
+ 
+
+
+Author: Microsoft SAP Team Version: 2.0
+
+
+
+
+
+
+ 
+Contents
+Steps to follow ABAP Azure SDK Configurations:	3.
+Configure Interface URI Destination (ZREST_CONFIG):	…….4.
+     SAP-Azure Data Framework Configurations (ZADF_CONFIG):	4
+     SAP-Azure Managed Identity Configurations (ZADF_MI_CONFIG):	4
+ SAP-Azure Rest Call Header Values (ZREST_CONF_MISC):	5
+      Config Table for Azure Service Retry (ZADF_SDK_RETRY):	6
+      SSF Framework Encrypting Secret (ZSSF_DATA):	7
+
+
+
+ 
+
+
+ 
+Steps to follow ABAP Azure  SDK Configurations:
+
+Go to Transaction Code: ZADF_CONFIG.
+ 
+
+ABAP SDK Centralized Configuration Transaction code has following main configuration needs to be maintained. 
+1)	Configure Interface URI Destination (ZREST_CONFIG): Master Table for Interface ID Maintenance. You must define a new Interface name and keep the destination. Destination needs to setup via SM59.
+2)	SAP-Azure Data Framework Configurations (ZADF_CONFIG): This is an Interface extension table which stores data that is more specific to Azure Services like Interface type, SAS keys, base URI, call type and processing Method.
+3)	SAP-Azure Managed Identity Configurations (ZADF_MI_CONFIG): This table stores the information relevant to establishment of connection with Azure service such as Managed Identity Client Id and the resource.
+4)	SAP-Azure Rest Call Header Values (ZREST_CONF_MISC): This table stores miscellaneous information for interfaces such as information on alerts & Rest Method Call type.
+5)	Config Table for Azure Service Retry (ZADF_SDK_RETRY): This Configuration enable the retry Mechanism for Azure interfaces using ZREST_UTIL. It stores link between AAD/MI and Actual interface IDs (E.g., Azure BLOB Storage, Event Grid, Event Hubs).
+6)	SSF Framework Encrypting Secret (ZSSF_DATA & ZREGISTER):  This Configuration enables to store SAS Key/Secrets in Encrypted format for the interfaces.
+
+Note:  Two interface IDs need to be maintained in these tables in case MSI configuration needs to be done, i.e., one interface ID for fetching Managed Identity token and another Interface ID (e.g., Azure Blob, Event Hub) for accessing the Azure service using AAD/MI token. 
+
+
+
+1)	Configure Interface URI Destination (ZREST_CONFIG):
+ 
+
+Create a new Interface ID such as ‘ZMI_DEMO’ and keep the RFC destination as NONE for Configuration related to Managed Identity (NONE).
+ 
+In case of Interface other than MSI like (BLOB Storage, Event Grid). RFC destination needs to be maintained as well SM59 Configuration for destination need setup.
+							                 
+2)	SAP-Azure Data Framework Configurations (ZADF_CONFIG):
+
+Now choose the Entry ZMI_DEMO from first configuration and select second configuration to fill Azure Interface Configuration details:
+ 
+
+
+ 
+
+
+
+
+
+Table configuration: 
+
+•	INTERFACE_TYPE – Eg. ‘Azure Managed Identities’. Based on Azure Resource destination SAP is sending data.
+•	Key/AAD Secret/SAS Key: Maintain the AAD Secret or SAS Keys and Blank (in Case of MSI)
+•	URI – Keep the Destination Azure service URL.
+In case of MSI use below URL: -
+‘http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01’ to get the token from the Instance Metadata Service. 
+•	SERVICE_TYPE - Synchronous(S). 
+3)	 SAP-Azure Managed Identity Configurations (ZADF_MI_CONFIG):
+
+Create new entry with interface Id ‘ZMI_DEMO’. 
+
+Table Configuration:
+
+•	Azure Resource: Maintain resource URL Scope which needs to be accessed e.g., (https://storage.azure.com/ ) to connect to Azure storage service.
+•	Client ID: MI Client ID
+Client ID: Provide client Id of the user-assigned Managed Identity.
+•	MI Name: Provide service line specific name representing the UAMI configuration.
+
+ 
+Note: This configuration is only needed for Managed Identity (MSI) Interface configuration. For interface configuration like (Blob Storage Account, Event Grid) This configuration is not needed and can be kept blank.
+4)	SAP-Azure Rest Call Header Values (ZREST_CONF_MISC):
+
+Create an entry for the interface Id ‘ZMI_DEMO’ created as above. 
+ 
+Table configuration:  
+•	METHOD – E.g., ‘GET/POST/PUT’. Based on Rest Call SAP is making to azure Resource.
+•	MAX_RETRY: Number of retry in case of service failure. 
+•	EMAIL_ID: Email id to which alerts would be send. 
+ 
+
+5)	Config Table for Azure Service Retry (ZADF_SDK_RETRY): 
+Create the new entry for Actual Interface (ZBLOB_DEMO) along with MI Interface ID(ZMI_DEMO).
+ 
+
+Table Configuration:
+•	Interface Type: Give the actual azure resource interface type which you are planning to send data Like (Azure BLOB Storage, Event Grid, Azure Open AI)
+•	Retry Flag:  Retry Flag will enable/Disable the retry.
+•	Azure Client ID: AAD/MI Client ID
+Client ID: Provide client Id of the user-assigned Managed Identity/AAD based on scenario.
+•	Azure Resource: Maintain resource Scope URL which needs to be accessed e.g., https://storage.azure.com/ to connect to Azure storage service.
+
+
+
+
+
+6)	SSF Framework Encrypting Secret (ZSSF_DATA & ZREGISTER): 
+Create a new entry with the Object name i.e. Report Name and interface ID.
+
+ 
+
+Create a new entry with Interface ID and add key value. After Save the Key value get encrypted and stored in table ZSSF_CON_INDX
+ 
+
+
+
