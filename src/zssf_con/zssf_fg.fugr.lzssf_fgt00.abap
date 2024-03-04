@@ -1,7 +1,5 @@
 *---------------------------------------------------------------------*
 *    view related data declarations
-*   generation date: 19.03.2018 at 12:06:49
-*   view maintenance generator version: #001407#
 *---------------------------------------------------------------------*
 *...processing: ZSSF_DATA.......................................*
 DATA:  BEGIN OF STATUS_ZSSF_DATA                     .   "state vector

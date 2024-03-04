@@ -1,7 +1,5 @@
 *---------------------------------------------------------------------*
 *    program for:   TABLEFRAME_ZGROUP_VALUES
-*   generation date: 10/28/2022 at 01:36:16
-*   view maintenance generator version: #001407#
 *---------------------------------------------------------------------*
 FUNCTION TABLEFRAME_ZGROUP_VALUES      .
 
