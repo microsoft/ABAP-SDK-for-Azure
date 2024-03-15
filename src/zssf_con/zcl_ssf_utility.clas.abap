@@ -362,9 +362,7 @@ ENDMETHOD.
 
 
   METHOD insert_key_with_default_pse.
-    DATA : lx_ref            TYPE REF TO zcx_adf_manage_access_keys,
-           lv_key            TYPE string,
-           lt_enveloped_data TYPE saml2_pse_bin_data_t,
+    DATA : lt_enveloped_data TYPE saml2_pse_bin_data_t,
            lv_srtfd          TYPE zssf_con_indx-srtfd,
            lv_indx           TYPE zssf_con_indx.
 
@@ -394,9 +392,7 @@ ENDMETHOD.
 
 
   METHOD insert_key_with_primary.
-    DATA : lx_ref            TYPE REF TO zcx_adf_manage_access_keys,
-           lv_key            TYPE string,
-           lt_enveloped_data TYPE saml2_pse_bin_data_t,
+    DATA : lt_enveloped_data TYPE saml2_pse_bin_data_t,
            lv_srtfd          TYPE zssf_con_indx-srtfd,
            lv_indx           TYPE zssf_con_indx.
 
@@ -425,9 +421,7 @@ ENDMETHOD.
 
 
   METHOD insert_key_with_secondary.
-    DATA : lx_ref            TYPE REF TO zcx_adf_manage_access_keys,
-           lv_key            TYPE string,
-           lt_enveloped_data TYPE saml2_pse_bin_data_t,
+    DATA : lt_enveloped_data TYPE saml2_pse_bin_data_t,
            lv_srtfd          TYPE zssf_con_indx-srtfd,
            lv_indx           TYPE zssf_con_indx.
 
@@ -481,9 +475,7 @@ ENDMETHOD.
 
 
   METHOD read_key_with_default_pse.
-    DATA : lx_ref            TYPE REF TO zcx_adf_manage_access_keys,
-           lv_key            TYPE string,
-           lt_enveloped_data TYPE saml2_pse_bin_data_t,
+    DATA : lt_enveloped_data TYPE saml2_pse_bin_data_t,
            lv_srtfd          TYPE zssf_con_indx-srtfd,
            lv_indx           TYPE zssf_con_indx.
 
@@ -511,9 +503,7 @@ ENDMETHOD.
 
 
   METHOD read_key_with_primary.
-    DATA : lx_ref            TYPE REF TO zcx_adf_manage_access_keys,
-           lv_key            TYPE string,
-           lt_enveloped_data TYPE saml2_pse_bin_data_t,
+    DATA : lt_enveloped_data TYPE saml2_pse_bin_data_t,
            lv_srtfd          TYPE zssf_con_indx-srtfd,
            lv_indx           TYPE zssf_con_indx.
 
@@ -535,9 +525,7 @@ ENDMETHOD.
 
 
   METHOD read_key_with_secondary.
-    DATA : lx_ref            TYPE REF TO zcx_adf_manage_access_keys,
-           lv_key            TYPE string,
-           lt_enveloped_data TYPE saml2_pse_bin_data_t,
+    DATA : lt_enveloped_data TYPE saml2_pse_bin_data_t,
            lv_srtfd          TYPE zssf_con_indx-srtfd,
            lv_indx           TYPE zssf_con_indx.
 

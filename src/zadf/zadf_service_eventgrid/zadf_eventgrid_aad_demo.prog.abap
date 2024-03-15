@@ -24,9 +24,7 @@ DATA:
   oref           TYPE REF TO zcl_adf_service,
   filter         TYPE zbusinessid,
   lv_http_status TYPE i,
-  lo_json        TYPE REF TO cl_trex_json_serializer,
-  lv1_string     TYPE string,
-  lv_xstring     TYPE xstring.
+  lv1_string     TYPE string.
 
 
 *----------------------------------------------------------------------*
