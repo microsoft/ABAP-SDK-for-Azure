@@ -1,76 +1,78 @@
-class ZCL_ADF_SERVICE_AAD definition
-  public
-  inheriting from ZCL_ADF_SERVICE
-  final
-  create public
+CLASS zcl_adf_service_aad DEFINITION
+  PUBLIC
+  INHERITING FROM zcl_adf_service
+  FINAL
+  CREATE PUBLIC
 
-  global friends ZCL_ADF_SERVICE_REPROCESS .
+  GLOBAL FRIENDS zcl_adf_service_reprocess .
 
-public section.
+  PUBLIC SECTION.
 
-  methods GET_AAD_TOKEN
-    importing
-      value(IV_CLIENT_ID) type STRING
-      value(IV_RESOURCE) type STRING
-    exporting
-      value(EV_AAD_TOKEN) type STRING
-      value(EV_RESPONSE) type STRING
-    raising
-      ZCX_ADF_SERVICE
-      ZCX_INTERACE_CONFIG_MISSING
-      ZCX_HTTP_CLIENT_FAILED .
-  methods GET_AAD_TOKEN_MSI
-    importing
-      !IV_TOKENGEN_FLAG type CHAR01 optional
-    exporting
-      value(EV_AAD_TOKEN) type STRING
-      value(EV_RESPONSE) type STRING
-      value(EV_HTTP_STATUS) type I
-    raising
-      ZCX_ADF_SERVICE
-      ZCX_INTERACE_CONFIG_MISSING
-      ZCX_HTTP_CLIENT_FAILED .
-  methods GET_AAD_FCI_TOKEN
-    importing
-      value(IV_ASSERTION_TOKEN) type STRING
-      value(IV_CLIENT_ID) type STRING
-      value(IV_SCOPE) type STRING
-    exporting
-      value(EV_ACCESS_TOKEN) type STRING
-      value(EV_RESPONSE) type STRING
-    raising
-      ZCX_ADF_SERVICE
-      ZCX_INTERACE_CONFIG_MISSING
-      ZCX_HTTP_CLIENT_FAILED .
-protected section.
-private section.
+    METHODS get_aad_token
+      IMPORTING
+        VALUE(iv_client_id) TYPE string
+        VALUE(iv_resource)  TYPE string
+        VALUE(iv_scope)     TYPE string OPTIONAL
+      EXPORTING
+        VALUE(ev_aad_token) TYPE string
+        VALUE(ev_response)  TYPE string
+      RAISING
+        zcx_adf_service
+        zcx_interace_config_missing
+        zcx_http_client_failed .
+    METHODS get_aad_token_msi
+      IMPORTING
+        !iv_tokengen_flag     TYPE char01 OPTIONAL
+      EXPORTING
+        VALUE(ev_aad_token)   TYPE string
+        VALUE(ev_response)    TYPE string
+        VALUE(ev_http_status) TYPE i
+      RAISING
+        zcx_adf_service
+        zcx_interace_config_missing
+        zcx_http_client_failed .
+    METHODS get_aad_fci_token
+      IMPORTING
+        VALUE(iv_assertion_token) TYPE string
+        VALUE(iv_client_id)       TYPE string
+        VALUE(iv_scope)           TYPE string
+      EXPORTING
+        VALUE(ev_access_token)    TYPE string
+        VALUE(ev_response)        TYPE string
+      RAISING
+        zcx_adf_service
+        zcx_interace_config_missing
+        zcx_http_client_failed .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
 
-  data GV_RESPONSE type STRING .
+    DATA gv_response TYPE string .
 
-  methods GET_AAD_TOKEN_CLNT_CRED
-    importing
-      value(IV_CLIENT_ID) type STRING
-      value(IV_RESOURCE) type STRING
-    exporting
-      value(EV_AAD_TOKEN) type STRING
-      value(EV_RESPONSE) type STRING
-    raising
-      ZCX_ADF_SERVICE
-      ZCX_INTERACE_CONFIG_MISSING
-      ZCX_HTTP_CLIENT_FAILED .
-  methods MI_TOKEN_STORE
-    importing
-      !IT_MI_RESPONSE type TIHTTPNVP .
-  methods MI_TOKEN_GET
-    importing
-      !IM_INTERFACE_ID type ZINTERFACE_ID
-    returning
-      value(RV_TOKEN) type STRINGVAL .
+    METHODS get_aad_token_clnt_cred
+      IMPORTING
+        VALUE(iv_client_id) TYPE string
+        VALUE(iv_resource)  TYPE string
+        VALUE(iv_scope)     TYPE string OPTIONAL
+      EXPORTING
+        VALUE(ev_aad_token) TYPE string
+        VALUE(ev_response)  TYPE string
+      RAISING
+        zcx_adf_service
+        zcx_interace_config_missing
+        zcx_http_client_failed .
+    METHODS mi_token_store
+      IMPORTING
+        !it_mi_response TYPE tihttpnvp .
+    METHODS mi_token_get
+      IMPORTING
+        !im_interface_id TYPE zinterface_id
+      RETURNING
+        VALUE(rv_token)  TYPE stringval .
 ENDCLASS.
 
 
 
-CLASS ZCL_ADF_SERVICE_AAD IMPLEMENTATION.
+CLASS zcl_adf_service_aad IMPLEMENTATION.
 
 
   METHOD get_aad_fci_token.
@@ -179,36 +181,37 @@ CLASS ZCL_ADF_SERVICE_AAD IMPLEMENTATION.
   ENDMETHOD.
 
 
-METHOD get_aad_token.
+  METHOD get_aad_token.
 * Switch to managed identities/ AAD authentication
 * based on the configuration in table ZADF_MI_CONFIG
-  DATA:
-    lv_switch_to_mi TYPE boolean,
-    lv_http_status  TYPE i.
+    DATA:
+      lv_switch_to_mi TYPE boolean,
+      lv_http_status  TYPE i.
 
-  CALL METHOD me->check_switch_to_mi
-    EXPORTING
-      iv_interface_id = gv_interface_id
-    IMPORTING
-      ev_switch_to_mi = lv_switch_to_mi.
-* Switching to exising fuctionality of getting AAD token
-  IF lv_switch_to_mi EQ abap_false.
-    CALL METHOD me->get_aad_token_clnt_cred
+    CALL METHOD me->check_switch_to_mi
       EXPORTING
-        iv_client_id = iv_client_id
-        iv_resource  = iv_resource
+        iv_interface_id = gv_interface_id
       IMPORTING
-        ev_aad_token = ev_aad_token
-        ev_response  = ev_response.
-  ELSE.
+        ev_switch_to_mi = lv_switch_to_mi.
+* Switching to exising fuctionality of getting AAD token
+    IF lv_switch_to_mi EQ abap_false.
+      CALL METHOD me->get_aad_token_clnt_cred
+        EXPORTING
+          iv_client_id = iv_client_id
+          iv_resource  = iv_resource
+          iv_scope     = iv_scope
+        IMPORTING
+          ev_aad_token = ev_aad_token
+          ev_response  = ev_response.
+    ELSE.
 * Switching managed identites based authentication.
-        CALL METHOD me->get_aad_token_msi
-          IMPORTING
-            ev_aad_token   = ev_aad_token
-            ev_response    = ev_response
-            ev_http_status = lv_http_status.
-  ENDIF.
-ENDMETHOD.
+      CALL METHOD me->get_aad_token_msi
+        IMPORTING
+          ev_aad_token   = ev_aad_token
+          ev_response    = ev_response
+          ev_http_status = lv_http_status.
+    ENDIF.
+  ENDMETHOD.
 
 
   METHOD get_aad_token_clnt_cred.
@@ -233,9 +236,16 @@ ENDMETHOD.
       CREATE OBJECT form_data_helper
         EXPORTING
           io_entity = lo_request.
-      wa_params-name = 'resource'.
-      wa_params-value =  iv_resource .
-      APPEND wa_params TO it_params.
+      IF iv_resource IS NOT INITIAL.
+         wa_params-name = 'resource'.
+         wa_params-value =  iv_resource .
+         APPEND wa_params TO it_params.
+      ENDIF.
+      IF iv_scope IS NOT INITIAL.
+         wa_params-name = 'scope'.
+         wa_params-value =  iv_scope .
+         APPEND wa_params TO it_params.
+      ENDIF.
       CLEAR wa_params.
       wa_params-name = 'client_id'.
       wa_params-value =  iv_client_id .

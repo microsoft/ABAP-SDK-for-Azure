@@ -8,8 +8,8 @@
     <SOBJ_NAME>LZADF_FGF01</SOBJ_NAME>
     <SOBJ_NAME>LZADF_FGI00</SOBJ_NAME>
     <SOBJ_NAME>LZADF_FGI01</SOBJ_NAME>
-    <SOBJ_NAME>LZADF_FGTOP</SOBJ_NAME>
     <SOBJ_NAME>LZADF_FGT00</SOBJ_NAME>
+    <SOBJ_NAME>LZADF_FGTOP</SOBJ_NAME>
     <SOBJ_NAME>SAPLZADF_FG</SOBJ_NAME>
    </INCLUDES>
    <FUNCTIONS>
@@ -63,55 +63,46 @@
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Aktion mit Tabelle: anz./änd./transp. (S/U/T)</STEXT>
-       <INDEX> 001</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Name der Tabelle</STEXT>
-       <INDEX> 002</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
-       <INDEX> 003</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
-       <INDEX> 004</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
-       <INDEX> 005</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
-       <INDEX> 006</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Kontrollblocktabelle für die Tabelle</STEXT>
-       <INDEX> 007</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Kontrollblocktabelle für die Tabellen-Felder</STEXT>
-       <INDEX> 008</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
        <STEXT>Korrekturnummer fehlt</STEXT>
-       <INDEX> 009</INDEX>
       </RSFDO>
      </DOCUMENTATION>
     </item>
@@ -194,103 +185,86 @@
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
        <STEXT>gewünschte Funktion des Bausteins</STEXT>
-       <INDEX> 001</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Aktion mit Tabelle: anz./änd./transp. (S/U/T)</STEXT>
-       <INDEX> 002</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Name der Tabelle</STEXT>
-       <INDEX> 003</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
-       <INDEX> 004</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
-       <INDEX> 005</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
        <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
-       <INDEX> 006</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
-       <INDEX> 007</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
-       <INDEX> 008</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
-       <INDEX> 009</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
-       <INDEX> 010</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
-       <INDEX> 011</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
-       <INDEX> 012</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
-       <INDEX> 013</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Kontrollblocktabelle für die Tabelle</STEXT>
-       <INDEX> 014</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Kontrollblocktabelle für die Tabellen-Felder</STEXT>
-       <INDEX> 015</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
        <STEXT>Korrekturnummer fehlt</STEXT>
-       <INDEX> 016</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
        <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
-       <INDEX> 017</INDEX>
       </RSFDO>
      </DOCUMENTATION>
     </item>
@@ -404,7 +378,6 @@
        <CONT_NAME>TCTRL_ZADF_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZADF_CONFIG-INTERFACE_ID</NAME>
-       <TEXT>Inter_ID________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
        <LENGTH>040</LENGTH>
@@ -421,7 +394,6 @@
        <CONT_NAME>TCTRL_ZADF_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZADF_CONFIG-INTERFACE_TYPE</NAME>
-       <TEXT>Interface_Type__________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>002</COLUMN>
        <LENGTH>040</LENGTH>
@@ -438,7 +410,6 @@
        <CONT_NAME>TCTRL_ZADF_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZADF_CONFIG-SAS_KEY</NAME>
-       <TEXT>SAS_Key_________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>003</COLUMN>
        <LENGTH>040</LENGTH>
@@ -455,7 +426,6 @@
        <CONT_NAME>TCTRL_ZADF_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZADF_CONFIG-URI</NAME>
-       <TEXT>Base_URI________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>004</COLUMN>
        <LENGTH>040</LENGTH>
@@ -472,7 +442,6 @@
        <CONT_NAME>TCTRL_ZADF_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZADF_CONFIG-SERVICE_TYPE</NAME>
-       <TEXT>Call_Type_______________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>005</COLUMN>
        <LENGTH>040</LENGTH>
@@ -489,7 +458,6 @@
        <CONT_NAME>TCTRL_ZADF_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZADF_CONFIG-IS_TRY</NAME>
-       <TEXT>Reprocess_______________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>006</COLUMN>
        <LENGTH>040</LENGTH>
@@ -636,19 +604,19 @@
        <LINE>PROCESS BEFORE OUTPUT.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_initialisieren.</LINE>
+       <LINE>  MODULE liste_initialisieren.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>LOOP AT extract WITH CONTROL</LINE>
+       <LINE>  LOOP AT extract WITH CONTROL</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>tctrl_zadf_config CURSOR nextline.</LINE>
+       <LINE>   tctrl_zadf_config CURSOR nextline.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_show_liste.</LINE>
+       <LINE>    MODULE liste_show_liste.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>ENDLOOP.</LINE>
+       <LINE>  ENDLOOP.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>*</LINE>
@@ -657,113 +625,78 @@
        <LINE>PROCESS AFTER INPUT.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_exit_command AT EXIT-COMMAND.</LINE>
+       <LINE>  MODULE liste_exit_command AT EXIT-COMMAND.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_before_loop.</LINE>
+       <LINE>  MODULE liste_before_loop.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>LOOP AT extract.</LINE>
+       <LINE>  LOOP AT extract.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_init_workarea.</LINE>
+       <LINE>    MODULE liste_init_workarea.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>CHAIN.</LINE>
+       <LINE>    CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-interface_id .</LINE>
+       <LINE>      FIELD zadf_config-interface_id .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-interface_type .</LINE>
+       <LINE>      FIELD zadf_config-interface_type .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-sas_key .</LINE>
+       <LINE>      FIELD zadf_config-sas_key .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-uri .</LINE>
+       <LINE>      FIELD zadf_config-uri .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-service_type .</LINE>
+       <LINE>      FIELD zadf_config-service_type .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-is_try .</LINE>
+       <LINE>      FIELD zadf_config-is_try .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE set_update_flag ON CHAIN-REQUEST.</LINE>
+       <LINE>      MODULE set_update_flag ON CHAIN-REQUEST.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>ENDCHAIN.</LINE>
+       <LINE>    ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD vim_marked MODULE liste_mark_checkbox.</LINE>
+       <LINE>    FIELD vim_marked MODULE liste_mark_checkbox.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>CHAIN.</LINE>
+       <LINE>    CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-interface_id .</LINE>
+       <LINE>      FIELD zadf_config-interface_id .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_update_liste.</LINE>
+       <LINE>      MODULE liste_update_liste.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>ENDCHAIN.</LINE>
+       <LINE>    ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>CHAIN.</LINE>
+       <LINE>    CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD zadf_config-sas_key.</LINE>
+       <LINE>      FIELD zadf_config-sas_key.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE validate_saskey ON CHAIN-REQUEST.</LINE>
+       <LINE>      MODULE validate_saskey ON CHAIN-REQUEST.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>ENDCHAIN.</LINE>
+       <LINE>    ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>ENDLOOP.</LINE>
+       <LINE>  ENDLOOP.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE liste_after_loop.</LINE>
+       <LINE>  MODULE liste_after_loop.</LINE>
       </RPY_DYFLOW>
      </FLOW_LOGIC>
-     <SPACES>
-      <item>0</item>
-      <item>0</item>
-      <item>2</item>
-      <item>2</item>
-      <item>3</item>
-      <item>4</item>
-      <item>2</item>
-      <item>0</item>
-      <item>0</item>
-      <item>2</item>
-      <item>2</item>
-      <item>2</item>
-      <item>4</item>
-      <item>4</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
-      <item>6</item>
-      <item>4</item>
-      <item>4</item>
-      <item>4</item>
-      <item>6</item>
-      <item>6</item>
-      <item>4</item>
-      <item>4</item>
-      <item>6</item>
-      <item>6</item>
-      <item>4</item>
-      <item>2</item>
-      <item>2</item>
-     </SPACES>
     </item>
    </DYNPROS>
   </asx:values>

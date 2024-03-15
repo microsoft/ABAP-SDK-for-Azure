@@ -1,7 +1,5 @@
 *---------------------------------------------------------------------*
 *    view related data declarations
-*   generation date: 11/10/2022 at 09:16:04
-*   view maintenance generator version: #001407#
 *---------------------------------------------------------------------*
 *...processing: ZTVARVC.........................................*
 DATA:  BEGIN OF STATUS_ZTVARVC                       .   "state vector
