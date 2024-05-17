@@ -1,4 +1,3 @@
-* regenerated at 19.03.2018 12:05:53
 FUNCTION-POOL ZSSF_FG                    MESSAGE-ID SV.
 
 * INCLUDE LZSSF_FGD...                       " Local class definition

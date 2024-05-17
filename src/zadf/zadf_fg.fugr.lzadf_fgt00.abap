@@ -1,7 +1,5 @@
 *---------------------------------------------------------------------*
 *    view related data declarations
-*   generation date: 05/10/2017 at 02:12:25
-*   view maintenance generator version: #001407#
 *---------------------------------------------------------------------*
 *...processing: ZADF_CONFIG.....................................*
 DATA:  BEGIN OF STATUS_ZADF_CONFIG                   .   "state vector
