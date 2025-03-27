@@ -79,23 +79,23 @@ METHOD create.
             iv_business_identifier = iv_business_identifier.
 * Insert End of VBANSAL- 06/12/2022  - Event Grid
 
-* Insert Begin of VBANSAL- 02/05/2023 - Azure Open AI
+* Insert Begin of VBANSAL- 02/05/2023 - Azure OpenAI
       WHEN gc_service_azopenai.
         CREATE OBJECT ro_service TYPE zcl_adf_service_azureopenai
           EXPORTING
             iv_interface_id        = iv_interface_id
             iv_service_id          = lv_interface_type
             iv_business_identifier = iv_business_identifier.
-* Insert End of VBANSAL- 06/12/2022  - Azure Open AI
+* Insert End of VBANSAL- 06/12/2022  - Azure OpenAI
 
-* Insert Begin of VBANSAL- 02/05/2023 - Azure Open AI
+* Insert Begin of VBANSAL- 02/05/2023 - Azure OpenAI
       WHEN gc_service_aztable.
         CREATE OBJECT ro_service TYPE zcl_adf_service_aztable
           EXPORTING
             iv_interface_id        = iv_interface_id
             iv_service_id          = lv_interface_type
             iv_business_identifier = iv_business_identifier.
-* Insert End of VBANSAL- 06/12/2022  - Azure Open AI
+* Insert End of VBANSAL- 06/12/2022  - Azure OpenAI
 
       WHEN gc_service_keyvault.
         CREATE OBJECT ro_service TYPE zcl_adf_service_keyvault
