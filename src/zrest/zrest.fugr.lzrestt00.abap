@@ -1,7 +1,5 @@
 *---------------------------------------------------------------------*
 *    view related data declarations
-*   generation date: 08/29/2018 at 03:15:49
-*   view maintenance generator version: #001407#
 *---------------------------------------------------------------------*
 *...processing: ZOBFUSCATE......................................*
 DATA:  BEGIN OF STATUS_ZOBFUSCATE                    .   "state vector

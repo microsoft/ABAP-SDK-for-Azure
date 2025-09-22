@@ -1,4 +1,3 @@
-* regenerated at 10/28/2022 01:36:17
 FUNCTION-POOL ZGROUP_VALUES              MESSAGE-ID SV.
 
 * INCLUDE LZGROUP_VALUESD...                 " Local class definition

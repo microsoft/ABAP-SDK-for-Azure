@@ -4,7 +4,6 @@
   <asx:values>
    <VSEOINTERF>
     <CLSNAME>ZIF_REST_HTTP_CONSTANTS</CLSNAME>
-    <VERSION>1</VERSION>
     <LANGU>E</LANGU>
     <DESCRIPT>Interface for Azure REST HTTP Constants</DESCRIPT>
     <EXPOSURE>2</EXPOSURE>

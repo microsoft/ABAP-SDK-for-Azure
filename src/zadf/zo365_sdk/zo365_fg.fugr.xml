@@ -6,8 +6,8 @@
    <INCLUDES>
     <SOBJ_NAME>LZO365_FGF00</SOBJ_NAME>
     <SOBJ_NAME>LZO365_FGI00</SOBJ_NAME>
-    <SOBJ_NAME>LZO365_FGTOP</SOBJ_NAME>
     <SOBJ_NAME>LZO365_FGT00</SOBJ_NAME>
+    <SOBJ_NAME>LZO365_FGTOP</SOBJ_NAME>
     <SOBJ_NAME>SAPLZO365_FG</SOBJ_NAME>
    </INCLUDES>
    <FUNCTIONS>
@@ -61,55 +61,46 @@
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Aktion mit Tabelle: anz./änd./transp. (S/U/T)</STEXT>
-       <INDEX> 001</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Name der Tabelle</STEXT>
-       <INDEX> 002</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
-       <INDEX> 003</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
-       <INDEX> 004</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
-       <INDEX> 005</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tabelle mit dynam. zu deaktivierenden CUA-Funkt.</STEXT>
-       <INDEX> 006</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Kontrollblocktabelle für die Tabelle</STEXT>
-       <INDEX> 007</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Kontrollblocktabelle für die Tabellen-Felder</STEXT>
-       <INDEX> 008</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
        <STEXT>Korrekturnummer fehlt</STEXT>
-       <INDEX> 009</INDEX>
       </RSFDO>
      </DOCUMENTATION>
     </item>
@@ -192,103 +183,86 @@
        <PARAMETER>FCODE</PARAMETER>
        <KIND>P</KIND>
        <STEXT>gewünschte Funktion des Bausteins</STEXT>
-       <INDEX> 001</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_ACTION</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Aktion mit Tabelle: anz./änd./transp. (S/U/T)</STEXT>
-       <INDEX> 002</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>VIEW_NAME</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Name der Tabelle</STEXT>
-       <INDEX> 003</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_NUMBER</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Korrekturnummer für durchgeführte Änderungen</STEXT>
-       <INDEX> 004</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>LAST_ACT_ENTRY</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Index der Cursorposition in der Anzeigetabelle</STEXT>
-       <INDEX> 005</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UCOMM</PARAMETER>
        <KIND>P</KIND>
        <STEXT>letztes User-command innerhalb der Viewpflege</STEXT>
-       <INDEX> 006</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>UPDATE_REQUIRED</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Flag: Einträge verändert, Sichern erforderlich</STEXT>
-       <INDEX> 007</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>CORR_KEYTAB</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tabelle mit den Keys der zu transport. Einträge</STEXT>
-       <INDEX> 008</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DBA_SELLIST</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Selektionsbedingungen für den DB-Zugriff</STEXT>
-       <INDEX> 009</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>DPL_SELLIST</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Selektionsbedingungen für die Anzeige</STEXT>
-       <INDEX> 010</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXCL_CUA_FUNCT</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tab. der nicht zu aktivierenden CUA-Funktionen</STEXT>
-       <INDEX> 011</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>EXTRACT</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tab. der gerade sichtbaren Daten (Anzeigetabelle</STEXT>
-       <INDEX> 012</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>TOTAL</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Tabelle, mit allen von der DB gelesenen Daten</STEXT>
-       <INDEX> 013</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_HEADER</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Kontrollblocktabelle für die Tabelle</STEXT>
-       <INDEX> 014</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>X_NAMTAB</PARAMETER>
        <KIND>P</KIND>
        <STEXT>Kontrollblocktabelle für die Tabellen-Felder</STEXT>
-       <INDEX> 015</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>MISSING_CORR_NUMBER</PARAMETER>
        <KIND>X</KIND>
        <STEXT>Korrekturnummer fehlt</STEXT>
-       <INDEX> 016</INDEX>
       </RSFDO>
       <RSFDO>
        <PARAMETER>SAVING_CORRECTION_FAILED</PARAMETER>
        <KIND>X</KIND>
        <STEXT>Fehler beim Sichern der Korrektureinträge</STEXT>
-       <INDEX> 017</INDEX>
       </RSFDO>
      </DOCUMENTATION>
     </item>
@@ -402,7 +376,6 @@
        <CONT_NAME>TCTRL_ZO365_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZO365_CONFIG-INTERFACE_ID</NAME>
-       <TEXT>Inter_ID________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>001</COLUMN>
        <LENGTH>040</LENGTH>
@@ -419,7 +392,6 @@
        <CONT_NAME>TCTRL_ZO365_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZO365_CONFIG-INTERFACE_TYPE</NAME>
-       <TEXT>Interface_Type__________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>002</COLUMN>
        <LENGTH>040</LENGTH>
@@ -436,7 +408,6 @@
        <CONT_NAME>TCTRL_ZO365_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZO365_CONFIG-SERVICE_TYPE</NAME>
-       <TEXT>Call_Type_______________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>003</COLUMN>
        <LENGTH>040</LENGTH>
@@ -453,7 +424,6 @@
        <CONT_NAME>TCTRL_ZO365_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZO365_CONFIG-IS_TRY</NAME>
-       <TEXT>Reprocess_______________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>004</COLUMN>
        <LENGTH>040</LENGTH>
@@ -470,7 +440,6 @@
        <CONT_NAME>TCTRL_ZO365_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZO365_CONFIG-CLIENT_ID</NAME>
-       <TEXT>Client_id_______________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>005</COLUMN>
        <LENGTH>040</LENGTH>
@@ -487,7 +456,6 @@
        <CONT_NAME>TCTRL_ZO365_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZO365_CONFIG-RESOURCE_ID</NAME>
-       <TEXT>Resource________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>006</COLUMN>
        <LENGTH>040</LENGTH>
@@ -504,7 +472,6 @@
        <CONT_NAME>TCTRL_ZO365_CONFIG</CONT_NAME>
        <TYPE>TEXT</TYPE>
        <NAME>*ZO365_CONFIG-AAD_INTERFACE_ID</NAME>
-       <TEXT>Inter_ID________________________________</TEXT>
        <LINE>001</LINE>
        <COLUMN>007</COLUMN>
        <LENGTH>040</LENGTH>
@@ -665,19 +632,19 @@
        <LINE>PROCESS BEFORE OUTPUT.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE LISTE_INITIALISIEREN.</LINE>
+       <LINE> MODULE LISTE_INITIALISIEREN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>LOOP AT EXTRACT WITH CONTROL</LINE>
+       <LINE> LOOP AT EXTRACT WITH CONTROL</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>TCTRL_ZO365_CONFIG CURSOR NEXTLINE.</LINE>
+       <LINE>  TCTRL_ZO365_CONFIG CURSOR NEXTLINE.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE LISTE_SHOW_LISTE.</LINE>
+       <LINE>   MODULE LISTE_SHOW_LISTE.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>ENDLOOP.</LINE>
+       <LINE> ENDLOOP.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
        <LINE>*</LINE>
@@ -686,100 +653,69 @@
        <LINE>PROCESS AFTER INPUT.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE LISTE_EXIT_COMMAND AT EXIT-COMMAND.</LINE>
+       <LINE> MODULE LISTE_EXIT_COMMAND AT EXIT-COMMAND.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE LISTE_BEFORE_LOOP.</LINE>
+       <LINE> MODULE LISTE_BEFORE_LOOP.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>LOOP AT EXTRACT.</LINE>
+       <LINE> LOOP AT EXTRACT.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE LISTE_INIT_WORKAREA.</LINE>
+       <LINE>   MODULE LISTE_INIT_WORKAREA.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>CHAIN.</LINE>
+       <LINE>   CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD ZO365_CONFIG-INTERFACE_ID .</LINE>
+       <LINE>    FIELD ZO365_CONFIG-INTERFACE_ID .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD ZO365_CONFIG-INTERFACE_TYPE .</LINE>
+       <LINE>    FIELD ZO365_CONFIG-INTERFACE_TYPE .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD ZO365_CONFIG-SERVICE_TYPE .</LINE>
+       <LINE>    FIELD ZO365_CONFIG-SERVICE_TYPE .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD ZO365_CONFIG-IS_TRY .</LINE>
+       <LINE>    FIELD ZO365_CONFIG-IS_TRY .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD ZO365_CONFIG-CLIENT_ID .</LINE>
+       <LINE>    FIELD ZO365_CONFIG-CLIENT_ID .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD ZO365_CONFIG-RESOURCE_ID .</LINE>
+       <LINE>    FIELD ZO365_CONFIG-RESOURCE_ID .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD ZO365_CONFIG-AAD_INTERFACE_ID .</LINE>
+       <LINE>    FIELD ZO365_CONFIG-AAD_INTERFACE_ID .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE SET_UPDATE_FLAG ON CHAIN-REQUEST.</LINE>
+       <LINE>    MODULE SET_UPDATE_FLAG ON CHAIN-REQUEST.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>ENDCHAIN.</LINE>
+       <LINE>   ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD VIM_MARKED MODULE LISTE_MARK_CHECKBOX.</LINE>
+       <LINE>   FIELD VIM_MARKED MODULE LISTE_MARK_CHECKBOX.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>CHAIN.</LINE>
+       <LINE>   CHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>FIELD ZO365_CONFIG-INTERFACE_ID .</LINE>
+       <LINE>    FIELD ZO365_CONFIG-INTERFACE_ID .</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE LISTE_UPDATE_LISTE.</LINE>
+       <LINE>    MODULE LISTE_UPDATE_LISTE.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>ENDCHAIN.</LINE>
+       <LINE>   ENDCHAIN.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>ENDLOOP.</LINE>
+       <LINE> ENDLOOP.</LINE>
       </RPY_DYFLOW>
       <RPY_DYFLOW>
-       <LINE>MODULE LISTE_AFTER_LOOP.</LINE>
+       <LINE> MODULE LISTE_AFTER_LOOP.</LINE>
       </RPY_DYFLOW>
      </FLOW_LOGIC>
-     <SPACES>
-      <item>0</item>
-      <item>1</item>
-      <item>1</item>
-      <item>2</item>
-      <item>3</item>
-      <item>1</item>
-      <item>0</item>
-      <item>0</item>
-      <item>1</item>
-      <item>1</item>
-      <item>1</item>
-      <item>3</item>
-      <item>3</item>
-      <item>4</item>
-      <item>4</item>
-      <item>4</item>
-      <item>4</item>
-      <item>4</item>
-      <item>4</item>
-      <item>4</item>
-      <item>4</item>
-      <item>3</item>
-      <item>3</item>
-      <item>3</item>
-      <item>4</item>
-      <item>4</item>
-      <item>3</item>
-      <item>1</item>
-      <item>1</item>
-     </SPACES>
     </item>
    </DYNPROS>
   </asx:values>

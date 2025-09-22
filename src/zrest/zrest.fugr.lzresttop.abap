@@ -1,4 +1,3 @@
-* regenerated at 08/02/2016 12:14:24
 FUNCTION-POOL zrest                      MESSAGE-ID sv.
 
 * INCLUDE LZRESTD...                         " Local class definition
