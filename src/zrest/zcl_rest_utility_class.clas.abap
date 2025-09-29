@@ -387,8 +387,6 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
       WHEN '503'. description = 'Service Unavailable'.
       WHEN '504'. description = 'Gateway Timeout'.
       WHEN '505'. description = 'HTTP Version Not Supported'.
-
-      WHEN'505'.
       WHEN OTHERS.
         description = ''.
     ENDCASE.

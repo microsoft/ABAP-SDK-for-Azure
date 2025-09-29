@@ -21,31 +21,6 @@ CLASS zcl_adf_service_azureopenai DEFINITION
         n          TYPE i,
       END OF ty_chatcompletion_input .
 
-
-    TYPES : BEGIN OF ty_chatcompl_resobj_choices,
-              text          TYPE string,
-              index         TYPE i,
-              finish_reason TYPE string,
-              message       TYPE ty_chatcompletion_message,
-            END OF ty_chatcompl_resobj_choices,
-
-            BEGIN OF ty_completion_resobj_usage,
-              completion_tokens TYPE i,
-              prompt_tokens     TYPE i,
-              total_tokens      TYPE i,
-            END OF ty_completion_resobj_usage,
-
-            tty_chatcompl_resobj_choices TYPE STANDARD TABLE OF ty_chatcompl_resobj_choices WITH DEFAULT KEY,
-
-            BEGIN OF ty_chatcompletion_output,
-              id      TYPE string,
-              object  TYPE string,
-              created TYPE i,
-              model   TYPE string,
-              choices TYPE tty_chatcompl_resobj_choices,
-              usage   TYPE ty_completion_resobj_usage,
-            END OF ty_chatcompletion_output.
-
     METHODS set_compopr_req_body
       IMPORTING
         !im_azopenai_reqbody     TYPE zadf_azopenai_compopr_req OPTIONAL
