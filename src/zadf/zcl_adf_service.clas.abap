@@ -244,11 +244,7 @@ ENDMETHOD.
 
     SELECT SINGLE * FROM zadf_mi_config INTO lw_mi_config
                                        WHERE interface_id = iv_interface_id.
-    IF sy-subrc EQ 0.
-      ev_switch_to_mi = abap_true.
-    ELSE.
-      ev_switch_to_mi = abap_false.
-    ENDIF.
+    ev_switch_to_mi = xsdbool( sy-subrc EQ 0 ).
   ENDMETHOD.
 
 

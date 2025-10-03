@@ -610,11 +610,7 @@ CALL METHOD me->rest_client->if_rest_client~get_response_header
 
 
   METHOD is_retry.
-    IF retry EQ abap_true.
-      result = abap_true.
-    ELSE.
-      result = abap_false.
-    ENDIF.
+    result = xsdbool( retry EQ abap_true ).
   ENDMETHOD.
 
 
