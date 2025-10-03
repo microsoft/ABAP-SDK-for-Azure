@@ -166,11 +166,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
   METHOD check_obfuscation_needed.
     SELECT  * FROM zobfuscate INTO table it_zobfuscate
                                     WHERE inetrface EQ inetrface_in.
-    IF sy-subrc EQ 0.
-      result = abap_true.
-    ELSE.
-      result = abap_false.
-    ENDIF.
+    result = xsdbool( sy-subrc EQ 0 ).
   ENDMETHOD.
 
 
