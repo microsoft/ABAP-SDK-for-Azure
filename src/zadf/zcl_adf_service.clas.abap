@@ -1115,6 +1115,9 @@ METHOD send.
 * Add Managed Identity/AAD/SAS keys to the headers
     add_request_header( iv_name = 'Authorization' iv_value = lv_sas_token ).
 
+* Add User Agent String keys to the headers
+    add_request_header( iv_name = 'User-Agent' iv_value = 'SAP-Azure-Telemetry-Client/1.0' ).
+
     go_rest_api->zif_rest_framework~set_binary_body( request ).
     IF NOT it_headers[] IS INITIAL.
       go_rest_api->zif_rest_framework~set_request_headers( it_header_fields = it_headers[] ).
