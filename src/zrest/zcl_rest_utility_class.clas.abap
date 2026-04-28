@@ -166,7 +166,11 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
   METHOD check_obfuscation_needed.
     SELECT  * FROM zobfuscate INTO table it_zobfuscate
                                     WHERE inetrface EQ inetrface_in.
-    result = xsdbool( sy-subrc EQ 0 ).
+    IF sy-subrc EQ 0.
+      result = abap_true.
+    ELSE.
+      result = abap_false.
+    ENDIF.
   ENDMETHOD.
 
 
@@ -316,9 +320,9 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
 
 
   METHOD get_config_data.
-    SELECT SINGLE * FROM zrest_config INTO CORRESPONDING FIELDS OF config_data WHERE interface_id EQ interface_id. " and method eq method.
-    SELECT SINGLE method max_retry
-      INTO (config_data-method, config_data-max_retry)
+    SELECT SINGLE * FROM zrest_config INTO CORRESPONDING FIELDS OF config_data WHERE interface_id EQ interface_id.
+    SELECT SINGLE method max_retry log_level
+      INTO (config_data-method, config_data-max_retry, config_data-log_level)
       FROM zrest_conf_misc
       WHERE interface_id EQ interface_id AND method EQ method.
   ENDMETHOD.
@@ -359,30 +363,32 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
       WHEN '304'. description = 'Not Modified'.
       WHEN '305'. description = 'Use Proxy'.
       WHEN '307'. description = 'Temporary Redirect'.
-      WHEN '400'. description = 'Bad Request'.
-      WHEN '401'. description = 'Unauthorized'.
-      WHEN '402'. description = 'Payment Required'.
-      WHEN '403'. description = 'Forbidden'.
-      WHEN '404'. description = 'Not Found'.
-      WHEN '405'. description = 'Method Not Allowed'.
-      WHEN '406'. description = 'Not Acceptable'.
-      WHEN '407'. description = 'Proxy Authentication Required'.
-      WHEN '408'. description = 'Request Timeout'.
-      WHEN '409'. description = 'Conflict'.
-      WHEN '410'. description = 'Gone'.
-      WHEN '411'. description = 'Length Required'.
-      WHEN '412'. description = 'Precondition Failed'.
-      WHEN '413'. description = 'Request Entity Too Large'.
-      WHEN '414'. description = 'Request-URI Too Long'.
-      WHEN '415'. description = 'Unsupported Media Type'.
-      WHEN '416'. description = 'Requested Range Not Satisfiable'.
-      WHEN '417'. description = 'Expectation Failed'.
-      WHEN '500'. description = 'Internal Server Error'.
-      WHEN '501'. description = 'Not Implemented'.
-      WHEN '502'. description = 'Bad Gateway'.
-      WHEN '503'. description = 'Service Unavailable'.
-      WHEN '504'. description = 'Gateway Timeout'.
-      WHEN '505'. description = 'HTTP Version Not Supported'.
+      WHEN'400'.description = ' Bad Request'.
+      WHEN'401'.description = ' Unauthorized'.
+      WHEN'402'.description = ' Payment Required'.
+      WHEN'403'.description = ' Forbidden'.
+      WHEN'404'.description = ' Not Found'.
+      WHEN'405'.description = ' Method Not Allowed'.
+      WHEN'406'.description = ' Not Acceptable'.
+      WHEN'407'.description = ' Proxy Authentication Required'.
+      WHEN'408'.description = ' Request Timeout'.
+      WHEN'409'.description = ' Conflict'.
+      WHEN'410'.description = ' Gone'.
+      WHEN'411'.description = ' Length Required'.
+      WHEN'412'.description = ' Precondition Failed'.
+      WHEN'413'.description = ' Request Entity Too Large'.
+      WHEN'414'.description = ' Request-URI Too Long'.
+      WHEN'415'.description = ' Unsupported Media Type'.
+      WHEN'416'.description = ' Requested Range Not Satisfiable'.
+      WHEN'417'.description = ' Expectation Failed'.
+      WHEN'500'.description = ' Internal Server Error'.
+      WHEN'501'.description = ' Not Implemented'.
+      WHEN'502'.description = ' Bad Gateway'.
+      WHEN'503'.description = ' Service Unavailable'.
+      WHEN'504'.description = ' Gateway Timeout'.
+      WHEN'505'.description = ' HTTP Version Not Supported'.
+
+      WHEN'505'.
       WHEN OTHERS.
         description = ''.
     ENDCASE.
@@ -675,6 +681,9 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
 *----------------------------------------------------------------------*
 * 19|04|2023| VBANSAL  |8222481 | SMTK90841  | Reprocessing Logic MI/AAD token gen.
 *----------------------------------------------------------------------*
+* 05|12|2025|SANJUKUM |15226912| SMTK910397  | Retry mechanism for Cross
+*                                              Tenant via MI + FIC
+*----------------------------------------------------------------------*
 
     DATA : lv_string        TYPE string,
 * Start of changes by KRDASH DGDK911539 4812204
@@ -800,11 +809,14 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
     IF sy-subrc EQ 0 AND ls_sdk_retry-retry_flag IS NOT INITIAL.
 *Reprocessing logic for Azure services Getting Auth Token.
       lv_interfacetype  = ls_sdk_retry-interface_type.
+
       CREATE OBJECT lo_adf_reprocess.
       CALL METHOD lo_adf_reprocess->sdk_rest_retry
         EXPORTING
           iv_rest_retry = ls_sdk_retry
           iv_url        = CONV #( wa_paylod-uri )
+          iv_interface  = wa_paylod-interface_id
+          iv_business   = wa_paylod-businessid
         IMPORTING
           rv_token      = lv_sas_token
           rv_date       = lv_sas_date
