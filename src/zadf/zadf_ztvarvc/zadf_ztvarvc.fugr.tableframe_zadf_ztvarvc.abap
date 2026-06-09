@@ -1,7 +1,5 @@
 *---------------------------------------------------------------------*
 *    program for:   TABLEFRAME_ZADF_ZTVARVC
-*   generation date: 11/10/2022 at 09:16:02
-*   view maintenance generator version: #001407#
 *---------------------------------------------------------------------*
 FUNCTION TABLEFRAME_ZADF_ZTVARVC       .
 
