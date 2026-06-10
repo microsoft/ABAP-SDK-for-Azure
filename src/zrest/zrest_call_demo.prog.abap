@@ -34,9 +34,9 @@ ENDTRY.
 *----------------------Build the query params +Set the Payload here----*
 ************************************************************************
 *Optional - To help developer understand the origin of call
-rest_handler->set_callingmethod('CALL DEMO').
+rest_handler->set_callingmethod( 'CALL DEMO' ).
 *Optional - To help developer understand the origin of call
-rest_handler->set_callingprogram('ZREST_CALL_DEMO').
+rest_handler->set_callingprogram( 'ZREST_CALL_DEMO' ).
 rest_handler->set_request_header( iv_name = 'header1' iv_value = 'value for header1' ).
 rest_handler->set_request_header( iv_name = 'header2' iv_value = 'value for header2' ).
 ************************************************************************
