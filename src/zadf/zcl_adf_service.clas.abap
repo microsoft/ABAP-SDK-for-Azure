@@ -15,6 +15,7 @@ public section.
   constants GC_TAB type CHAR1 value CL_ABAP_CHAR_UTILITIES=>HORIZONTAL_TAB ##NO_TEXT.
   constants GC_SERVICE_MSI type ZAZURE_DEST value 'MSI' ##NO_TEXT.
   constants GC_SERVICE_APPINS type ZAZURE_DEST value 'APPINS' ##NO_TEXT.
+  constants GC_BEARER type CHAR6 value 'Bearer' ##NO_TEXT.
 
   methods SEND
     importing
@@ -115,6 +116,9 @@ protected section.
   data GV_PATH_PREFIX type STRING .
   data GV_HOST type STRING .
   data GT_HEADERS type TIHTTPNVP .
+  data GV_INTERFACE_ID_AAD type ZINTERFACE_ID .
+  data GV_CLIENT_ID type STRING .
+  data GV_RESOURCE type STRING .
 
   methods ADD_REQUEST_HEADER
     importing
@@ -171,6 +175,9 @@ private section.
   data GV_DESTINATION type ZAZURE_DEST .
   data GV_SERVICE_ID type ZAZURE_DEST .
   data GV_METHOD_CALL type CHAR20 .
+  constants GC_I type CHAR1 value 'I' ##NO_TEXT.
+  data GV_AAD_TOKEN type STRING .
+  data GV_API_REF_MI type CHAR01 .
 
   methods GET_INTERFACE_DETAILS
     raising
@@ -244,7 +251,11 @@ ENDMETHOD.
 
     SELECT SINGLE * FROM zadf_mi_config INTO lw_mi_config
                                        WHERE interface_id = iv_interface_id.
-    ev_switch_to_mi = xsdbool( sy-subrc EQ 0 ).
+    IF sy-subrc EQ 0.
+      ev_switch_to_mi = abap_true.
+    ELSE.
+      ev_switch_to_mi = abap_false.
+    ENDIF.
   ENDMETHOD.
 
 
@@ -264,6 +275,12 @@ METHOD constructor.
     gv_service_id   = iv_service_id.
   ENDIF.
   get_interface_details( ).
+
+  IF gv_api_ref_mi  = 'X'.
+    get_rest_api_ref( EXPORTING iv_business_identifier = iv_business_identifier ).
+    RETURN.
+  ENDIF.
+
   get_rest_api_ref( EXPORTING iv_business_identifier = iv_business_identifier ).
 ENDMETHOD.
 
@@ -979,31 +996,33 @@ METHOD json_to_http_fields.
       json = cl_abap_codepage=>convert_to( iv_response_data ).
       reader = cl_sxml_string_reader=>create( json ).
       " after parse, the json response should look like following
-
+      CLEAR ls_fields.
       DO.
-        CLEAR ls_fields.
+
         l_node = reader->read_next_node( ).
 
         IF l_node IS INITIAL.
           EXIT.
         ENDIF.
         CASE l_node->type.
+
           WHEN if_sxml_node=>co_nt_element_open.
             lr_open_element ?= l_node.
             lt_attributes  = lr_open_element->get_attributes( ).
             IF lt_attributes IS NOT INITIAL.
-              " get name
-              READ TABLE lt_attributes INDEX 1 INTO ls_attribute.
-              ls_fields-name = ls_attribute->get_value( ).
-              " get value
-              l_node = reader->read_next_node( ).
-              IF l_node->type = if_sxml_node=>co_nt_value.
-                lr_value_node ?= l_node .
-                ls_fields-value = lr_value_node->get_value( ).
-                " add field into the result table
-                APPEND ls_fields TO et_fields.
-              ENDIF.
+               READ TABLE lt_attributes INDEX 1 INTO ls_attribute.
+               ls_fields-name = ls_attribute->get_value( ).
             ENDIF.
+
+          WHEN if_sxml_node=>co_nt_value.
+              lr_value_node ?= l_node.
+              IF lr_value_node->value_type = if_sxml_value=>co_vt_text.
+                ls_fields-value = lr_value_node->get_value( ).
+              ENDIF.
+              APPEND ls_fields TO et_fields.
+              CLEAR ls_fields.
+
+
           WHEN OTHERS.
             " do nothing
         ENDCASE.

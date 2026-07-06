@@ -68,6 +68,11 @@
      <DESCRIPT>Asynchronous Service Call</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
+     <CMPNAME>GC_BEARER</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Character field of length 6</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
      <CMPNAME>GC_ERROR</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>Error Message type</DESCRIPT>
@@ -81,6 +86,11 @@
      <CMPNAME>GC_FORMAT_XML</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>SAP-Azure Data Framework Format Type</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>GC_I</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Single-Character Indicator</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
      <CMPNAME>GC_MI_AUTH</CMPNAME>
@@ -173,6 +183,11 @@
      <DESCRIPT>HTTP Framework (iHTTP) Table Name/Value Pairs</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
+     <CMPNAME>GV_API_REF_MI</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Character Field Length 1</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
      <CMPNAME>GV_ASYNCHRONOUS</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>REST API Call Type ( Sync/Async)</DESCRIPT>
@@ -206,6 +221,11 @@
      <CMPNAME>GV_INTERFACE_ID</CMPNAME>
      <LANGU>E</LANGU>
      <DESCRIPT>Interface ID</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>GV_INTERFACE_ID_AAD</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Char 20</DESCRIPT>
     </SEOCOMPOTX>
     <SEOCOMPOTX>
      <CMPNAME>GV_IS_TRY</CMPNAME>
