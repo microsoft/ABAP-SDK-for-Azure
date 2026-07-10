@@ -107,11 +107,6 @@ private section.
   class-data METHODNAME type CHAR5 .
   class-data INTERFACE_NAME type ZINTERFACE_ID .
   class-data IT_ZOBFUSCATE type ZTOBFUSCATE .
-  constants GC_TYPE_AAD type STRING value 'type=aad' ##NO_TEXT.
-  constants GC_TYPE type STRING value 'type=master' ##NO_TEXT.
-  constants GC_VERSION type STRING value 'ver=1.0' ##NO_TEXT.
-  constants GC_SEPARATOR type STRING value '&' ##NO_TEXT.
-  constants GC_SIG type STRING value 'sig=' ##NO_TEXT.
 
   class-methods GET_DB_DATA
     importing
@@ -316,7 +311,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
 
 
   METHOD get_config_data.
-    SELECT SINGLE * FROM zrest_config INTO CORRESPONDING FIELDS OF config_data WHERE interface_id EQ interface_id. " and method eq method.
+    SELECT SINGLE * FROM zrest_config INTO CORRESPONDING FIELDS OF config_data WHERE interface_id EQ interface_id.
     SELECT SINGLE method max_retry
       INTO (config_data-method, config_data-max_retry)
       FROM zrest_conf_misc
@@ -359,30 +354,30 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
       WHEN '304'. description = 'Not Modified'.
       WHEN '305'. description = 'Use Proxy'.
       WHEN '307'. description = 'Temporary Redirect'.
-      WHEN '400'. description = 'Bad Request'.
-      WHEN '401'. description = 'Unauthorized'.
-      WHEN '402'. description = 'Payment Required'.
-      WHEN '403'. description = 'Forbidden'.
-      WHEN '404'. description = 'Not Found'.
-      WHEN '405'. description = 'Method Not Allowed'.
-      WHEN '406'. description = 'Not Acceptable'.
-      WHEN '407'. description = 'Proxy Authentication Required'.
-      WHEN '408'. description = 'Request Timeout'.
-      WHEN '409'. description = 'Conflict'.
-      WHEN '410'. description = 'Gone'.
-      WHEN '411'. description = 'Length Required'.
-      WHEN '412'. description = 'Precondition Failed'.
-      WHEN '413'. description = 'Request Entity Too Large'.
-      WHEN '414'. description = 'Request-URI Too Long'.
-      WHEN '415'. description = 'Unsupported Media Type'.
-      WHEN '416'. description = 'Requested Range Not Satisfiable'.
-      WHEN '417'. description = 'Expectation Failed'.
-      WHEN '500'. description = 'Internal Server Error'.
-      WHEN '501'. description = 'Not Implemented'.
-      WHEN '502'. description = 'Bad Gateway'.
-      WHEN '503'. description = 'Service Unavailable'.
-      WHEN '504'. description = 'Gateway Timeout'.
-      WHEN '505'. description = 'HTTP Version Not Supported'.
+      WHEN'400'.description = ' Bad Request'.
+      WHEN'401'.description = ' Unauthorized'.
+      WHEN'402'.description = ' Payment Required'.
+      WHEN'403'.description = ' Forbidden'.
+      WHEN'404'.description = ' Not Found'.
+      WHEN'405'.description = ' Method Not Allowed'.
+      WHEN'406'.description = ' Not Acceptable'.
+      WHEN'407'.description = ' Proxy Authentication Required'.
+      WHEN'408'.description = ' Request Timeout'.
+      WHEN'409'.description = ' Conflict'.
+      WHEN'410'.description = ' Gone'.
+      WHEN'411'.description = ' Length Required'.
+      WHEN'412'.description = ' Precondition Failed'.
+      WHEN'413'.description = ' Request Entity Too Large'.
+      WHEN'414'.description = ' Request-URI Too Long'.
+      WHEN'415'.description = ' Unsupported Media Type'.
+      WHEN'416'.description = ' Requested Range Not Satisfiable'.
+      WHEN'417'.description = ' Expectation Failed'.
+      WHEN'500'.description = ' Internal Server Error'.
+      WHEN'501'.description = ' Not Implemented'.
+      WHEN'502'.description = ' Bad Gateway'.
+      WHEN'503'.description = ' Service Unavailable'.
+      WHEN'504'.description = ' Gateway Timeout'.
+      WHEN'505'.description = ' HTTP Version Not Supported'.
       WHEN OTHERS.
         description = ''.
     ENDCASE.
@@ -675,6 +670,9 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
 *----------------------------------------------------------------------*
 * 19|04|2023| VBANSAL  |8222481 | SMTK90841  | Reprocessing Logic MI/AAD token gen.
 *----------------------------------------------------------------------*
+* 05|12|2025|SANJUKUM |15226912| SMTK910397  | Retry mechanism for Cross
+*                                              Tenant via MI + FIC
+*----------------------------------------------------------------------*
 
     DATA : lv_string        TYPE string,
 * Start of changes by KRDASH DGDK911539 4812204
@@ -800,11 +798,14 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
     IF sy-subrc EQ 0 AND ls_sdk_retry-retry_flag IS NOT INITIAL.
 *Reprocessing logic for Azure services Getting Auth Token.
       lv_interfacetype  = ls_sdk_retry-interface_type.
+
       CREATE OBJECT lo_adf_reprocess.
       CALL METHOD lo_adf_reprocess->sdk_rest_retry
         EXPORTING
           iv_rest_retry = ls_sdk_retry
           iv_url        = CONV #( wa_paylod-uri )
+          iv_interface  = wa_paylod-interface_id
+          iv_business   = wa_paylod-businessid
         IMPORTING
           rv_token      = lv_sas_token
           rv_date       = lv_sas_date
@@ -1746,116 +1747,101 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD write_application_log.
-*----------------------------------------------------------------------*
-*                       Modification History                           *
-*----------------------------------------------------------------------*
-* Date     | USER ID       | VSTF#  | Transport  | Description         *
-*----------|---------------|--------|------------|---------------------*
-*10/05/21  | V-PRALAV      |   -    | SMTK906965 | Changing message    *
-*                                                  type E to I         *
-*09|29|2022| V-ASHOKM1     |        | SMTK907895 | Fixing VF Errors    *
-*----------------------------------------------------------------------*
+  method WRITE_APPLICATION_LOG.
 *********************************************************************
 *                   Variable Declaration                            *
 *********************************************************************
-    DATA: lw_log        TYPE bal_s_log,
-          lw_msg        TYPE bal_s_msg,
-          lv_log_handle TYPE balloghndl,
-          lw_message    TYPE zrest_applog_message.
+  DATA: lw_log         TYPE bal_s_log,
+        lw_msg         TYPE bal_s_msg,
+        lv_log_handle  TYPE balloghndl,
+        lw_message     TYPE zrest_applog_message.
 
 *********************************************************************
 *                   Constants Declaration                           *
 *********************************************************************
-    CONSTANTS: lc_bl TYPE char2      VALUE 'BL',
-               lc_no TYPE char4      VALUE '0001',
-               lc_e  TYPE char1      VALUE 'E',
-               lc_s  TYPE char1      VALUE 'S',
-               lc_b  TYPE char1      VALUE 'B',
-               lc_i  TYPE char1      VALUE 'I'. "(+)V-PRALAV TR# SMTK906965
+  CONSTANTS:    lc_bl         TYPE char2      VALUE 'BL',
+                lc_no         TYPE char4      VALUE '0001',
+                lc_e          TYPE char1      VALUE 'E',
+                lc_s          TYPE char1      VALUE 'S',
+                lc_b          TYPE char1      VALUE 'B'.
 
 *// Populate the Data for the Hierarchial update
-    lw_log-extnumber  = iv_extnumber.
-    lw_log-object     = iv_object.
-    lw_log-subobject  = iv_subobject.
-    lw_log-aldate     = sy-datum.
-    lw_log-altime     = sy-uzeit.
-    lw_log-aluser     = sy-uname.
-    lw_log-altcode    = sy-tcode.
-    lw_log-alprog     = sy-repid.
+  lw_log-extnumber  = iv_extnumber.
+  lw_log-object     = iv_object.
+  lw_log-subobject  = iv_subobject.
+  lw_log-aldate     = sy-datum.
+  lw_log-altime     = sy-uzeit.
+  lw_log-aluser     = sy-uname.
+  lw_log-altcode    = sy-tcode.
+  lw_log-alprog     = sy-repid.
 
 *// Calling Function Module to Create the Application Log
-    CALL FUNCTION 'BAL_LOG_CREATE'
-      EXPORTING
-        i_s_log                 = lw_log
-      IMPORTING
-        e_log_handle            = lv_log_handle
-      EXCEPTIONS
-        log_header_inconsistent = 1
-        OTHERS                  = 2.
+  CALL FUNCTION 'BAL_LOG_CREATE'
+    EXPORTING
+      i_s_log                 = lw_log
+    IMPORTING
+      e_log_handle            = lv_log_handle
+    EXCEPTIONS
+      log_header_inconsistent = 1
+      OTHERS                  = 2.
 
-    IF sy-subrc EQ 0.
+  IF sy-subrc EQ 0.
 
-      LOOP AT it_message INTO lw_message.
+    LOOP AT it_message INTO lw_message.
 
-        IF lw_message-zmsgid IS NOT INITIAL.
-          lw_msg-msgid = lw_message-zmsgid.
-        ELSE.
-          lw_msg-msgid = lc_bl.     "'BL'.
-        ENDIF.
-        IF lw_message-zmsgno IS NOT INITIAL.
-          lw_msg-msgno = lw_message-zmsgno.
-        ELSE.
-          lw_msg-msgno = lc_no.     "'0001'.
-        ENDIF.
+      IF lw_message-zmsgid IS NOT INITIAL.
+        lw_msg-msgid = lw_message-zmsgid.
+      ELSE.
+        lw_msg-msgid = lc_bl.     "'BL'.
+      ENDIF.
+      IF lw_message-zmsgno IS NOT INITIAL.
+        lw_msg-msgno = lw_message-zmsgno.
+      ELSE.
+        lw_msg-msgno = lc_no.     "'0001'.
+      ENDIF.
 
-        lw_msg-msgty = lw_message-zmsgty.
-        lw_msg-msgv1 = lw_message-zmsgv1.
-        lw_msg-msgv2 = lw_message-zmsgv2.
-        lw_msg-msgv3 = lw_message-zmsgv3.
-        lw_msg-msgv4 = lw_message-zmsgv4.
+      lw_msg-msgty = lw_message-zmsgty.
+      lw_msg-msgv1 = lw_message-zmsgv1.
+      lw_msg-msgv2 = lw_message-zmsgv2.
+      lw_msg-msgv3 = lw_message-zmsgv3.
+      lw_msg-msgv4 = lw_message-zmsgv4.
 
-        CALL FUNCTION 'BAL_LOG_MSG_ADD'
-          EXPORTING
-            i_log_handle     = lv_log_handle
-            i_s_msg          = lw_msg
-          EXCEPTIONS
-            log_not_found    = 1
-            msg_inconsistent = 2
-            log_is_full      = 3
-            OTHERS           = 4.
-*-Begin of changes by V-ASHOKM1 ++ SMTK907895
-        IF sy-subrc <> 0.
-          MESSAGE e004(zvf_zrest).  "Error in adding the Application Log Messages
-        ENDIF.
-*-End of changes by V-ASHOKM1 ++ SMTK907895
-        CLEAR:  lw_msg-msgv1,
-                lw_msg-msgv2,
-                lw_msg-msgv3,
-                lw_msg-msgv4.
+      CALL FUNCTION 'BAL_LOG_MSG_ADD'
+        EXPORTING
+          i_log_handle     = lv_log_handle
+          i_s_msg          = lw_msg
+        EXCEPTIONS
+          log_not_found    = 1
+          msg_inconsistent = 2
+          log_is_full      = 3
+          OTHERS           = 4.
 
-      ENDLOOP.
+      CLEAR:  lw_msg-msgv1,
+              lw_msg-msgv2,
+              lw_msg-msgv3,
+              lw_msg-msgv4.
+
+    ENDLOOP.
 
 
 *// FM to save the Application Log Messages
-      CALL FUNCTION 'BAL_DB_SAVE'
-        EXPORTING
-          i_save_all       = 'X'
-        EXCEPTIONS
-          log_not_found    = 1
-          save_not_allowed = 2
-          numbering_error  = 3
-          OTHERS           = 4.
-      IF sy-subrc EQ 0.
+    CALL FUNCTION 'BAL_DB_SAVE'
+      EXPORTING
+        i_save_all       = 'X'
+      EXCEPTIONS
+        log_not_found    = 1
+        save_not_allowed = 2
+        numbering_error  = 3
+        OTHERS           = 4.
+    IF sy-subrc EQ 0.
 
 *// 'Messages posted to Application Log Successfully'
-        MESSAGE text-002 TYPE lc_s. "'S'.
-      ENDIF.
-    ELSE.
+      MESSAGE text-002 TYPE lc_s. "'S'.
+    ENDIF.
+  ELSE.
 
 *// 'Application Log Creation Failed'
-*    MESSAGE text-001 TYPE lc_e DISPLAY LIKE lc_s.  "(-)V-PRALAV TR# SMTK906965
-      MESSAGE text-001 TYPE lc_i DISPLAY LIKE lc_s.  "(+)V-PRALAV TR# SMTK906965
-    ENDIF.
-  ENDMETHOD.
+    MESSAGE text-001 TYPE lc_e DISPLAY LIKE lc_s.
+  ENDIF.
+  endmethod.
 ENDCLASS.

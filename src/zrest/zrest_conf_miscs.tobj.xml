@@ -37,6 +37,13 @@
      <LISTE>9002</LISTE>
      <BASTAB>X</BASTAB>
     </TVDIR>
+    <TVIMF>
+     <TVIMF>
+      <TABNAME>ZREST_CONF_MISC</TABNAME>
+      <EVENT>01</EVENT>
+      <FORMNAME>F_BEFORE_SAVE</FORMNAME>
+     </TVIMF>
+    </TVIMF>
    </TOBJ>
   </asx:values>
  </asx:abap>

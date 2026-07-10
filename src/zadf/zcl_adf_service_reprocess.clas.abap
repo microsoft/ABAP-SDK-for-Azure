@@ -5,6 +5,7 @@ class ZCL_ADF_SERVICE_REPROCESS definition
 
 public section.
 
+  constants GC_S type CHAR1 value 'S' ##NO_TEXT.
   constants GC_AAD type CHAR5 value 'AAD' ##NO_TEXT.
   constants GC_MSI type CHAR3 value 'MSI' ##NO_TEXT.
   constants GC_SERVICE_COSMOSDB type ZAZURE_DEST value 'COSMOSDB' ##NO_TEXT.
@@ -45,6 +46,8 @@ public section.
     importing
       value(IV_REST_RETRY) type ZADF_SDK_RETRY
       value(IV_URL) type ZURI_AZURE optional
+      !IV_INTERFACE type ZINTERFACE_ID
+      !IV_BUSINESS type ZBUSINESSID optional
     exporting
       value(RV_TOKEN) type STRING
       value(RV_DATE) type STRING
@@ -669,24 +672,56 @@ ENDMETHOD.
 
 METHOD sdk_rest_retry.
 
-  DATA  : ls_retry TYPE zadf_sdk_retry.
+  DATA  : ls_retry          TYPE zadf_sdk_retry,
+          lo_adf_aad        TYPE REF TO zcl_adf_service_aad,
+          lv_retry_resource TYPE string,
+          lv_retry_client   TYPE string.
 
   ls_retry  = iv_rest_retry.
 
 *Reprocessing logic for Azure services AAD & MI.
   IF ls_retry-auth_intf_id IS NOT INITIAL
                                   AND ls_retry-client_id IS NOT INITIAL
-                                        AND ls_retry-resource_id IS NOT INITIAL.
-* Fetch AAD/MI Token.
-    CALL METHOD me->get_aad_token
-      EXPORTING
-        iv_interface_id = ls_retry-auth_intf_id
-        iv_client_id    = CONV #( ls_retry-client_id )
-        iv_resource     = CONV #( ls_retry-resource_id )
-        iv_int_type     = ls_retry-interface_type
-      IMPORTING
-        ev_aad_token    = rv_aad_token.
+                                  AND ls_retry-resource_id IS NOT INITIAL.
+    IF ls_retry-interface_type EQ 'FIC'.
+      lv_retry_client = ls_retry-client_id.
+      lv_retry_resource = ls_retry-resource_id.
 
+      TRY.
+          zcl_adf_service_aad=>get_fci_token(
+            EXPORTING
+              iv_mi_intif       = ls_retry-auth_intf_id
+              iv_aad_intid      = 'ZCOPIT_AAD'          " to be changed
+              iv_client_id      = lv_retry_client
+              iv_scope          = lv_retry_resource
+              iv_aad_bus_id     = iv_business
+            IMPORTING
+              ev_aad_token      = rv_token
+              ev_response       = DATA(lv_fic_response) ).
+        CATCH zcx_adf_service INTO DATA(lx_adf_service).
+          DATA(lv_fic_msg) = lx_adf_service->get_text( ).
+          MESSAGE lv_fic_msg TYPE gc_i.
+          RETURN.
+        CATCH zcx_interace_config_missing INTO DATA(lx_config).
+          lv_fic_msg = lx_config->get_text( ).
+          MESSAGE lv_fic_msg TYPE gc_i.
+          RETURN.
+        CATCH zcx_http_client_failed INTO DATA(lx_http_client).
+          lv_fic_msg = lx_http_client->get_text( ).
+          MESSAGE lv_fic_msg TYPE gc_i.
+          RETURN.
+      ENDTRY.
+    ELSE.
+* Fetch AAD/MI Token.
+      CALL METHOD me->get_aad_token
+        EXPORTING
+          iv_interface_id = ls_retry-auth_intf_id
+          iv_client_id    = CONV #( ls_retry-client_id )
+          iv_resource     = CONV #( ls_retry-resource_id )
+          iv_int_type     = ls_retry-interface_type
+        IMPORTING
+          ev_aad_token    = rv_aad_token.
+    ENDIF.
 * Reprocessing logic for Azure services excluding AAD( with SAS KEY/SASTOKEN/PKEY)
   ELSE.
 
@@ -714,15 +749,15 @@ METHOD sdk_rest_retry.
               rv_date           = rv_date.
         CATCH zcx_adf_service INTO DATA(lcx_adf_service).
           DATA(lv_msg) =  lcx_adf_service->get_text( ).
-          MESSAGE lv_msg TYPE gc_i.
+          MESSAGE lv_msg TYPE gc_s.
           RETURN.
         CATCH zcx_interace_config_missing INTO DATA(lcx_interface).
           lv_msg =  lcx_interface->get_text( ).
-          MESSAGE lv_msg TYPE gc_i.
+          MESSAGE lv_msg TYPE gc_s.
           RETURN.
         CATCH zcx_http_client_failed INTO DATA(lcx_http).
           lv_msg =  lcx_http->get_text( ).
-          MESSAGE lv_msg TYPE gc_i.
+          MESSAGE lv_msg TYPE gc_s.
           RETURN.
       ENDTRY.
     ENDIF.

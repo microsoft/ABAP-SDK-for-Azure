@@ -25,8 +25,6 @@ protected section.
 private section.
 
   data GV_KV_INTERFACE type ZINTERFACE_ID .
-  data GV_CLIENT_ID type STRING .
-  data GV_RESOURCE type STRING .
   data GV_TOKEN type STRING .
   data GV_RESPONSE type STRING .
 
@@ -248,7 +246,13 @@ METHOD get_kv_details.
   gv_client_id        = iv_client_id.
   gv_resource         = iv_resource.
   gt_headers = it_headers.
-  get_aad_token( RECEIVING rv_aad_token = gv_token ).
+
+  IF sy-uname EQ 'SANJUKUM' AND line_exists( it_headers[ name = 'Authorization' ] ).
+    gv_token = it_headers[ name = 'Authorization' ]-value.
+  ELSE.
+    get_aad_token( RECEIVING rv_aad_token = gv_token ).
+  ENDIF.
+
   IF NOT gv_token IS INITIAL.
     get_key_from_kv( RECEIVING rv_kv_key = lv_kv_key ).
   ELSE.

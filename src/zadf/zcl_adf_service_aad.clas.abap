@@ -12,6 +12,7 @@ public section.
     importing
       value(IV_CLIENT_ID) type STRING
       value(IV_RESOURCE) type STRING
+      value(IV_SCOPE) type STRING optional
     exporting
       value(EV_AAD_TOKEN) type STRING
       value(EV_RESPONSE) type STRING
@@ -42,6 +43,21 @@ public section.
       ZCX_ADF_SERVICE
       ZCX_INTERACE_CONFIG_MISSING
       ZCX_HTTP_CLIENT_FAILED .
+  class-methods GET_FCI_TOKEN
+    importing
+      !IV_MI_INTIF type ZINTERFACE_ID default 'ZADF_FIC'
+      !IV_AAD_INTID type ZINTERFACE_ID optional
+      value(IV_CLIENT_ID) type STRING
+      value(IV_SCOPE) type STRING
+      value(IV_AAD_BUS_ID) type ZBUSINESSID
+    exporting
+      !EV_AAD_TOKEN type STRING
+      !EV_RESPONSE type STRING
+      !EV_ERROR_RESPONSE type STRING
+    raising
+      ZCX_ADF_SERVICE
+      ZCX_INTERACE_CONFIG_MISSING
+      ZCX_HTTP_CLIENT_FAILED .
 protected section.
 private section.
 
@@ -51,6 +67,7 @@ private section.
     importing
       value(IV_CLIENT_ID) type STRING
       value(IV_RESOURCE) type STRING
+      value(IV_SCOPE) type STRING optional
     exporting
       value(EV_AAD_TOKEN) type STRING
       value(EV_RESPONSE) type STRING
@@ -81,7 +98,7 @@ CLASS ZCL_ADF_SERVICE_AAD IMPLEMENTATION.
            lv_token           TYPE string,
            ls_response_fields TYPE ihttpnvp,
            reader1            TYPE REF TO if_sxml_reader,
-           form_data_helper   TYPE REF TO cl_rest_form_data,
+*           form_data_helper   TYPE REF TO cl_rest_form_data,
            it_params          TYPE tihttpnvp,
            wa_params          TYPE ihttpnvp,
            lv_mediatype       TYPE string,
@@ -93,17 +110,22 @@ CLASS ZCL_ADF_SERVICE_AAD IMPLEMENTATION.
 ************************************************************************
     lv_mediatype = if_rest_media_type=>gc_appl_www_form_url_encoded.
 
-    CREATE OBJECT form_data_helper
-      EXPORTING
-        io_entity = lo_request.
+*    CREATE OBJECT form_data_helper
+*      EXPORTING
+*        io_entity = lo_request.
 
-    wa_params-name  =  'scope'.
-    wa_params-value =  cl_http_utility=>escape_url( iv_scope ).
+    wa_params-name = 'client_id'.
+    wa_params-value =  iv_client_id .
     APPEND wa_params TO it_params.
     CLEAR wa_params.
 
-    wa_params-name  = 'client_assertion_type'.
-    wa_params-value = cl_http_utility=>escape_url( 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer' ) .
+    wa_params-name = 'grant_type'.
+    wa_params-value = 'client_credentials'.
+    APPEND wa_params TO it_params.
+    CLEAR wa_params.
+
+    wa_params-name  = 'scope'.
+    wa_params-value =  iv_scope."cl_http_utility=>escape_url( iv_scope ).
     APPEND wa_params TO it_params.
     CLEAR wa_params.
 
@@ -112,25 +134,9 @@ CLASS ZCL_ADF_SERVICE_AAD IMPLEMENTATION.
     APPEND wa_params TO it_params.
     CLEAR wa_params.
 
-**    decode_sign( receiving rv_secret = lv_secret ).
-*    TRY.
-*        IF gv_sas_key IS INITIAL.
-*          lv_secret = read_ssf_key( ).
-*        ELSE.
-*          lv_secret = read_key( ).
-*        ENDIF.
-*      CATCH zcx_adf_service INTO lcx_adf_service.
-*        lv_msg =  lcx_adf_service->get_text( ).
-*        MESSAGE lv_msg TYPE 'I'.
-*    ENDTRY.
-
-*    wa_params-name = 'client_secret'.
-*    wa_params-value = lv_secret.
-*    APPEND wa_params TO it_params.
-*    CLEAR wa_params.
-
-    wa_params-name = 'grant_type'.
-    wa_params-value = 'client_credentials'.
+    wa_params-name  = 'client_assertion_type'.
+    wa_params-value = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer' .
+    "cl_http_utility=>escape_url( 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer' ) .
     APPEND wa_params TO it_params.
     CLEAR wa_params.
 
@@ -233,9 +239,19 @@ ENDMETHOD.
       CREATE OBJECT form_data_helper
         EXPORTING
           io_entity = lo_request.
-      wa_params-name = 'resource'.
-      wa_params-value =  iv_resource .
-      APPEND wa_params TO it_params.
+*      wa_params-name = 'resource'.
+*      wa_params-value =  iv_resource .
+*      APPEND wa_params TO it_params.
+      IF iv_resource IS NOT INITIAL.
+        wa_params-name = 'resource'.
+        wa_params-value =  iv_resource .
+        APPEND wa_params TO it_params.
+      ENDIF.
+      IF iv_scope IS NOT INITIAL.
+        wa_params-name = 'scope'.
+        wa_params-value =  iv_scope .
+        APPEND wa_params TO it_params.
+      ENDIF.
       CLEAR wa_params.
       wa_params-name = 'client_id'.
       wa_params-value =  iv_client_id .
@@ -372,6 +388,72 @@ ENDMETHOD.
       ev_aad_token = lv_token.
     ENDIF.
 *  ENDIF.
+  ENDMETHOD.
+
+
+  METHOD get_fci_token.
+
+    DATA: lo_oref    TYPE REF TO zcl_adf_service,
+          lo_ref_msi TYPE REF TO zcl_adf_service_aad,
+          lv_busid   TYPE zbusinessid.
+
+    DATA: lo_oref_adf TYPE REF TO zcl_adf_service,
+          lo_ref_aad  TYPE REF TO zcl_adf_service_aad.
+******** Get First MSI Based Token****************
+    lo_oref = zcl_adf_service_factory=>create( iv_interface_id        = iv_mi_intif
+                                               iv_business_identifier = 'MSI_FCI_TOKEN' ).
+    lo_ref_msi ?=  lo_oref.
+
+* Get First MSI based Token.
+    TRY.
+        lo_ref_msi->get_aad_token_msi(
+          IMPORTING
+            ev_aad_token = DATA(lv_mi_token) ).
+      CATCH zcx_interace_config_missing zcx_http_client_failed zcx_adf_service INTO DATA(cx_interface).
+        DATA(lv_string) = cx_interface->get_text( ).
+
+        CONCATENATE TEXT-003 lv_string INTO lv_string SEPARATED BY space.
+        ev_error_response = lv_string.
+    ENDTRY.
+
+    CLEAR : lo_ref_msi,lo_oref.
+
+******** USE MSI Based Token and Pass to AAD FCI****************
+    IF lv_mi_token IS NOT INITIAL.
+
+      IF iv_aad_bus_id IS INITIAL.
+        lv_busid  = 'AAD_FCI_TOKEN'.
+      ELSE.
+        lv_busid  = iv_aad_bus_id.
+      ENDIF.
+
+      lo_oref_adf = zcl_adf_service_factory=>create( iv_interface_id        = iv_aad_intid
+                                                     iv_business_identifier = lv_busid ).
+
+      lo_ref_aad ?=  lo_oref_adf.
+* GET AAD Based FCI Token
+      TRY.
+          CALL METHOD lo_ref_aad->get_aad_fci_token
+            EXPORTING
+              iv_assertion_token = lv_mi_token
+              iv_client_id       = iv_client_id
+              iv_scope           = iv_scope
+            IMPORTING
+              ev_access_token    = DATA(lv_aad_token)
+              ev_response        = DATA(lv_response).
+        CATCH zcx_interace_config_missing zcx_http_client_failed zcx_adf_service INTO cx_interface.
+          lv_string = cx_interface->get_text( ).
+
+          CONCATENATE lv_string lv_response INTO lv_string SEPARATED BY space.
+          ev_error_response = lv_string.
+      ENDTRY.
+
+      ev_aad_token  = lv_aad_token.
+      ev_response   = lv_response.
+
+      CLEAR : lo_ref_aad,lo_oref_adf.
+
+    ENDIF.
   ENDMETHOD.
 
 
