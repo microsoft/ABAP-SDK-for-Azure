@@ -169,7 +169,7 @@ CLASS ZCL_O365_SERVICE_SHAREPOINT IMPLEMENTATION.
         request    = lv_request
         it_headers = it_headers ).
 
-    go_rest_api1->set_callingmethod('CREATE_FOLDER').
+    go_rest_api1->set_callingmethod( 'CREATE_FOLDER' ).
 
     me->set_uri_path_folder( ).
 
@@ -258,7 +258,7 @@ CLASS ZCL_O365_SERVICE_SHAREPOINT IMPLEMENTATION.
         it_headers = it_headers ).
     CREATE OBJECT cx_interface.
     CREATE OBJECT cx_http.
-    go_rest_api1->set_callingmethod('DELETE_FILE_FROM_FOLDER').
+    go_rest_api1->set_callingmethod( 'DELETE_FILE_FROM_FOLDER' ).
     me->set_uri_path_for_delete( ).
 
     go_response = go_rest_api1->zif_rest_framework~execute( io_entity = go_request
@@ -364,7 +364,7 @@ ENDMETHOD.
         request    = lv_request
         it_headers = lt_headers ).
 
-    go_rest_api1->set_callingmethod('READ_ALL_FILE_FROM_FOLDER').
+    go_rest_api1->set_callingmethod( 'READ_ALL_FILE_FROM_FOLDER' ).
 
     CONCATENATE gc_uri_sp gc_sep1
                 iv_folder_name gc_sep1  gc_sep2
@@ -430,7 +430,7 @@ ENDMETHOD.
         request    = lv_request
         it_headers = it_headers ).
 
-    go_rest_api1->set_callingmethod('READ_FILE_DATA').
+    go_rest_api1->set_callingmethod( 'READ_FILE_DATA' ).
     me->set_uri_path_read( ).
     go_response = go_rest_api1->zif_rest_framework~execute( io_entity = go_request
                                                             async     = abap_false
@@ -474,7 +474,7 @@ METHOD send.
     EXPORTING
       request    = request
       it_headers = it_headers ).
-  go_rest_api1->set_callingmethod('SEND').
+  go_rest_api1->set_callingmethod( 'SEND' ).
   me->set_uri_path( ).
   go_rest_api1->zif_rest_framework~set_binary_body( request ).
   go_response = go_rest_api1->zif_rest_framework~execute( io_entity = go_request

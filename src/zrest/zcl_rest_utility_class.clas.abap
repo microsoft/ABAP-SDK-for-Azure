@@ -873,7 +873,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
     IF monitor-calling_method IS NOT INITIAL.
       rest_handler->set_callingmethod( monitor-calling_method ).
     ELSE.
-      rest_handler->set_callingmethod('RETRY').
+      rest_handler->set_callingmethod( 'RETRY' ).
     ENDIF.
 *   //up to here VSO#4360996 TR#MS2K981536
 
@@ -922,7 +922,7 @@ CLASS ZCL_REST_UTILITY_CLASS IMPLEMENTATION.
     IF monitor-calling_program IS NOT INITIAL.
       rest_handler->set_callingprogram( monitor-calling_program ).
     ELSE.
-      rest_handler->set_callingprogram('ZCL_REST_UTILITY_CLASS').
+      rest_handler->set_callingprogram( 'ZCL_REST_UTILITY_CLASS' ).
     ENDIF.
 
 *   //Retain Submit date and time

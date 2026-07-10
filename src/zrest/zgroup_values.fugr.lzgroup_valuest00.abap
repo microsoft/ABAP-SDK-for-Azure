@@ -1,7 +1,5 @@
 *---------------------------------------------------------------------*
 *    view related data declarations
-*   generation date: 10/28/2022 at 01:36:17
-*   view maintenance generator version: #001407#
 *---------------------------------------------------------------------*
 *...processing: ZGROUP_VALUES...................................*
 DATA:  BEGIN OF STATUS_ZGROUP_VALUES                 .   "state vector

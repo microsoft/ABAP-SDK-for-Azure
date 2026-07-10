@@ -7,6 +7,7 @@
     <DDLANGUAGE>E</DDLANGUAGE>
     <TABCLASS>INTTAB</TABCLASS>
     <DDTEXT>Azure Open AI response usage</DDTEXT>
+    <EXCLASS>1</EXCLASS>
    </DD02V>
    <DD03P_TABLE>
     <DD03P>

@@ -1,0 +1,33 @@
+
+PROCESS BEFORE OUTPUT.
+  MODULE liste_initialisieren.
+  LOOP AT extract WITH CONTROL
+   tctrl_zadf_config CURSOR nextline.
+    MODULE liste_show_liste.
+  ENDLOOP.
+*
+PROCESS AFTER INPUT.
+  MODULE liste_exit_command AT EXIT-COMMAND.
+  MODULE liste_before_loop.
+  LOOP AT extract.
+    MODULE liste_init_workarea.
+    CHAIN.
+      FIELD zadf_config-interface_id .
+      FIELD zadf_config-interface_type .
+      FIELD zadf_config-sas_key .
+      FIELD zadf_config-uri .
+      FIELD zadf_config-service_type .
+      FIELD zadf_config-is_try .
+      MODULE set_update_flag ON CHAIN-REQUEST.
+    ENDCHAIN.
+    FIELD vim_marked MODULE liste_mark_checkbox.
+    CHAIN.
+      FIELD zadf_config-interface_id .
+      MODULE liste_update_liste.
+    ENDCHAIN.
+    CHAIN.
+      FIELD zadf_config-sas_key.
+      MODULE validate_saskey ON CHAIN-REQUEST.
+    ENDCHAIN.
+  ENDLOOP.
+  MODULE liste_after_loop.
