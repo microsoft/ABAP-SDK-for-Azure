@@ -102,7 +102,7 @@ CLASS ZCL_ADF_MANAGE_ACCESS_KEYS IMPLEMENTATION.
 
     LOOP AT lt_abap_stack INTO ls_abap_stack
             WHERE mainprogram EQ 'SAPLZSSF_FG' OR
-                  mainprogram eq 'ZCL_ADF_MANAGE_ACCESS_KEYS====CP'      " <--- Missing mainprogram 
+                  mainprogram eq 'ZCL_ADF_MANAGE_ACCESS_KEYS====CP'      " <--- Missing mainprogram
                   mainprogram EQ 'ZCL_ADF_MANAGE_INTERFACE_KEY==CP' OR
                   mainprogram EQ 'ZADF_VALIDATE_AND_ADJUST_KEYS' OR
                   mainprogram EQ 'ZSSF_VALIDATE_AND_ADJUST_KEYS' OR
