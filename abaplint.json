@@ -203,7 +203,10 @@
       "requested": true,
       "setExtended": true
     },
-    "parser_error": false,
+    "parser_error": {
+      "exclude": ["svim.xml"],
+      "severity": "Error"
+    },
     "remove_descriptions": false,
     "sequential_blank": false,
     "short_case": {
