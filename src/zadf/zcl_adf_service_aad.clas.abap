@@ -203,6 +203,7 @@ METHOD get_aad_token.
       EXPORTING
         iv_client_id = iv_client_id
         iv_resource  = iv_resource
+        iv_scope     = iv_scope
       IMPORTING
         ev_aad_token = ev_aad_token
         ev_response  = ev_response.
