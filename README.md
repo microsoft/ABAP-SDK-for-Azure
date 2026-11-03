@@ -6,6 +6,8 @@ ABAP SDK for Azure consists of ABAP objects/classes which simplify SAP and Azure
 For more information on ABAP SDK for Azure and it’s installation process,
 Please check document [ABAP SDK for Azure – Github](https://github.com/Microsoft/ABAP-SDK-for-Azure/blob/master/ABAP%20SDK%20for%20Azure%20-%20Github.pdf)
 
+> [!NOTE]
+> **Developing with ABAP Cloud?** Check out the new [ABAP Cloud SDK for Azure](https://github.com/Azure/ABAP-Cloud-SDK-for-Azure), a complementary project providing Azure REST clients for SAP Business AI Platform, ABAP environment (Steampunk) and SAP S/4HANA Cloud Public Edition. This initial release welcomes your feedback and contributions.
 
 As of now, ABAP SDK supports direct integration with following Azure services,
 * Event hub
